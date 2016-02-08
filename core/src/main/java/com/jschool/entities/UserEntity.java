@@ -7,6 +7,8 @@ import javax.persistence.*;
  */
 @Entity
 @NamedQueries({
+        @NamedQuery(name="User.findByRole",
+                query="SELECT u FROM UserEntity u WHERE u.role = :role"),
         @NamedQuery(name="User.findByEmail",
                 query="SELECT u FROM UserEntity u WHERE u.email = :email"),
         @NamedQuery(name="User.findAll",
@@ -24,7 +26,7 @@ public class UserEntity {
     private String password;
     @Column(name = "role", nullable = false)
     private boolean role;
-    @OneToOne(optional=false, mappedBy="user")
+    @OneToOne(mappedBy="user")
     private DriverEntity driver;
 
     public int getId() {
@@ -67,26 +69,4 @@ public class UserEntity {
         this.driver = driver;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        UserEntity that = (UserEntity) o;
-
-        if (id != that.id) return false;
-        if (role != that.role) return false;
-        if (email != null ? !email.equals(that.email) : that.email != null) return false;
-        if (password != null ? !password.equals(that.password) : that.password != null) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = id;
-        result = 31 * result + (email != null ? email.hashCode() : 0);
-        result = 31 * result + (password != null ? password.hashCode() : 0);
-        return result;
-    }
 }

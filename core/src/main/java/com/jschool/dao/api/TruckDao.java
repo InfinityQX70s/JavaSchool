@@ -9,6 +9,7 @@ import java.util.List;
  */
 public interface TruckDao extends GenericDao<TruckEntity> {
 
-    List<TruckEntity> findAllByStateAndCapacity(boolean isRepair,int capacity);
+    TruckEntity findByNumber(String number);
+    List<TruckEntity> findAllFreeByStateAndCapacity(boolean isRepair,int capacity);
     List<TruckEntity> findAll();
 }

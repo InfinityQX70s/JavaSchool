@@ -18,6 +18,13 @@ public class UserDaoImpl extends GenericDaoImpl<UserEntity> implements UserDao{
         return query.getSingleResult();
     }
 
+    public List<UserEntity> findByRole(boolean isDriver) {
+        TypedQuery<UserEntity> query =
+                entityManager.createNamedQuery("User.findByRole", UserEntity.class);
+        query.setParameter("role", isDriver);
+        return query.getResultList();
+    }
+
     public List<UserEntity> findAll() {
         TypedQuery<UserEntity> query =
                 entityManager.createNamedQuery("User.findAll", UserEntity.class);

@@ -2,7 +2,12 @@ package com.jschool;
 
 import com.jschool.dao.api.CargoDao;
 import com.jschool.dao.impl.CargoDaoImpl;
+import com.jschool.dao.impl.UserDaoImpl;
 import com.jschool.entities.CargoEntity;
+import com.jschool.entities.UserEntity;
+import com.jschool.services.impl.TruckServiceImpl;
+import com.jschool.services.impl.UserServiceImpl;
+
 import java.util.List;
 
 /**
@@ -12,9 +17,9 @@ public class Main {
 
     public static void main(String[] args) {
         System.out.println("Main");
-        CargoDao cargoDao = new CargoDaoImpl();
-        List<CargoEntity> cargoEntity = cargoDao.findAll();
-        for (CargoEntity a : cargoEntity)
-            System.out.println(a.getName());
+        UserServiceImpl userService = new UserServiceImpl();
+        UserEntity userEntity = userService.findByEmail("ololo@driver.sto");
+        userService.delete(userEntity);
+
     }
 }

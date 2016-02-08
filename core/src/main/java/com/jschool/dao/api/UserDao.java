@@ -10,5 +10,6 @@ import java.util.List;
 public interface UserDao extends GenericDao<UserEntity>{
 
     UserEntity findByEmail(String email);
+    List<UserEntity> findByRole(boolean isDriver);
     List<UserEntity> findAll();
 }

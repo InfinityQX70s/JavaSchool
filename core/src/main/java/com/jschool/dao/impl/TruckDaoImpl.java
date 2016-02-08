@@ -11,9 +11,16 @@ import java.util.List;
  */
 public class TruckDaoImpl extends GenericDaoImpl<TruckEntity> implements TruckDao {
 
-    public List<TruckEntity> findAllByStateAndCapacity(boolean isRepair, int capacity) {
+    public TruckEntity findByNumber(String number) {
         TypedQuery<TruckEntity> query =
-                entityManager.createNamedQuery("Truck.findAllByStateAndCapacity", TruckEntity.class);
+                entityManager.createNamedQuery("Truck.findByNumber", TruckEntity.class);
+        query.setParameter("number", number);
+        return query.getSingleResult();
+    }
+
+    public List<TruckEntity> findAllFreeByStateAndCapacity(boolean isRepair, int capacity) {
+        TypedQuery<TruckEntity> query =
+                entityManager.createNamedQuery("Truck.findAllFreeByStateAndCapacity", TruckEntity.class);
         query.setParameter("repairState", isRepair);
         query.setParameter("capacity", capacity);
         return query.getResultList();
