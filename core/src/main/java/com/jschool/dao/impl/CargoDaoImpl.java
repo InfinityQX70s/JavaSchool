@@ -1,9 +1,14 @@
 package com.jschool.dao.impl;
 
 import com.jschool.dao.api.CargoDao;
+import com.jschool.dao.api.CargoStatusLogDao;
 import com.jschool.entities.CargoEntity;
+import com.jschool.entities.CargoStatusLogEntity;
+import com.jschool.entities.status.CargoStatus;
 
 import javax.persistence.TypedQuery;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -29,5 +34,28 @@ public class CargoDaoImpl extends GenericDaoImpl<CargoEntity> implements CargoDa
         TypedQuery<CargoEntity> query =
                 entityManager.createNamedQuery("Cargo.findAll", CargoEntity.class);
         return query.getResultList();
+    }
+
+    @Override
+    public void create(CargoEntity entity) {
+        entityManager.getTransaction( ).begin( );
+        entityManager.persist(entity);
+        CargoStatusLogEntity cargoStatusLogEntity = new CargoStatusLogEntity();
+        cargoStatusLogEntity.setStatus(CargoStatus.ready);
+        cargoStatusLogEntity.setTimestamp(new Date());
+        cargoStatusLogEntity.setCargo(entity);
+        entityManager.persist(cargoStatusLogEntity);
+        entityManager.getTransaction( ).commit( );
+    }
+
+    public void setCargoStatus(int number, CargoStatus status){
+        entityManager.getTransaction( ).begin( );
+        CargoEntity cargo = findByNumber(number);
+        CargoStatusLogEntity cargoStatusLogEntity = new CargoStatusLogEntity();
+        cargoStatusLogEntity.setStatus(CargoStatus.delivered);
+        cargoStatusLogEntity.setTimestamp(new Date());
+        cargoStatusLogEntity.setCargo(cargo);
+        entityManager.persist(cargoStatusLogEntity);
+        entityManager.getTransaction( ).commit( );
     }
 }
