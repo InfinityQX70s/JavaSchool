@@ -15,8 +15,6 @@ public abstract class GenericDaoImpl<T> implements GenericDao<T> {
 
     public GenericDaoImpl(EntityManager entityManager) {
         this.entityManager = entityManager;
-//        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("Logiweb");
-//        entityManager = entityManagerFactory.createEntityManager( );
     }
 
     public void create(T entity) {

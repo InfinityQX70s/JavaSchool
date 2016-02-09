@@ -1,12 +1,14 @@
 package com.jschool.entities;
 
 import javax.persistence.*;
-import java.sql.Date;
+import java.util.Date;
 
 /**
  * Created by infinity on 06.02.16.
  */
 @Entity
+@NamedQuery(name="DriverStatistic.findAllByOneMonth",
+        query="SELECT d FROM DriverStatistic d WHERE d.driver = :driver AND d.timestamp >= :endDate")
 @Table(name = "DriverStatistic", schema = "logiweb")
 public class DriverStatistic {
     @Id
@@ -14,6 +16,7 @@ public class DriverStatistic {
     @Column(name = "idDriverStatistic", unique = true, nullable = false)
     private int id;
     @Column(name = "timestamp", nullable = false)
+    @Temporal(value = TemporalType.DATE)
     private Date timestamp;
     @Column(name = "hoursWorked", nullable = false)
     private int hoursWorked;

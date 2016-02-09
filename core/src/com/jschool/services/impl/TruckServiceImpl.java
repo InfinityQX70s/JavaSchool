@@ -18,15 +18,19 @@ public class TruckServiceImpl {
     }
 
     public void create(Truck truck){
-        truckDao.create(truck);
+        Truck element = truckDao.findUniqueByNumber(truck.getNumber());
+        if (element == null)
+            truckDao.create(truck);
     }
 
     public void update(Truck truck){
         truckDao.update(truck);
     }
 
-    public void delete(Truck truck){
-        truckDao.delete(truck);
+    public void delete(String truckNumber){
+        Truck truck = truckDao.findUniqueByNumber(truckNumber);
+        if (truck.getOreder() == null)
+            truckDao.delete(truck);
     }
 
     public Truck findByNumber(String number){
@@ -37,7 +41,7 @@ public class TruckServiceImpl {
         return truckDao.findAll();
     }
 
-    public List<Truck> findAllFreeByStateAndCapacity(boolean isRepair, int capacity){
-        return truckDao.findAllFreeByStateAndCapacity(isRepair,capacity);
+    public List<Truck> findAllFreeByStateAndGreaterThanCapacity(boolean isRepair, int capacity){
+        return truckDao.findAllFreeByStateAndGreaterThanCapacity(isRepair,capacity);
     }
 }

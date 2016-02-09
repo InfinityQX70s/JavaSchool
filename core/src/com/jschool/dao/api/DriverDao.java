@@ -12,4 +12,5 @@ public interface DriverDao extends GenericDao<Driver> {
     Driver findUniqueByNumber(int number);
     List<Driver> findAllByFirstNameAndLastName(String firstName, String lastName);
     List<Driver> findAll();
+    List<Driver> findAllFreeDrivers();
 }

@@ -17,6 +17,7 @@ public class CargoStatusLog {
     @Enumerated(EnumType.STRING)
     private CargoStatus status;
     @Column(name = "timestamp", nullable = false)
+    @Temporal(value = TemporalType.TIMESTAMP)
     private Date timestamp;
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="cargo_id", nullable = false)

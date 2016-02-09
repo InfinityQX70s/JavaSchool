@@ -10,7 +10,9 @@ import java.util.List;
 @NamedQueries({
         @NamedQuery(name="Driver.findByNumber",
                 query="SELECT d FROM Driver d WHERE d.number = :number"),
-        @NamedQuery(name="Driver.findByFirstNameAndLastName",
+        @NamedQuery(name="Driver.findAllFreeDrivers",
+                query="SELECT d FROM Driver d WHERE d.order IS NULL"),
+        @NamedQuery(name="Driver.findAllByFirstNameAndLastName",
                 query="SELECT d FROM Driver d WHERE d.firstName = :firstName AND d.lastName = :lastName"),
         @NamedQuery(name="Driver.findAll",
                 query="SELECT d FROM Driver d")

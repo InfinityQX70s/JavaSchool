@@ -2,8 +2,8 @@
 <persistence xmlns="http://java.sun.com/xml/ns/persistence" version="2.0">
     <persistence-unit name="Logiweb" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
-        <class>com.jschool.entities.CargoEntity</class>
-        <class>com.jschool.entities.CargoStatusLogEntity</class>
+        <class>com.jschool.entities.Cargo</class>
+        <class>com.jschool.entities.CargoStatusLog</class>
         <class>com.jschool.entities.City</class>
         <class>com.jschool.entities.Driver</class>
         <class>com.jschool.entities.DriverStatistic</class>

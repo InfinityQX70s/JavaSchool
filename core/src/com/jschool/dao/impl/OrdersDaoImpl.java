@@ -35,4 +35,5 @@ public class OrdersDaoImpl extends GenericDaoImpl<Order> implements OrdersDao{
                 entityManager.createNamedQuery("Orders.findAll", Order.class);
         return query.getResultList();
     }
+
 }

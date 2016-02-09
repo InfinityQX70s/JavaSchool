@@ -9,10 +9,6 @@
         <webroots>
           <root url="file://$MODULE_DIR$/src/main/webapp" relative="/" />
         </webroots>
-        <sourceRoots>
-          <root url="file://$MODULE_DIR$/src/main/resources" />
-          <root url="file://$MODULE_DIR$/src/main/java" />
-        </sourceRoots>
       </configuration>
     </facet>
     <facet type="jpa" name="JPA">
@@ -21,6 +17,7 @@
         <setting name="provider-name" value="" />
         <datasource-mapping>
           <factory-entry name="Eclipselink_JPA" value="6f95c1de-d2b4-4110-9769-8d8e7268346b" />
+          <factory-entry name="Logiweb" />
           <factory-entry name="logiweb" />
         </datasource-mapping>
         <deploymentDescriptor name="persistence.xml" url="file://$MODULE_DIR$/src/META-INF/persistence.xml" />

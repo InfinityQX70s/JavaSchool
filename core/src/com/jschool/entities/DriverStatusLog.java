@@ -17,6 +17,7 @@ public class DriverStatusLog {
     @Enumerated(EnumType.STRING)
     private DriverStatus status;
     @Column(name = "timestamp", nullable = false)
+    @Temporal(value = TemporalType.TIMESTAMP)
     private Date timestamp;
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="driver_id", nullable = false)

@@ -25,7 +25,7 @@ public class DriverDaoImpl extends GenericDaoImpl<Driver> implements DriverDao {
 
     public List<Driver> findAllByFirstNameAndLastName(String firstName, String lastName) {
         TypedQuery<Driver> query =
-                entityManager.createNamedQuery("Driver.findByFirstNameAndLastName", Driver.class);
+                entityManager.createNamedQuery("Driver.findAllByFirstNameAndLastName", Driver.class);
         query.setParameter("firstName", firstName);
         query.setParameter("lastName", lastName);
         return query.getResultList();
@@ -34,6 +34,12 @@ public class DriverDaoImpl extends GenericDaoImpl<Driver> implements DriverDao {
     public List<Driver> findAll() {
         TypedQuery<Driver> query =
                 entityManager.createNamedQuery("Driver.findAll", Driver.class);
+        return query.getResultList();
+    }
+
+    public List<Driver> findAllFreeDrivers() {
+        TypedQuery<Driver> query =
+                entityManager.createNamedQuery("Driver.findAllFreeDrivers", Driver.class);
         return query.getResultList();
     }
 }
