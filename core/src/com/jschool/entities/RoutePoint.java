@@ -22,9 +22,13 @@ public class RoutePoint {
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="city_id", nullable = false)
     private City city;
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="cargo_id", nullable = false)
-    private Cargo cargo;
+//    @ManyToOne(fetch=FetchType.LAZY)
+//    @JoinColumn(name="cargo_id", nullable = false)
+//    private Cargo cargo;
+    @OneToOne(mappedBy="pickup")
+    private Cargo pickup;
+    @OneToOne(mappedBy="unload")
+    private Cargo unload;
 
     public int getId() {
         return id;

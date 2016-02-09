@@ -25,10 +25,18 @@ import java.util.List;
  */
 public class OrderServiceImpl {
 
-    private OrdersDao ordersDao = new OrdersDaoImpl();
-    private TruckDao truckDao = new TruckDaoImpl();
-    private DriverDao driverDao = new DriverDaoImpl();
-    private DriverStatisticDao driverStatisticDao = new DriverStatisticDaoImpl();
+    private OrdersDao ordersDao;
+    private TruckDao truckDao;
+    private DriverDao driverDao;
+    private DriverStatisticDao driverStatisticDao;
+
+    public OrderServiceImpl(DriverStatisticDao driverStatisticDao,
+                            OrdersDao ordersDao, TruckDao truckDao, DriverDao driverDao) {
+        this.driverStatisticDao = driverStatisticDao;
+        this.ordersDao = ordersDao;
+        this.truckDao = truckDao;
+        this.driverDao = driverDao;
+    }
 
     public void create(Order order){
         Order element = ordersDao.findUniqueByNumber(order.getNumber());

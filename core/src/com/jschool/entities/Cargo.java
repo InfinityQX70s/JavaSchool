@@ -29,6 +29,12 @@ public class Cargo {
     private int weight;
     @OneToMany(fetch=FetchType.LAZY, mappedBy = "cargo")
     private List<RoutePoint> routePoints;
+    @OneToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="pickup")
+    private RoutePoint pickup;
+    @OneToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="unload")
+    private RoutePoint unload;
     @OneToMany(fetch=FetchType.LAZY, mappedBy = "cargo")
     private List<CargoStatusLog> statusLogs;
 

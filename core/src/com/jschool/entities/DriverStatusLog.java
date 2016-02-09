@@ -7,6 +7,8 @@ import java.util.Date;
  * Created by infinity on 06.02.16.
  */
 @Entity
+@NamedQuery(name="DriverStatusLog.findLastStatus",
+        query="SELECT d FROM DriverStatusLog d WHERE d.driver = :driver ORDER BY d.timestamp DESC")
 @Table(name = "DriverStatusLog", schema = "logiweb")
 public class DriverStatusLog {
     @Id

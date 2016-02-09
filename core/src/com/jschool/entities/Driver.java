@@ -32,9 +32,9 @@ public class Driver {
     @OneToOne(optional=false)
     @JoinColumn(name="user_id", nullable=false)
     private User user;
-    @OneToMany(fetch=FetchType.LAZY, mappedBy = "driver")
+    @OneToMany(fetch=FetchType.LAZY, mappedBy = "driver", orphanRemoval=true)//cascade=CascadeType.ALL
     private List<DriverStatusLog> statusLogs;
-    @OneToMany(fetch=FetchType.LAZY, mappedBy = "driver")
+    @OneToMany(fetch=FetchType.LAZY, mappedBy = "driver", orphanRemoval=true)//cascade=CascadeType.ALL
     private List<DriverStatistic> statistics;
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="order_id")
