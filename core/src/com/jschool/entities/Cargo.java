@@ -27,8 +27,6 @@ public class Cargo {
     private String name;
     @Column(name = "weight", nullable = false)
     private int weight;
-    @OneToMany(fetch=FetchType.LAZY, mappedBy = "cargo")
-    private List<RoutePoint> routePoints;
     @OneToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="pickup")
     private RoutePoint pickup;
@@ -70,19 +68,27 @@ public class Cargo {
         this.weight = weight;
     }
 
-    public List<RoutePoint> getRoutePoints() {
-        return routePoints;
-    }
-
-    public void setRoutePoints(List<RoutePoint> routePoints) {
-        this.routePoints = routePoints;
-    }
-
     public List<CargoStatusLog> getStatusLogs() {
         return statusLogs;
     }
 
     public void setStatusLogs(List<CargoStatusLog> statusLogs) {
         this.statusLogs = statusLogs;
+    }
+
+    public RoutePoint getPickup() {
+        return pickup;
+    }
+
+    public void setPickup(RoutePoint pickup) {
+        this.pickup = pickup;
+    }
+
+    public RoutePoint getUnload() {
+        return unload;
+    }
+
+    public void setUnload(RoutePoint unload) {
+        this.unload = unload;
     }
 }

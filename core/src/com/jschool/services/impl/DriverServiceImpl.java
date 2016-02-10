@@ -1,5 +1,6 @@
 package com.jschool.services.impl;
 
+import com.jschool.TransactionManager;
 import com.jschool.dao.api.DriverDao;
 import com.jschool.dao.api.DriverStatisticDao;
 import com.jschool.dao.api.DriverStatusLogDao;
@@ -23,20 +24,23 @@ public class DriverServiceImpl {
     private DriverDao driverDao;
     private DriverStatusLogDao driverStatusLogDao;
     private DriverStatisticDao driverStatisticDao;
+    private TransactionManager transactionManager;
 
     public DriverServiceImpl(UserDao userDao, DriverDao driverDao,
-                             DriverStatusLogDao driverStatusLogDao, DriverStatisticDao driverStatisticDao) {
+                             DriverStatusLogDao driverStatusLogDao,
+                             DriverStatisticDao driverStatisticDao,
+                             TransactionManager transactionManager) {
         this.userDao = userDao;
         this.driverDao = driverDao;
         this.driverStatusLogDao = driverStatusLogDao;
         this.driverStatisticDao = driverStatisticDao;
+        this.transactionManager = transactionManager;
     }
 
 
     public void create(Driver driver, User user){
-        User userElement = userDao.findUniqueByEmail(user.getEmail());
-        Driver driverElement = driverDao.findUniqueByNumber(driver.getNumber());
-        if (userElement == null && driverElement == null){
+        try {
+            transactionManager.getTransaction().begin();
             userDao.create(user);
             driver.setUser(user);
             driverDao.create(driver);
@@ -45,24 +49,44 @@ public class DriverServiceImpl {
             driverStatusLog.setTimestamp(new Date());
             driverStatusLog.setDriver(driver);
             driverStatusLogDao.create(driverStatusLog);
+            transactionManager.getTransaction().commit();
+        }finally {
+            transactionManager.getTransaction().rollbackIfActive();
         }
+
     }
 
     public void update(Driver driver, User user){
-        User userElement = userDao.findUniqueByEmail(user.getEmail());
-        Driver driverElement = driverDao.findUniqueByNumber(driver.getNumber());
-        if (userElement == null && driverElement == null){
-            userDao.update(user);
-            driverDao.update(driver);
+        try {
+            transactionManager.getTransaction().begin();
+            User userElement = userDao.findUniqueByEmail(user.getEmail());
+            Driver driverElement = driverDao.findUniqueByNumber(driver.getNumber());
+            if (userElement != null && driverElement != null){
+                user.setId(userElement.getId());
+                driver.setId(driverElement.getId());
+                userDao.update(user);
+                driver.setUser(user);
+                driverDao.update(driver);
+            }
+            transactionManager.getTransaction().commit();
+        }finally {
+            transactionManager.getTransaction().rollbackIfActive();
         }
+
     }
 
     public void delete(int number){
-        Driver driver = driverDao.findUniqueByNumber(number);
-        if (driver != null && driver.getOrder() == null){
-            User user = driver.getUser();
-            driverDao.delete(driver);
-            userDao.delete(user);
+        try {
+            transactionManager.getTransaction().begin();
+            Driver driver = driverDao.findUniqueByNumber(number);
+            if (driver != null && driver.getOrder() == null){
+                User user = driver.getUser();
+                driverDao.delete(driver);
+                userDao.delete(user);
+            }
+            transactionManager.getTransaction().commit();
+        }finally {
+            transactionManager.getTransaction().rollbackIfActive();
         }
     }
 
@@ -75,25 +99,32 @@ public class DriverServiceImpl {
     }
 
     public void setStatusByDriverNumberAndStatus(int number, DriverStatus status){
-        Driver driver = driverDao.findUniqueByNumber(number);
-        if (driver != null){
-            DriverStatusLog statusLog = driverStatusLogDao.findLastStatus(driver);
-            if (statusLog.getStatus() != status){
-                if (statusLog.getStatus() == DriverStatus.driving){
-                    long diff = new Date().getTime() - statusLog.getTimestamp().getTime();
-                    int diffHours = (int) (diff / (60 * 60 * 1000));
-                    DriverStatistic driverStatistic = new DriverStatistic();
-                    driverStatistic.setTimestamp(new Date());
-                    driverStatistic.setHoursWorked(diffHours);
-                    driverStatistic.setDriver(driver);
-                    driverStatisticDao.create(driverStatistic);
+        try {
+            transactionManager.getTransaction().begin();
+            Driver driver = driverDao.findUniqueByNumber(number);
+            if (driver != null){
+                DriverStatusLog statusLog = driverStatusLogDao.findLastStatus(driver);
+                if (statusLog.getStatus() != status){
+                    if (statusLog.getStatus() == DriverStatus.driving){
+                        long diff = new Date().getTime() - statusLog.getTimestamp().getTime();
+                        int diffHours = (int) (diff / (60 * 60 * 1000));
+                        DriverStatistic driverStatistic = new DriverStatistic();
+                        driverStatistic.setTimestamp(new Date());
+                        driverStatistic.setHoursWorked(diffHours);
+                        driverStatistic.setDriver(driver);
+                        driverStatisticDao.create(driverStatistic);
+                    }
                 }
+                DriverStatusLog driverStatusLog = new DriverStatusLog();
+                driverStatusLog.setStatus(status);
+                driverStatusLog.setTimestamp(new Date());
+                driverStatusLog.setDriver(driver);
+                driverStatusLogDao.create(driverStatusLog);
             }
-            DriverStatusLog driverStatusLog = new DriverStatusLog();
-            driverStatusLog.setStatus(status);
-            driverStatusLog.setTimestamp(new Date());
-            driverStatusLog.setDriver(driver);
-            driverStatusLogDao.create(driverStatusLog);
+            transactionManager.getTransaction().commit();
+        }finally {
+            transactionManager.getTransaction().rollbackIfActive();
         }
+
     }
 }

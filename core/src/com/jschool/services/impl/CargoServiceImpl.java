@@ -1,5 +1,6 @@
 package com.jschool.services.impl;
 
+import com.jschool.TransactionManager;
 import com.jschool.dao.api.CargoDao;
 import com.jschool.dao.api.CargoStatusLogDao;
 import com.jschool.dao.impl.CargoDaoImpl;
@@ -18,10 +19,12 @@ public class CargoServiceImpl {
 
     private CargoDao cargoDao;
     private CargoStatusLogDao cargoStatusLogDao;
+    private TransactionManager transactionManager;
 
-    public CargoServiceImpl(CargoDao cargoDao, CargoStatusLogDao cargoStatusLogDao) {
+    public CargoServiceImpl(CargoDao cargoDao, CargoStatusLogDao cargoStatusLogDao, TransactionManager transactionManager) {
         this.cargoDao = cargoDao;
         this.cargoStatusLogDao = cargoStatusLogDao;
+        this.transactionManager = transactionManager;
     }
 
     public void create(Cargo cargo){

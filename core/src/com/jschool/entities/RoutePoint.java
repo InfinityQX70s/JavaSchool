@@ -14,17 +14,12 @@ public class RoutePoint {
     private int id;
     @Column(name = "point", nullable = false)
     private int point;
-    @Column(name = "loadType", nullable = false)
-    private boolean loadType;
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="orders_id", nullable = false)
     private Order order;
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="city_id", nullable = false)
     private City city;
-//    @ManyToOne(fetch=FetchType.LAZY)
-//    @JoinColumn(name="cargo_id", nullable = false)
-//    private Cargo cargo;
     @OneToOne(mappedBy="pickup")
     private Cargo pickup;
     @OneToOne(mappedBy="unload")
@@ -46,14 +41,6 @@ public class RoutePoint {
         this.point = point;
     }
 
-    public boolean isLoadType() {
-        return loadType;
-    }
-
-    public void setLoadType(boolean loadType) {
-        this.loadType = loadType;
-    }
-
     public Order getOrder() {
         return order;
     }
@@ -70,12 +57,19 @@ public class RoutePoint {
         this.city = city;
     }
 
-    public Cargo getCargo() {
-        return cargo;
+    public Cargo getPickup() {
+        return pickup;
     }
 
-    public void setCargo(Cargo cargo) {
-        this.cargo = cargo;
+    public void setPickup(Cargo pickup) {
+        this.pickup = pickup;
     }
 
+    public Cargo getUnload() {
+        return unload;
+    }
+
+    public void setUnload(Cargo unload) {
+        this.unload = unload;
+    }
 }

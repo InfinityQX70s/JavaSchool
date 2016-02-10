@@ -29,7 +29,7 @@ public class Order {
     private List<RoutePoint> routePoints;
     @OneToMany(fetch=FetchType.LAZY, mappedBy = "order")
     private List<Driver> drivers;
-    @OneToOne(optional=false)
+    @OneToOne()
     @JoinColumn(name="truck_id")
     private Truck truck;
 
