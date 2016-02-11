@@ -30,12 +30,12 @@ public class Main {
 //                new DriverStatusLogDaoImpl(entityManager),
 //                new DriverStatisticDaoImpl(entityManager),
 //                transactionManager);
-        OrderServiceImpl orderService = new OrderServiceImpl(new OrdersDaoImpl(entityManager),
-                new TruckDaoImpl(entityManager), new DriverDaoImpl(entityManager),
-                new DriverStatisticDaoImpl(entityManager),
-                new CargoDaoImpl(entityManager), new CargoStatusLogDaoImpl(entityManager),
-                new RoutePointDaoImpl(entityManager), new CityDaoImpl(entityManager),
-                transactionManager);
+//        OrderServiceImpl orderService = new OrderServiceImpl(new OrdersDaoImpl(entityManager),
+//                new TruckDaoImpl(entityManager), new DriverDaoImpl(entityManager),
+//                new DriverStatisticDaoImpl(entityManager),
+//                new CargoDaoImpl(entityManager), new CargoStatusLogDaoImpl(entityManager),
+//                new RoutePointDaoImpl(entityManager), new CityDaoImpl(entityManager),
+//                transactionManager);
 //        User user = new User();
 //        user.setEmail("mazu@yandex.ru");
 //        user.setPassword("222");
@@ -50,14 +50,18 @@ public class Main {
 //        truck.setShiftSize(3);
 //        truck.setCapacity(20);
 //        driverService.setStatusByDriverNumberAndStatus(234,DriverStatus.shift);
-        Order order = new Order();
-        order.setNumber(242);
-        order.setDoneState(false);
-        Cargo cargo = new Cargo();
-        cargo.setNumber(22);
-        cargo.setName("absorb");
-        cargo.setWeight(30);
-        orderService.createCargoAndAssignToOrder(242,cargo,"Moscow","Orel", 1);
-        System.out.print("fd");
+//        Order order = new Order();
+//        order.setNumber(242);
+//        order.setDoneState(false);
+//        Cargo cargo = new Cargo();
+//        cargo.setNumber(22);
+//        cargo.setName("absorb");
+//        cargo.setWeight(30);
+//        orderService.createCargoAndAssignToOrder(242,cargo,"Moscow","Orel", 1);
+//        System.out.print("fd");
+        CargoServiceImpl cargoService = new CargoServiceImpl(new CargoDaoImpl(entityManager),
+                new CargoStatusLogDaoImpl(entityManager), new OrdersDaoImpl(entityManager),
+                transactionManager);
+        cargoService.setCargoStatus(22, CargoStatus.delivered);
     }
 }

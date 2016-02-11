@@ -4,13 +4,14 @@ import com.jschool.TransactionManager;
 import com.jschool.dao.api.TruckDao;
 import com.jschool.dao.impl.TruckDaoImpl;
 import com.jschool.entities.Truck;
+import com.jschool.services.api.TruckService;
 
 import java.util.List;
 
 /**
  * Created by infinity on 08.02.16.
  */
-public class TruckServiceImpl {
+public class TruckServiceImpl implements TruckService{
 
     private TruckDao truckDao;
     private TransactionManager transactionManager;

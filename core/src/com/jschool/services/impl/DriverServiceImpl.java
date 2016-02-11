@@ -10,6 +10,7 @@ import com.jschool.dao.impl.DriverStatisticDaoImpl;
 import com.jschool.dao.impl.DriverStatusLogDaoImpl;
 import com.jschool.dao.impl.UserDaoImpl;
 import com.jschool.entities.*;
+import com.jschool.services.api.DriverService;
 
 import java.time.Period;
 import java.util.Date;
@@ -18,7 +19,7 @@ import java.util.List;
 /**
  * Created by infinity on 09.02.16.
  */
-public class DriverServiceImpl {
+public class DriverServiceImpl implements DriverService{
 
     private UserDao userDao;
     private DriverDao driverDao;

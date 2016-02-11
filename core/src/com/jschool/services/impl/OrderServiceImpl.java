@@ -7,6 +7,7 @@ import com.jschool.dao.impl.DriverStatisticDaoImpl;
 import com.jschool.dao.impl.OrdersDaoImpl;
 import com.jschool.dao.impl.TruckDaoImpl;
 import com.jschool.entities.*;
+import com.jschool.services.api.OrderService;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -19,7 +20,7 @@ import java.util.List;
 /**
  * Created by infinity on 09.02.16.
  */
-public class OrderServiceImpl {
+public class OrderServiceImpl implements OrderService{
 
     private OrdersDao ordersDao;
     private TruckDao truckDao;
@@ -114,7 +115,7 @@ public class OrderServiceImpl {
         return ordersDao.findAllByState(isDone);
     }
 
-    public List<Truck> findAllFreeByStateAndGreaterThanCapacity(int capacity) {
+    public List<Truck> findAllFreeTruckByStateAndGreaterThanCapacity(int capacity) {
         return truckDao.findAllFreeByStateAndGreaterThanCapacity(true, capacity);
     }
 
