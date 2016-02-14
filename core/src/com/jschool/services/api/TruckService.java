@@ -9,16 +9,10 @@ import java.util.List;
  */
 public interface TruckService {
 
-     void create(Truck truck);
-     void update(Truck truck);
-    /**
-     * Удалить нельзя пока на заказе
-     */
-     void delete(String truckNumber);
-     Truck findByNumber(String number);
-     List<Truck> findAll();
-    /**
-     * Список фур, подходящих по вместимости
-     */
-     List<Truck> findAllFreeByStateAndGreaterThanCapacity(boolean isRepair, int capacity);
+     void addTruck(Truck truck);
+     void updateTruck(Truck truck);
+     void deleteTruck(String number);
+     Truck getTruckByNumber(String number);
+     List<Truck> findAllTrucks();
+     List<Truck> findAllAvailableTrucksByMinCapacity(int capacity);
 }

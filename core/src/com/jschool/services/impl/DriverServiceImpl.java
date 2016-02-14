@@ -1,5 +1,6 @@
 package com.jschool.services.impl;
 
+import com.jschool.CustomTransaction;
 import com.jschool.TransactionManager;
 import com.jschool.dao.api.DriverDao;
 import com.jschool.dao.api.DriverStatisticDao;
@@ -11,8 +12,10 @@ import com.jschool.dao.impl.DriverStatusLogDaoImpl;
 import com.jschool.dao.impl.UserDaoImpl;
 import com.jschool.entities.*;
 import com.jschool.services.api.DriverService;
+import org.apache.commons.codec.digest.DigestUtils;
 
 import java.time.Period;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -38,94 +41,80 @@ public class DriverServiceImpl implements DriverService{
         this.transactionManager = transactionManager;
     }
 
-
-    public void create(Driver driver, User user){
+    public void addDriver(Driver driver) {
+        CustomTransaction ct = transactionManager.getTransaction();
+        ct.begin();
         try {
-            transactionManager.getTransaction().begin();
+            User user = driver.getUser();
+            user.setPassword(DigestUtils.md5Hex(user.getPassword()));
             userDao.create(user);
-            driver.setUser(user);
-            driverDao.create(driver);
+            List<DriverStatusLog> driverStatusLogs = new ArrayList<>();
             DriverStatusLog driverStatusLog = new DriverStatusLog();
             driverStatusLog.setStatus(DriverStatus.rest);
             driverStatusLog.setTimestamp(new Date());
             driverStatusLog.setDriver(driver);
-            driverStatusLogDao.create(driverStatusLog);
-            transactionManager.getTransaction().commit();
+            driverStatusLogs.add(driverStatusLog);
+            driver.setStatusLogs(driverStatusLogs);
+            driverDao.create(driver);
+            //driverStatusLogDao.create(driverStatusLog);
+            ct.commit();
         }finally {
-            transactionManager.getTransaction().rollbackIfActive();
+            ct.rollbackIfActive();
         }
-
     }
 
-    public void update(Driver driver, User user){
+    public void updateDrive(Driver driver) {
+        CustomTransaction ct = transactionManager.getTransaction();
+        ct.begin();
         try {
-            transactionManager.getTransaction().begin();
-            User userElement = userDao.findUniqueByEmail(user.getEmail());
             Driver driverElement = driverDao.findUniqueByNumber(driver.getNumber());
-            if (userElement != null && driverElement != null){
-                user.setId(userElement.getId());
-                driver.setId(driverElement.getId());
-                userDao.update(user);
-                driver.setUser(user);
-                driverDao.update(driver);
+            if (driverElement != null){
+                driverElement.setFirstName(driver.getFirstName());
+                driverElement.setLastName(driver.getLastName());
+                driverDao.update(driverElement);
             }
-            transactionManager.getTransaction().commit();
+            ct.commit();
         }finally {
-            transactionManager.getTransaction().rollbackIfActive();
+            ct.rollbackIfActive();
         }
-
     }
 
-    public void delete(int number){
+    public void deleteDriver(int number) {
+        CustomTransaction ct = transactionManager.getTransaction();
+        ct.begin();
         try {
-            transactionManager.getTransaction().begin();
             Driver driver = driverDao.findUniqueByNumber(number);
             if (driver != null && driver.getOrder() == null){
                 User user = driver.getUser();
                 driverDao.delete(driver);
                 userDao.delete(user);
             }
-            transactionManager.getTransaction().commit();
+            ct.commit();
         }finally {
-            transactionManager.getTransaction().rollbackIfActive();
+            ct.rollbackIfActive();
         }
     }
 
-    public Driver findUniqueByNumber(int number){
+    public Driver getDriverByPersonalNumber(int number) {
         return driverDao.findUniqueByNumber(number);
     }
 
-    public List<Driver> findAll(){
+    public List<Driver> findAllDrivers() {
         return driverDao.findAll();
     }
 
-    public void setStatusByDriverNumberAndStatus(int number, DriverStatus status){
-        try {
-            transactionManager.getTransaction().begin();
-            Driver driver = driverDao.findUniqueByNumber(number);
-            if (driver != null){
-                DriverStatusLog statusLog = driverStatusLogDao.findLastStatus(driver);
-                if (statusLog.getStatus() != status){
-                    if (statusLog.getStatus() == DriverStatus.driving){
-                        long diff = new Date().getTime() - statusLog.getTimestamp().getTime();
-                        int diffHours = (int) (diff / (60 * 60 * 1000));
-                        DriverStatistic driverStatistic = new DriverStatistic();
-                        driverStatistic.setTimestamp(new Date());
-                        driverStatistic.setHoursWorked(diffHours);
-                        driverStatistic.setDriver(driver);
-                        driverStatisticDao.create(driverStatistic);
-                    }
-                }
-                DriverStatusLog driverStatusLog = new DriverStatusLog();
-                driverStatusLog.setStatus(status);
-                driverStatusLog.setTimestamp(new Date());
-                driverStatusLog.setDriver(driver);
-                driverStatusLogDao.create(driverStatusLog);
+    public List<Driver> findAllAvailableDrivers(int hoursWorked) {
+        List<Driver> drivers = driverDao.findAllFreeDrivers();
+        List<Driver> driverList = new ArrayList<Driver>();
+        for (Driver driver : drivers) {
+            List<DriverStatistic> driverStatistics = driverStatisticDao.findAllByOneMonth(driver);
+            int sum = 0;
+            for (DriverStatistic driverStatistic : driverStatistics)
+                sum += driverStatistic.getHoursWorked();
+            if (sum + hoursWorked <= 176) {
+                driverList.add(driver);
             }
-            transactionManager.getTransaction().commit();
-        }finally {
-            transactionManager.getTransaction().rollbackIfActive();
         }
-
+        return driverList;
     }
 }

@@ -7,13 +7,13 @@ import javax.persistence.EntityManager;
  */
 public class TransactionManager {
 
-    private CustomTransaction customTransaction;
+    private EntityManager entityManager;
 
     public TransactionManager(EntityManager entityManager) {
-        customTransaction = new CustomTransaction(entityManager);
+        this.entityManager = entityManager;
     }
 
     public CustomTransaction getTransaction(){
-        return customTransaction;
+        return new CustomTransaction(entityManager);
     }
 }

@@ -26,6 +26,6 @@ public class OrderController implements Command{
     }
 
     public void execute(ServletContext servletContext, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+        request.getRequestDispatcher("/WEB-INF/pages/order/order.jsp").forward(request,response);
     }
 }

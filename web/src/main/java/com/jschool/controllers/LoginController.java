@@ -15,7 +15,7 @@ public class LoginController implements Command {
 
 
     public void execute(ServletContext servletContext, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        RequestDispatcher requestDispatcher = servletContext.getRequestDispatcher("/login.jsp");
+        RequestDispatcher requestDispatcher = servletContext.getRequestDispatcher("/WEB-INF/pages/login.jsp");
         requestDispatcher.forward(request, response);
     }
 }

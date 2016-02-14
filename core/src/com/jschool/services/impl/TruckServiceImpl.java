@@ -1,5 +1,6 @@
 package com.jschool.services.impl;
 
+import com.jschool.CustomTransaction;
 import com.jschool.TransactionManager;
 import com.jschool.dao.api.TruckDao;
 import com.jschool.dao.impl.TruckDaoImpl;
@@ -21,53 +22,52 @@ public class TruckServiceImpl implements TruckService{
         this.transactionManager = transactionManager;
     }
 
-    public void create(Truck truck){
+    public void addTruck(Truck truck) {
+        CustomTransaction ct = transactionManager.getTransaction();
+        ct.begin();
         try {
-            transactionManager.getTransaction().begin();
             truckDao.create(truck);
-            transactionManager.getTransaction().commit();
+            ct.commit();
         }finally {
-            transactionManager.getTransaction().rollbackIfActive();
+            ct.rollbackIfActive();
         }
-
     }
 
-    public void update(Truck truck){
+    public void updateTruck(Truck truck) {
+        CustomTransaction ct = transactionManager.getTransaction();
+        ct.begin();
         try {
-            transactionManager.getTransaction().begin();
             Truck element = truckDao.findUniqueByNumber(truck.getNumber());
-            if (element.getOreder() == null) {
-                truck.setId(element.getId());
-                truckDao.update(truck);
-            }
-            transactionManager.getTransaction().commit();
+            truck.setId(element.getId());
+            truckDao.update(truck);
+            ct.commit();
         }finally {
-            transactionManager.getTransaction().rollbackIfActive();
+            ct.rollbackIfActive();
         }
     }
 
-    public void delete(String truckNumber){
+    public void deleteTruck(String truckNumber) {
+        CustomTransaction ct = transactionManager.getTransaction();
+        ct.begin();
         try {
-            transactionManager.getTransaction().begin();
             Truck truck = truckDao.findUniqueByNumber(truckNumber);
             if (truck.getOreder() == null)
                 truckDao.delete(truck);
-            transactionManager.getTransaction().commit();
+            ct.commit();
         }finally {
-            transactionManager.getTransaction().rollbackIfActive();
+            ct.rollbackIfActive();
         }
-
     }
 
-    public Truck findByNumber(String number){
+    public Truck getTruckByNumber(String number) {
         return truckDao.findUniqueByNumber(number);
     }
 
-    public List<Truck> findAll(){
+    public List<Truck> findAllTrucks() {
         return truckDao.findAll();
     }
 
-    public List<Truck> findAllFreeByStateAndGreaterThanCapacity(boolean isRepair, int capacity){
-        return truckDao.findAllFreeByStateAndGreaterThanCapacity(isRepair,capacity);
+    public List<Truck> findAllAvailableTrucksByMinCapacity(int capacity) {
+        return truckDao.findAllFreeByStateAndGreaterThanCapacity(true,capacity);
     }
 }

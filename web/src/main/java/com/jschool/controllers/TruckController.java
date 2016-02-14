@@ -41,6 +41,6 @@ public class TruckController implements Command{
     }
 
     public void execute(ServletContext servletContext, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+        request.getRequestDispatcher("/WEB-INF/pages/truck/truck.jsp").forward(request,response);
     }
 }
