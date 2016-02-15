@@ -93,7 +93,6 @@ public class DriverController implements Command{
         String number = req.getParameter("number");
         String firstName = req.getParameter("firstName");
         String lastName = req.getParameter("lastName");
-        String email = req.getParameter("email");
         Driver driver = new Driver();
         driver.setNumber(Integer.parseInt(number));
         driver.setFirstName(firstName);

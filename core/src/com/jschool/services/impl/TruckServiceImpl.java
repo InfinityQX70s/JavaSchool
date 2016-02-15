@@ -38,8 +38,11 @@ public class TruckServiceImpl implements TruckService{
         ct.begin();
         try {
             Truck element = truckDao.findUniqueByNumber(truck.getNumber());
-            truck.setId(element.getId());
-            truckDao.update(truck);
+            element.setNumber(truck.getNumber());
+            element.setCapacity(truck.getCapacity());
+            element.setShiftSize(truck.getShiftSize());
+            element.setRepairState(truck.isRepairState());
+            truckDao.update(element);
             ct.commit();
         }finally {
             ct.rollbackIfActive();
