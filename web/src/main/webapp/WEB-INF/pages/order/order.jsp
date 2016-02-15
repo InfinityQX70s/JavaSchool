@@ -20,6 +20,6 @@
     Orders
 </div>
 <div class="row col s7">
-    <a class="right btn-floating btn-large waves-effect waves-light red "><i class="material-icons">add</i></a>
+    <a href="/employee/order/add" class="right btn-floating btn-large waves-effect waves-light red "><i class="material-icons">add</i></a>
 </div>
 <jsp:include page="../footer.jsp"/>

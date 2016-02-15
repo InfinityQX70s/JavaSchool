@@ -7,7 +7,7 @@
     <jsp:param name="orders" value=""/>
     <jsp:param name="trucks" value=""/>
 </jsp:include>
-<div class="row col s6 z-depth-2" style="margin-top:50px;">
+<div class="row col s6 z-depth-2  offset-s4" style="margin-top:50px;">
     <form class="col s12" action="/employee/driver/add" method="post">
         <div class="row" style="margin-top:20px;">
             <div class="input-field col s12">

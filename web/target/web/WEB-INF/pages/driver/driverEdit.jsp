@@ -8,7 +8,7 @@
     <jsp:param name="orders" value=""/>
     <jsp:param name="trucks" value=""/>
 </jsp:include>
-<div class="row col s6 z-depth-2" style="margin-top:50px;">
+<div class="row col s6 z-depth-2  offset-s4" style="margin-top:50px;">
     <% Driver driver = (Driver) request.getAttribute("driver");%>
     <form class="col s12" action="/employee/driver/change" method="post">
         <div class="row" style="margin-top:20px;">

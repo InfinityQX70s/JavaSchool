@@ -16,52 +16,53 @@
     <jsp:param name="trucks" value="class=\"active z-depth-2\""/>
 </jsp:include>
 <p></p>
-<div class="row">
+<table style="margin-top:50px;" class="bordered centered z-depth-2 col s6 offset-s4">
+    <thead>
+    <tr>
+        <th data-field="id">Number</th>
+        <th data-field="capacity">Capacity</th>
+        <th data-field="shift_size">Shift Size</th>
+        <th data-field="state">State</th>
+        <th data-field="change"></th>
+        <th data-field="delete"></th>
+    </tr>
+    </thead>
 
-    <table style="margin-top:50px;" class="bordered centered z-depth-2 col s8">
-        <thead>
-        <tr>
-            <th data-field="id">Number</th>
-            <th data-field="capacity">Capacity</th>
-            <th data-field="shift_size">Shift Size</th>
-            <th data-field="state">State</th>
-            <th data-field="change"></th>
-            <th data-field="delete"></th>
-        </tr>
-        </thead>
-
-        <tbody>
-        <% List<Truck> trucks = (List<Truck>) request.getAttribute("trucks");%>
-        <%   for (Truck truck : trucks){ %>
-        <tr>
-            <td><%=truck.getNumber()%></td>
-            <td><%=truck.getCapacity()%></td>
-            <td><%=truck.getShiftSize()%></td>
-            <% if (truck.isRepairState()){%>
-                <td>OK</td>
-            <% } else { %>
-                <td>Broken</td>
-            <% } %>
-            <td>
-                <a href="/employee/truck/<%=truck.getNumber()%>/edit" class="secondary-content">
-                    <i class="material-icons">create</i>
-                </a>
-            </td>
-            <td>
-                <form action="/employee/truck/delete" method="post">
-                    <input type="hidden" name="number" value="<%=truck.getNumber()%>">
-                    <a class="secondary-content" style="margin-right:20px;" onclick="parentNode.submit();">
-                        <i class="material-icons">clear</i>
-                    </a>
-                </form>
-            </td>
-        </tr>
+    <tbody>
+    <% List<Truck> trucks = (List<Truck>) request.getAttribute("trucks");%>
+    <% for (Truck truck : trucks) { %>
+    <tr>
+        <td><%=truck.getNumber()%>
+        </td>
+        <td><%=truck.getCapacity()%>
+        </td>
+        <td><%=truck.getShiftSize()%>
+        </td>
+        <% if (truck.isRepairState()) {%>
+        <td>OK</td>
+        <% } else { %>
+        <td>Broken</td>
         <% } %>
-        </tbody>
+        <td>
+            <a href="/employee/truck/<%=truck.getNumber()%>/edit" class="secondary-content">
+                <i class="material-icons">create</i>
+            </a>
+        </td>
+        <td>
+            <form action="/employee/truck/delete" method="post">
+                <input type="hidden" name="number" value="<%=truck.getNumber()%>">
+                <a class="secondary-content" style="margin-right:20px;" onclick="parentNode.submit();">
+                    <i class="material-icons">clear</i>
+                </a>
+            </form>
+        </td>
+    </tr>
+    <% } %>
+    </tbody>
 
-    </table>
-</div>
-<div class="row col s7">
-    <a  href="/employee/truck/add" class="right btn-floating btn-large waves-effect waves-light red "><i class="material-icons">add</i></a>
+</table>
+<div class="row col s6 offset-s4 right-align">
+    <a href="/employee/truck/add" class="right btn-floating btn-large waves-effect waves-light red "><i
+            class="material-icons">add</i></a>
 </div>
 <jsp:include page="../footer.jsp"/>

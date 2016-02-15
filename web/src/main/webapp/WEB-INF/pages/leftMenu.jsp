@@ -22,4 +22,3 @@
             </div>
         </ul>
     </div>
-    <div class="col s9 offset-s4">

@@ -10,48 +10,50 @@
     <jsp:param name="trucks" value=""/>
 </jsp:include>
 <p></p>
-<div class="row">
+<table style="margin-top:50px;" class="bordered centered z-depth-2 col s6 offset-s4">
+    <thead>
+    <tr>
+        <th data-field="id">Number</th>
+        <th data-field="first_name">First Name</th>
+        <th data-field="last_name">Last Name</th>
+        <th data-field="status">Status</th>
+        <th data-field="change"></th>
+        <th data-field="delete"></th>
+    </tr>
+    </thead>
 
-    <table style="margin-top:50px;" class="bordered centered z-depth-2 col s8">
-        <thead>
-        <tr>
-            <th data-field="id">Number</th>
-            <th data-field="first_name">First Name</th>
-            <th data-field="last_name">Last Name</th>
-            <th data-field="status">Status</th>
-            <th data-field="change"></th>
-            <th data-field="delete"></th>
-        </tr>
-        </thead>
-
-        <tbody>
-        <% List<Driver> drivers = (List<Driver>) request.getAttribute("drivers");%>
-        <%   for (Driver driver : drivers){ %>
-        <tr>
-            <td><%=driver.getNumber()%></td>
-            <td><%=driver.getFirstName()%></td>
-            <td><%=driver.getLastName()%></td>
-            <td><%=driver.getStatusLogs().get(driver.getStatusLogs().size()-1).getStatus().toString()%></td>
-            <td>
-                <a href="/employee/driver/<%=driver.getNumber()%>/edit" class="secondary-content">
-                    <i class="material-icons">create</i>
+    <tbody>
+    <% List<Driver> drivers = (List<Driver>) request.getAttribute("drivers");%>
+    <% for (Driver driver : drivers) { %>
+    <tr>
+        <td><%=driver.getNumber()%>
+        </td>
+        <td><%=driver.getFirstName()%>
+        </td>
+        <td><%=driver.getLastName()%>
+        </td>
+        <td><%=driver.getStatusLogs().get(driver.getStatusLogs().size() - 1).getStatus().toString()%>
+        </td>
+        <td>
+            <a href="/employee/driver/<%=driver.getNumber()%>/edit" class="secondary-content">
+                <i class="material-icons">create</i>
+            </a>
+        </td>
+        <td>
+            <form action="/employee/driver/delete" method="post">
+                <input type="hidden" name="number" value="<%=driver.getNumber()%>">
+                <a class="secondary-content" style="margin-right:20px;" onclick="parentNode.submit();">
+                    <i class="material-icons">clear</i>
                 </a>
-            </td>
-            <td>
-                <form action="/employee/driver/delete" method="post">
-                    <input type="hidden" name="number" value="<%=driver.getNumber()%>">
-                    <a class="secondary-content" style="margin-right:20px;" onclick="parentNode.submit();">
-                        <i class="material-icons">clear</i>
-                    </a>
-                </form>
-            </td>
-        </tr>
-        <% } %>
-        </tbody>
+            </form>
+        </td>
+    </tr>
+    <% } %>
+    </tbody>
 
-    </table>
-</div>
-<div class="row col s7">
-    <a  href="/employee/driver/add" class="right btn-floating btn-large waves-effect waves-light red "><i class="material-icons">add</i></a>
+</table>
+<div class="row col s6 offset-s4 right-align">
+    <a href="/employee/driver/add" class="right btn-floating btn-large waves-effect waves-light red "><i
+            class="material-icons">add</i></a>
 </div>
 <jsp:include page="../footer.jsp"/>

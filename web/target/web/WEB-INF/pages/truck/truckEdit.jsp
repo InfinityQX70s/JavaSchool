@@ -14,7 +14,7 @@
     <jsp:param name="orders" value=""/>
     <jsp:param name="trucks" value="class=\"active z-depth-2\""/>
 </jsp:include>
-<div class="row col s6 z-depth-2" style="margin-top:50px;">
+<div class="row col s6 z-depth-2  offset-s4" style="margin-top:50px;">
     <% Truck truck = (Truck) request.getAttribute("truck");%>
     <form class="col s12" action="/employee/truck/change" method="post">
         <div class="row" style="margin-top:20px;">
