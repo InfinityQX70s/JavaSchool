@@ -20,7 +20,9 @@ public class OrdersDaoImpl extends GenericDaoImpl<Order> implements OrdersDao{
         TypedQuery<Order> query =
                 entityManager.createNamedQuery("Orders.findByNumber", Order.class);
         query.setParameter("number", number);
-        return query.getSingleResult();
+        Order order = query.getSingleResult();
+        entityManager.refresh(order);
+        return order;
     }
 
     public List<Order> findAllByState(boolean isDone) {

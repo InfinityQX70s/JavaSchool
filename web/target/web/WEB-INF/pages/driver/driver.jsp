@@ -16,7 +16,6 @@
         <th data-field="id">Number</th>
         <th data-field="first_name">First Name</th>
         <th data-field="last_name">Last Name</th>
-        <th data-field="status">Status</th>
         <th data-field="change"></th>
         <th data-field="delete"></th>
     </tr>
@@ -32,8 +31,8 @@
         </td>
         <td><%=driver.getLastName()%>
         </td>
-        <td><%=driver.getStatusLogs().get(driver.getStatusLogs().size() - 1).getStatus().toString()%>
-        </td>
+        <%--<td><%=driver.getStatusLogs().get(driver.getStatusLogs().size() - 1).getStatus().toString()%>--%>
+        <%--</td>--%>
         <td>
             <a href="/employee/driver/<%=driver.getNumber()%>/edit" class="secondary-content">
                 <i class="material-icons">create</i>

@@ -53,6 +53,7 @@ public class TruckController implements Command{
     }
   //  /employee/truck/add POST
     public void addTruck(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        req.setCharacterEncoding("UTF-8");
         String number = req.getParameter("number");
         String capacity = req.getParameter("capacity");
         String shiftSize = req.getParameter("shiftSize");
@@ -72,6 +73,7 @@ public class TruckController implements Command{
 
  //   /employee/truck/delete POST
     public void deleteTruck(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        req.setCharacterEncoding("UTF-8");
         String number = req.getParameter("number");
         truckService.deleteTruck(number);
         resp.sendRedirect("/employee/trucks");
@@ -86,6 +88,7 @@ public class TruckController implements Command{
 
  //   /employee/truck/change POST
     public void changeTruck(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        req.setCharacterEncoding("UTF-8");
         String number = req.getParameter("number");
         String capacity = req.getParameter("capacity");
         String shiftSize = req.getParameter("shiftSize");

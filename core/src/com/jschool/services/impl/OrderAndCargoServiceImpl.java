@@ -99,11 +99,13 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
                 pickupRoutePoint.setOrder(order);
                 pickupRoutePoint.setPoint(cargo.getPickup().getPoint());
                 pickupRoutePoint.setCity(pickupCity);
+                pickupRoutePoint.setPickup(cargo);
                 routePointDao.create(pickupRoutePoint);
                 RoutePoint unloadRoutePoint = new RoutePoint();
                 unloadRoutePoint.setOrder(order);
                 unloadRoutePoint.setPoint(cargo.getUnload().getPoint());
                 unloadRoutePoint.setCity(unloadCity);
+                unloadRoutePoint.setUnload(cargo);
                 routePointDao.create(unloadRoutePoint);
                 cargo.setPickup(pickupRoutePoint);
                 cargo.setUnload(unloadRoutePoint);

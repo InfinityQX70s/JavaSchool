@@ -11,7 +11,7 @@ import java.util.List;
         @NamedQuery(name="Driver.findByNumber",
                 query="SELECT d FROM Driver d WHERE d.number = :number"),
         @NamedQuery(name="Driver.findAllFreeDrivers",
-                query="SELECT d FROM Driver d WHERE d.order IS NULL"),
+                query="SELECT d FROM Driver d LEFT JOIN d.order o WHERE o IS NULL"),
         @NamedQuery(name="Driver.findAllByFirstNameAndLastName",
                 query="SELECT d FROM Driver d WHERE d.firstName = :firstName AND d.lastName = :lastName"),
         @NamedQuery(name="Driver.findAll",

@@ -10,7 +10,7 @@ import javax.persistence.*;
         @NamedQuery(name="Truck.findByNumber",
                 query="SELECT t FROM Truck t WHERE t.number = :number"),
         @NamedQuery(name="Truck.findAllFreeByStateAndCapacity",
-                query="SELECT t FROM Truck t WHERE t.repairState = :repairState AND t.capacity >= :capacity AND t.oreder IS null "),
+                query="SELECT t FROM Truck t LEFT JOIN t.oreder o WHERE t.repairState = :repairState AND t.capacity >= :capacity AND o IS NULL"),
         @NamedQuery(name="Truck.findAll",
                 query="SELECT t FROM Truck t")
 })

@@ -57,6 +57,7 @@ public class DriverController implements Command{
     }
  //   /employee/driver/add POST
     public void addDriver(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        req.setCharacterEncoding("UTF-8");
         String number = req.getParameter("number");
         String firstName = req.getParameter("firstName");
         String lastName = req.getParameter("lastName");
@@ -90,6 +91,7 @@ public class DriverController implements Command{
 
  //   /employee/driver/change POST
     public void changeDriver(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        req.setCharacterEncoding("UTF-8");
         String number = req.getParameter("number");
         String firstName = req.getParameter("firstName");
         String lastName = req.getParameter("lastName");
