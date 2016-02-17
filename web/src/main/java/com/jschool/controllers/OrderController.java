@@ -12,7 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by infinity on 12.02.16.
@@ -39,13 +41,20 @@ public class OrderController implements Command{
                 mapHandler(request,response);
             else if (uri.length == 5 && uri[4].equals("truck"))
                 assignTruck(request,response);
-            else if (uri.length == 6 && uri[5].equals("driver"))
+            else if (uri.length == 5 && uri[4].equals("driver"))
                 assignDriver(request,response);
         }
     }
 
     // /employee/orders/
     public void showOrders(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        List<Order> orders = orderAndCargoService.findAllOrders();
+        Map<Order,List<Cargo>> orderListMap = new HashMap<>();
+        for (Order order : orders){
+            List<Cargo> cargos = orderAndCargoService.findAllCargosByOrderNumber(order.getNumber());
+            orderListMap.put(order,cargos);
+        }
+        req.setAttribute("orderListMap",orderListMap);
         req.getRequestDispatcher("/WEB-INF/pages/order/order.jsp").forward(req,resp);
     }
 
@@ -116,18 +125,25 @@ public class OrderController implements Command{
         String duration = req.getParameter("duration");
         String truckNumber = req.getParameter("truckNumber");
         String orderNumber = req.getParameter("orderNumber");
+        Truck truck = truckService.getTruckByNumber(truckNumber);
         orderAndCargoService.assignTruckToOrder(truckNumber,Integer.parseInt(orderNumber));
-        List<Driver> drivers = driverService.findAllAvailableDrivers(Integer.parseInt(duration));
-        req.setAttribute("drivers",drivers);
+        Map<Driver,Integer> driverHoursList = driverService.findAllAvailableDrivers(Integer.parseInt(duration));
+        req.setAttribute("drivers",driverHoursList);
         req.setAttribute("duration",duration);
+        req.setAttribute("orderNumber", orderNumber);
+        req.setAttribute("shiftSize",truck.getShiftSize());
         req.getRequestDispatcher("/WEB-INF/pages/order/selectDriver.jsp").forward(req,resp);
         //:TODO  список по размеру смены !!!
     }
 
 
     // /employee/order/driver POST
-    public void assignDriver(HttpServletRequest req, HttpServletResponse resp){
-
+    public void assignDriver(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String[] driverNumbers = req.getParameterValues("driverNumber");
+        String orderNumber = req.getParameter("orderNumber");
+        for (String driver : driverNumbers)
+            orderAndCargoService.assignDriverToOrder(Integer.parseInt(driver),Integer.parseInt(orderNumber));
+        resp.sendRedirect("/employee/orders");
     }
 
 }

@@ -15,9 +15,7 @@ import com.jschool.services.api.DriverService;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.time.Period;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by infinity on 09.02.16.
@@ -103,18 +101,18 @@ public class DriverServiceImpl implements DriverService{
         return driverDao.findAll();
     }
 
-    public List<Driver> findAllAvailableDrivers(int hoursWorked) {
+    public Map<Driver,Integer> findAllAvailableDrivers(int hoursWorked) {
         List<Driver> drivers = driverDao.findAllFreeDrivers();
-        List<Driver> driverList = new ArrayList<Driver>();
+        Map<Driver,Integer> driverHoursList = new HashMap<>();
         for (Driver driver : drivers) {
             List<DriverStatistic> driverStatistics = driverStatisticDao.findAllByOneMonth(driver);
             int sum = 0;
             for (DriverStatistic driverStatistic : driverStatistics)
                 sum += driverStatistic.getHoursWorked();
             if (sum + hoursWorked <= 176) {
-                driverList.add(driver);
+                driverHoursList.put(driver,sum);
             }
         }
-        return driverList;
+        return driverHoursList;
     }
 }

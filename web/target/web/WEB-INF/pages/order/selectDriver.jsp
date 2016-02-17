@@ -1,5 +1,5 @@
 <%@ page import="com.jschool.entities.Driver" %>
-<%@ page import="java.util.List" %><%--
+<%@ page import="java.util.Map" %><%--
   Created by IntelliJ IDEA.
   User: infinity
   Date: 15.02.16
@@ -21,24 +21,32 @@
         <h5 class="center-align">The duration of the distance is <%=request.getAttribute("duration") %> hours
         </h5>
     </div>
+    <div class="row col s7 offset-s3 center-align">
+        <h6 class="center-align">Select <%=request.getAttribute("shiftSize") %> drivers for order
+        </h6>
+    </div>
     <table class="bordered centered z-depth-2 col s5 offset-m4">
         <thead>
         <tr>
             <th data-field="id">Check</th>
             <th data-field="firstName">First Name</th>
             <th data-field="lastName">Last Name</th>
+            <th data-field="hoursWorked">Hours Worked</th>
         </tr>
         </thead>
         <tbody>
-        <% List<Driver> drivers = (List<Driver>) request.getAttribute("drivers");%>
-        <% for (Driver driver : drivers) { %>
+        <% Map<Driver,Integer> drivers = (Map<Driver,Integer>) request.getAttribute("drivers");%>
+        <% for (Map.Entry<Driver,Integer> element : drivers.entrySet()) { %>
+        <% Driver driver = element.getKey();%>
         <tr>
-            <td><input name="driverNumber" type="radio" id="<%= driver.getNumber()%>" value="<%= driver.getNumber()%>"/>
+            <td><input name="driverNumber" type="checkbox" id="<%= driver.getNumber()%>" value="<%= driver.getNumber()%>"/>
                 <label for="<%= driver.getNumber()%>"><%= driver.getNumber()%>
                 </label></td>
             <td><%= driver.getFirstName()%>
             </td>
             <td><%= driver.getLastName()%>
+            </td>
+            <td><%= element.getValue()%>
             </td>
         </tr>
         <% } %>
