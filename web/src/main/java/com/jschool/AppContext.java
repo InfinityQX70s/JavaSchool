@@ -34,7 +34,7 @@ public class AppContext {
     private TruckDao truckDao;
     private UserDao userDao;
 
-    private CityService cityService;
+    private UserService userService;
     private DriverService driverService;
     private DutyService dutyService;
     private OrderAndCargoService orderAndCargoService;
@@ -142,11 +142,11 @@ public class AppContext {
         return userDao;
     }
 
-    public CityService getCityService() {
-        if (cityService == null){
-            cityService = new CityServiceImpl(getCityDao());
+    public UserService getUserService() {
+        if (userService == null){
+            userService = new UserServiceImpl(getUserDao(), getTransactionManager());
         }
-        return cityService;
+        return userService;
     }
 
     public DriverService getDriverService() {

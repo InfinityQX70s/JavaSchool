@@ -13,16 +13,20 @@ public class CommandFactory {
     private static OrderController orderController = new OrderController();
     private static TruckController truckController = new TruckController();
     private static LoginController loginController = new LoginController();
+    private static DriverInfoController driverInfoController = new DriverInfoController();
 
 
     public static Command create(HttpServletRequest request){
         String uri = request.getRequestURI();
-        if (uri.startsWith("/logiweb/employee/driver"))
+        String role = (String) request.getSession().getAttribute("role");
+        if (uri.startsWith("/logiweb/employee/driver") && role.equals("employee"))
             return driverController;
-        if (uri.startsWith("/logiweb/employee/order"))
+        else if (uri.startsWith("/logiweb/employee/order") && role.equals("employee"))
             return orderController;
-        if (uri.startsWith("/logiweb/employee/truck"))
+        else if (uri.startsWith("/logiweb/employee/truck") && role.equals("employee"))
             return truckController;
-        return loginController;
+        else if (uri.startsWith("/logiweb/log"))
+            return loginController;
+        return null;
     }
 }

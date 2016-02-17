@@ -17,7 +17,7 @@
                     <li <%= request.getParameter("orders")%>><a href="/employee/orders">Orders</a></li>
                     <li <%= request.getParameter("drivers")%>><a href="/employee/drivers">Drivers</a></li>
                     <li <%= request.getParameter("trucks")%>><a href="/employee/trucks">Trucks</a></li>
-                    <li><a href="#">Log out</a></li>
+                    <li><a href="/logout">Log out</a></li>
                 </ul>
             </div>
         </ul>
