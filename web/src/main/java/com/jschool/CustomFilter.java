@@ -18,13 +18,6 @@ public class CustomFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) servletRequest;
         String path = req.getRequestURI().substring(req.getContextPath().length());
-        String role = (String) req.getSession().getAttribute("role");
-        if (role == null && path.equals("/"))
-            servletRequest.getRequestDispatcher("/logiweb/login").forward(servletRequest, servletResponse);
-        if (role != null && role.equals("employee") && path.equals("/"))
-            servletRequest.getRequestDispatcher("/logiweb/employee/orders").forward(servletRequest, servletResponse);
-        if (role != null && role.equals("driver") && path.equals("/"))
-            servletRequest.getRequestDispatcher("/logiweb/driver").forward(servletRequest, servletResponse);
         if (path.matches(regExp)) {
             filterChain.doFilter(servletRequest, servletResponse);
         } else {

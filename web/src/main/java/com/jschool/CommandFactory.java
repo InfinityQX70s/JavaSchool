@@ -18,12 +18,11 @@ public class CommandFactory {
 
     public static Command create(HttpServletRequest request){
         String uri = request.getRequestURI();
-        String role = (String) request.getSession().getAttribute("role");
-        if (uri.startsWith("/logiweb/employee/driver") && role.equals("employee"))
+        if (uri.startsWith("/logiweb/employee/driver"))
             return driverController;
-        else if (uri.startsWith("/logiweb/employee/order") && role.equals("employee"))
+        else if (uri.startsWith("/logiweb/employee/order"))
             return orderController;
-        else if (uri.startsWith("/logiweb/employee/truck") && role.equals("employee"))
+        else if (uri.startsWith("/logiweb/employee/truck"))
             return truckController;
         else if (uri.startsWith("/logiweb/log"))
             return loginController;

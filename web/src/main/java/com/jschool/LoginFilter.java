@@ -26,11 +26,11 @@ public class LoginFilter implements Filter {
         HttpServletResponse resp = (HttpServletResponse) response;
         String path = req.getRequestURI().substring(req.getContextPath().length());
         String role = (String) req.getSession().getAttribute("role");
-        if (role.equals("employee") && path.equals("/logiweb/"))
+        if (role!= null && role.equals("employee") && path.equals("/logiweb/"))
             resp.sendRedirect("/employee/orders");
-        if (role.equals("driver") && path.equals("/logiweb/"))
+        if (role!= null && role.equals("driver") && path.equals("/logiweb/"))
             resp.sendRedirect("/driver");
-        if (role.isEmpty() && path.equals("/logiweb/"))
+        if (role == null && path.equals("/logiweb/"))
             resp.sendRedirect("/login");
         if ((path.matches(regExpEmployee) && role.equals("employee"))
                 || (path.matches(regExpDriver) && role.equals("driver"))
