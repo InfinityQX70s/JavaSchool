@@ -1,5 +1,6 @@
 package com.jschool.dao.api;
 
+import com.jschool.dao.api.exception.DaoException;
 import com.jschool.entities.Truck;
 
 import java.util.List;
@@ -9,7 +10,7 @@ import java.util.List;
  */
 public interface TruckDao extends GenericDao<Truck> {
 
-    Truck findUniqueByNumber(String number);
-    List<Truck> findAllFreeByStateAndGreaterThanCapacity(boolean isRepair, int capacity);
-    List<Truck> findAll();
+    Truck findUniqueByNumber(String number) throws DaoException;
+    List<Truck> findAllFreeByStateAndGreaterThanCapacity(boolean isRepair, int capacity) throws DaoException;
+    List<Truck> findAll() throws DaoException;
 }

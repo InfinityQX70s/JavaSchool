@@ -25,18 +25,20 @@ public class LoginFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse resp = (HttpServletResponse) response;
         String path = req.getRequestURI().substring(req.getContextPath().length());
+        req.setCharacterEncoding("UTF-8");
         String role = (String) req.getSession().getAttribute("role");
         if (role!= null && role.equals("employee") && path.equals("/logiweb/"))
             resp.sendRedirect("/employee/orders");
-        if (role!= null && role.equals("driver") && path.equals("/logiweb/"))
+        else if (role!= null && role.equals("driver") && path.equals("/logiweb/"))
             resp.sendRedirect("/driver");
-        if (role == null && path.equals("/logiweb/"))
+        else if (role == null && !path.matches(regExpLog))
             resp.sendRedirect("/login");
-        if ((path.matches(regExpEmployee) && role.equals("employee"))
+        else if ((path.matches(regExpEmployee) && role.equals("employee"))
                 || (path.matches(regExpDriver) && role.equals("driver"))
-                || path.matches(regExpLog)) {
+                || path.matches(regExpLog))
             chain.doFilter(request, response);
-        }
+        else
+            req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
     }
 
     @Override

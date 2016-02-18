@@ -1,5 +1,6 @@
 package com.jschool.dao.api;
 
+import com.jschool.dao.api.exception.DaoException;
 import com.jschool.entities.Order;
 
 import java.util.List;
@@ -9,7 +10,7 @@ import java.util.List;
  */
 public interface OrdersDao extends GenericDao<Order> {
 
-    Order findUniqueByNumber(int number);
-    List<Order> findAllByState(boolean isDone);
-    List<Order> findAll();
+    Order findUniqueByNumber(int number) throws DaoException;
+    List<Order> findAllByState(boolean isDone) throws DaoException;
+    List<Order> findAll() throws DaoException;
 }

@@ -1,6 +1,7 @@
 package com.jschool.dao.impl;
 
 import com.jschool.dao.api.DriverDao;
+import com.jschool.dao.api.exception.DaoException;
 import com.jschool.entities.Driver;
 
 import javax.persistence.EntityManager;
@@ -16,30 +17,50 @@ public class DriverDaoImpl extends GenericDaoImpl<Driver> implements DriverDao {
         super(entityManager);
     }
 
-    public Driver findUniqueByNumber(int number) {
-        TypedQuery<Driver> query =
-                entityManager.createNamedQuery("Driver.findByNumber", Driver.class);
-        query.setParameter("number", number);
-        return query.getSingleResult();
+    public Driver findUniqueByNumber(int number) throws DaoException {
+        try {
+            TypedQuery<Driver> query =
+                    entityManager.createNamedQuery("Driver.findByNumber", Driver.class);
+            query.setParameter("number", number);
+            List<Driver> drivers = query.getResultList();
+            Driver driver = null;
+            if (!drivers.isEmpty())
+                driver = drivers.get(0);
+            return driver;
+        }catch (Exception e){
+            throw  new DaoException(e);
+        }
     }
 
-    public List<Driver> findAllByFirstNameAndLastName(String firstName, String lastName) {
-        TypedQuery<Driver> query =
-                entityManager.createNamedQuery("Driver.findAllByFirstNameAndLastName", Driver.class);
-        query.setParameter("firstName", firstName);
-        query.setParameter("lastName", lastName);
-        return query.getResultList();
+    public List<Driver> findAllByFirstNameAndLastName(String firstName, String lastName) throws DaoException {
+        try {
+            TypedQuery<Driver> query =
+                    entityManager.createNamedQuery("Driver.findAllByFirstNameAndLastName", Driver.class);
+            query.setParameter("firstName", firstName);
+            query.setParameter("lastName", lastName);
+            return query.getResultList();
+        }catch (Exception e){
+            throw  new DaoException(e);
+        }
     }
 
-    public List<Driver> findAll() {
-        TypedQuery<Driver> query =
-                entityManager.createNamedQuery("Driver.findAll", Driver.class);
-        return query.getResultList();
+    public List<Driver> findAll() throws DaoException {
+        try {
+            TypedQuery<Driver> query =
+                    entityManager.createNamedQuery("Driver.findAll", Driver.class);
+            return query.getResultList();
+        }catch (Exception e){
+            throw  new DaoException(e);
+        }
     }
 
-    public List<Driver> findAllFreeDrivers() {
-        TypedQuery<Driver> query =
-                entityManager.createNamedQuery("Driver.findAllFreeDrivers", Driver.class);
-        return query.getResultList();
+    public List<Driver> findAllFreeDrivers() throws DaoException {
+        try {
+            TypedQuery<Driver> query =
+                    entityManager.createNamedQuery("Driver.findAllFreeDrivers", Driver.class);
+            return query.getResultList();
+        }catch (Exception e){
+            throw  new DaoException(e);
+        }
     }
 }

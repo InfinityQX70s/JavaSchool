@@ -1,6 +1,7 @@
 package com.jschool.dao.impl;
 
 import com.jschool.dao.api.DriverStatisticDao;
+import com.jschool.dao.api.exception.DaoException;
 import com.jschool.entities.Driver;
 import com.jschool.entities.DriverStatistic;
 
@@ -21,15 +22,19 @@ public class DriverStatisticDaoImpl extends GenericDaoImpl<DriverStatistic> impl
         super(entityManager);
     }
 
-    public List<DriverStatistic> findAllByOneMonth(Driver driver) {
-        TypedQuery<DriverStatistic> query =
-                entityManager.createNamedQuery("DriverStatistic.findAllByOneMonth", DriverStatistic.class);
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
-        calendar.add(Calendar.MONTH, -1);
-        Date endDate = calendar.getTime();
-        query.setParameter("driver", driver);
-        query.setParameter("endDate", endDate, TemporalType.DATE);
-        return query.getResultList();
+    public List<DriverStatistic> findAllByOneMonth(Driver driver) throws DaoException {
+        try {
+            TypedQuery<DriverStatistic> query =
+                    entityManager.createNamedQuery("DriverStatistic.findAllByOneMonth", DriverStatistic.class);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(new Date());
+            calendar.add(Calendar.MONTH, -1);
+            Date endDate = calendar.getTime();
+            query.setParameter("driver", driver);
+            query.setParameter("endDate", endDate, TemporalType.DATE);
+            return query.getResultList();
+        }catch (Exception e){
+            throw  new DaoException(e);
+        }
     }
 }

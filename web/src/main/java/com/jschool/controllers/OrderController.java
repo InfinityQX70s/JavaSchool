@@ -5,6 +5,7 @@ import com.jschool.entities.*;
 import com.jschool.services.api.DriverService;
 import com.jschool.services.api.OrderAndCargoService;
 import com.jschool.services.api.TruckService;
+import com.jschool.services.api.exception.ServiceExeption;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -48,14 +49,18 @@ public class OrderController implements Command{
 
     // /employee/orders/
     public void showOrders(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<Order> orders = orderAndCargoService.findAllOrders();
-        Map<Order,List<Cargo>> orderListMap = new HashMap<>();
-        for (Order order : orders){
-            List<Cargo> cargos = orderAndCargoService.findAllCargosByOrderNumber(order.getNumber());
-            orderListMap.put(order,cargos);
+        try {
+            List<Order> orders = orderAndCargoService.findAllOrders();
+            Map<Order,List<Cargo>> orderListMap = new HashMap<>();
+            for (Order order : orders){
+                List<Cargo> cargos = orderAndCargoService.findAllCargosByOrderNumber(order.getNumber());
+                orderListMap.put(order,cargos);
+            }
+            req.setAttribute("orderListMap",orderListMap);
+            req.getRequestDispatcher("/WEB-INF/pages/order/order.jsp").forward(req,resp);
+        }catch (ServiceExeption e){
+
         }
-        req.setAttribute("orderListMap",orderListMap);
-        req.getRequestDispatcher("/WEB-INF/pages/order/order.jsp").forward(req,resp);
     }
 
     // /employee/order/add GET
@@ -64,86 +69,101 @@ public class OrderController implements Command{
     }
     //   /employee/order/add POST
     public void addOrder(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.setCharacterEncoding("UTF-8");
-        String orderNumber = req.getParameter("orderNumber");
-        String cargoNumber[] = req.getParameterValues("cargoNumber");
-        String cargoName[] = req.getParameterValues("cargoName");
-        String cargoWeight[] = req.getParameterValues("cargoWeight");
-        String pickup[] = req.getParameterValues("pickup");
-        String unload[] = req.getParameterValues("unload");
-        Order order = new Order();
-        order.setNumber(Integer.parseInt(orderNumber));
-        order.setDoneState(false);
-        orderAndCargoService.addOrder(order);
-        List<String> cities = new ArrayList<>();
-        for (int i = 0; i < cargoNumber.length; i++){
-            Cargo cargo = new Cargo();
-            cargo.setNumber(Integer.parseInt(cargoNumber[i]));
-            cargo.setName(cargoName[i]);
-            cargo.setWeight(Integer.parseInt(cargoWeight[i]));
-            City pickCity = new City();
-            cities.add(pickup[i]);
-            pickCity.setName(pickup[i]);
-            City unloadCity =  new City();
-            cities.add(unload[i]);
-            unloadCity.setName(unload[i]);
-            RoutePoint pickRoute = new RoutePoint();
-            pickRoute.setPoint(i);
-            pickRoute.setCity(pickCity);
-            RoutePoint unloadRoute = new RoutePoint();
-            unloadRoute.setPoint(i);
-            unloadRoute.setCity(unloadCity);
-            cargo.setPickup(pickRoute);
-            cargo.setUnload(unloadRoute);
-            orderAndCargoService.addCargo(order.getNumber(),cargo);
+        try {
+            String orderNumber = req.getParameter("orderNumber");
+            String cargoNumber[] = req.getParameterValues("cargoNumber");
+            String cargoName[] = req.getParameterValues("cargoName");
+            String cargoWeight[] = req.getParameterValues("cargoWeight");
+            String pickup[] = req.getParameterValues("pickup");
+            String unload[] = req.getParameterValues("unload");
+            Order order = new Order();
+            order.setNumber(Integer.parseInt(orderNumber));
+            order.setDoneState(false);
+            orderAndCargoService.addOrder(order);
+            List<String> cities = new ArrayList<>();
+            for (int i = 0; i < cargoNumber.length; i++){
+                Cargo cargo = new Cargo();
+                cargo.setNumber(Integer.parseInt(cargoNumber[i]));
+                cargo.setName(cargoName[i]);
+                cargo.setWeight(Integer.parseInt(cargoWeight[i]));
+                City pickCity = new City();
+                cities.add(pickup[i]);
+                pickCity.setName(pickup[i]);
+                City unloadCity =  new City();
+                cities.add(unload[i]);
+                unloadCity.setName(unload[i]);
+                RoutePoint pickRoute = new RoutePoint();
+                pickRoute.setPoint(i);
+                pickRoute.setCity(pickCity);
+                RoutePoint unloadRoute = new RoutePoint();
+                unloadRoute.setPoint(i);
+                unloadRoute.setCity(unloadCity);
+                cargo.setPickup(pickRoute);
+                cargo.setUnload(unloadRoute);
+                orderAndCargoService.addCargo(order.getNumber(),cargo);
+            }
+            req.setAttribute("cities",cities);
+            req.setAttribute("order",order.getNumber());
+            req.getRequestDispatcher("/WEB-INF/pages/order/orderMap.jsp").forward(req,resp);
+        }catch (ServiceExeption e){
+
         }
-        req.setAttribute("cities",cities);
-        req.setAttribute("order",order.getNumber());
-        req.getRequestDispatcher("/WEB-INF/pages/order/orderMap.jsp").forward(req,resp);
     }
 
     // /employee/order/map POST
     public void mapHandler(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String orderNumber = req.getParameter("number");
-        String duration = req.getParameter("duration").split(" ")[0];
-        List<Cargo> cargos = orderAndCargoService.findAllCargosByOrderNumber(Integer.parseInt(orderNumber));
-        int max = 0;
-        for (Cargo cargo : cargos){
-            if (cargo.getWeight() > max)
-                max = cargo.getWeight();
+        try {
+            String orderNumber = req.getParameter("number");
+            String duration = req.getParameter("duration").split(" ")[0];
+            List<Cargo> cargos = orderAndCargoService.findAllCargosByOrderNumber(Integer.parseInt(orderNumber));
+            int max = 0;
+            for (Cargo cargo : cargos){
+                if (cargo.getWeight() > max)
+                    max = cargo.getWeight();
+            }
+            List<Truck> trucks =truckService.findAllAvailableTrucksByMinCapacity(max);
+            req.setAttribute("orderNumber",orderNumber);
+            req.setAttribute("duration",duration);
+            req.setAttribute("trucks",trucks);
+            req.setAttribute("max",max);
+            req.getRequestDispatcher("/WEB-INF/pages/order/selectTruck.jsp").forward(req,resp);
+        }catch (ServiceExeption e){
+
         }
-        List<Truck> trucks =truckService.findAllAvailableTrucksByMinCapacity(max);
-        req.setAttribute("orderNumber",orderNumber);
-        req.setAttribute("duration",duration);
-        req.setAttribute("trucks",trucks);
-        req.setAttribute("max",max);
-        req.getRequestDispatcher("/WEB-INF/pages/order/selectTruck.jsp").forward(req,resp);
     }
 
     // /employee/order/truck POST
     public void assignTruck(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String duration = req.getParameter("duration");
-        String truckNumber = req.getParameter("truckNumber");
-        String orderNumber = req.getParameter("orderNumber");
-        Truck truck = truckService.getTruckByNumber(truckNumber);
-        orderAndCargoService.assignTruckToOrder(truckNumber,Integer.parseInt(orderNumber));
-        Map<Driver,Integer> driverHoursList = driverService.findAllAvailableDrivers(Integer.parseInt(duration));
-        req.setAttribute("drivers",driverHoursList);
-        req.setAttribute("duration",duration);
-        req.setAttribute("orderNumber", orderNumber);
-        req.setAttribute("shiftSize",truck.getShiftSize());
-        req.getRequestDispatcher("/WEB-INF/pages/order/selectDriver.jsp").forward(req,resp);
+        try {
+            String duration = req.getParameter("duration");
+            String truckNumber = req.getParameter("truckNumber");
+            String orderNumber = req.getParameter("orderNumber");
+            Truck truck = truckService.getTruckByNumber(truckNumber);
+            orderAndCargoService.assignTruckToOrder(truckNumber,Integer.parseInt(orderNumber));
+            Map<Driver,Integer> driverHoursList = driverService.findAllAvailableDrivers(Integer.parseInt(duration));
+            req.setAttribute("drivers",driverHoursList);
+            req.setAttribute("duration",duration);
+            req.setAttribute("orderNumber", orderNumber);
+            req.setAttribute("shiftSize",truck.getShiftSize());
+            req.getRequestDispatcher("/WEB-INF/pages/order/selectDriver.jsp").forward(req,resp);
+        }catch (ServiceExeption e){
+
+        }
         //:TODO  список по размеру смены !!!
     }
 
 
     // /employee/order/driver POST
     public void assignDriver(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String[] driverNumbers = req.getParameterValues("driverNumber");
-        String orderNumber = req.getParameter("orderNumber");
-        for (String driver : driverNumbers)
-            orderAndCargoService.assignDriverToOrder(Integer.parseInt(driver),Integer.parseInt(orderNumber));
-        resp.sendRedirect("/employee/orders");
+        try {
+            String[] driverNumbers = req.getParameterValues("driverNumber");
+            String orderNumber = req.getParameter("orderNumber");
+            for (String driver : driverNumbers)
+                orderAndCargoService.assignDriverToOrder(Integer.parseInt(driver),Integer.parseInt(orderNumber));
+            resp.sendRedirect("/employee/orders");
+        }catch (ServiceExeption e){
+
+        }
     }
 
 }

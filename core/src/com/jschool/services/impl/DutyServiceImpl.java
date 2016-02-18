@@ -6,11 +6,13 @@ import com.jschool.dao.api.DriverDao;
 import com.jschool.dao.api.DriverStatisticDao;
 import com.jschool.dao.api.DriverStatusLogDao;
 import com.jschool.dao.api.UserDao;
+import com.jschool.dao.api.exception.DaoException;
 import com.jschool.entities.Driver;
 import com.jschool.entities.DriverStatistic;
 import com.jschool.entities.DriverStatus;
 import com.jschool.entities.DriverStatusLog;
 import com.jschool.services.api.DutyService;
+import com.jschool.services.api.exception.ServiceExeption;
 
 import java.util.Date;
 
@@ -32,19 +34,19 @@ public class DutyServiceImpl implements DutyService {
         this.transactionManager = transactionManager;
     }
 
-    public void loginDriverByNumber(int number, DriverStatus dutyStatus) {
+    public void loginDriverByNumber(int number, DriverStatus dutyStatus) throws ServiceExeption {
         setDriverStatus(number,dutyStatus);
     }
 
-    public void changeDriverDutyStatusByNumber(int number, DriverStatus dutyStatus) {
+    public void changeDriverDutyStatusByNumber(int number, DriverStatus dutyStatus) throws ServiceExeption {
         setDriverStatus(number,dutyStatus);
     }
 
-    public void logoutDriverByNumber(int number) {
-        setDriverStatus(number,DriverStatus.rest);
+    public void logoutDriverByNumber(int number) throws ServiceExeption {
+        setDriverStatus(number, DriverStatus.rest);
     }
 
-    private void setDriverStatus(int number, DriverStatus dutyStatus){
+    private void setDriverStatus(int number, DriverStatus dutyStatus) throws ServiceExeption {
         CustomTransaction ct = transactionManager.getTransaction();
         ct.begin();
         try {
@@ -70,6 +72,8 @@ public class DutyServiceImpl implements DutyService {
                 }
             }
             ct.commit();
+        }catch (DaoException e) {
+            throw new ServiceExeption(e);
         }finally {
             ct.rollbackIfActive();
         }

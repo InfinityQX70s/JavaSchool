@@ -1,5 +1,6 @@
 package com.jschool.dao.api;
 
+import com.jschool.dao.api.exception.DaoException;
 import com.jschool.entities.City;
 
 import java.util.List;
@@ -9,6 +10,6 @@ import java.util.List;
  */
 public interface CityDao extends GenericDao<City>{
 
-    City findUniqueByName(String name);
-    List<City> findAll();
+    City findUniqueByName(String name) throws DaoException;
+    List<City> findAll() throws DaoException;
 }

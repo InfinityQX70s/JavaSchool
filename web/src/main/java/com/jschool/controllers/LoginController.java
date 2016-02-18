@@ -5,6 +5,7 @@ import com.jschool.entities.Driver;
 import com.jschool.entities.User;
 import com.jschool.services.api.DriverService;
 import com.jschool.services.api.UserService;
+import com.jschool.services.api.exception.ServiceExeption;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import javax.servlet.RequestDispatcher;
@@ -47,27 +48,31 @@ public class LoginController implements Command {
 
     // /login POST
     private void loginUser(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-        String email = req.getParameter("email");
-        String password = req.getParameter("password");
-        String number = req.getParameter("number");
-        if (!email.isEmpty() && number.isEmpty()){
-            User user = userService.findUserByEmail(email);
-            if (user != null && !user.isRole() && DigestUtils.md5Hex(password).equals(user.getPassword())){
-                req.getSession().setAttribute("role","employee");
-                resp.sendRedirect("/employee/orders");
+        try {
+            String email = req.getParameter("email");
+            String password = req.getParameter("password");
+            String number = req.getParameter("number");
+            if (!email.isEmpty() && number.isEmpty()){
+                User user = userService.findUserByEmail(email);
+                if (user != null && !user.isRole() && DigestUtils.md5Hex(password).equals(user.getPassword())){
+                    req.getSession().setAttribute("role","employee");
+                    resp.sendRedirect("/employee/orders");
+                }else {
+                    req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
+                }
+            }else if (!number.isEmpty() && email.isEmpty()){
+                Driver driver = driverService.getDriverByPersonalNumber(Integer.parseInt(number));
+                if (driver != null){
+                    req.getSession().setAttribute("role","driver");
+                    resp.sendRedirect("/driver");
+                }else {
+                    req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
+                }
             }else {
                 req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
             }
-        }else if (!number.isEmpty() && email.isEmpty()){
-            Driver driver = driverService.getDriverByPersonalNumber(Integer.parseInt(number));
-            if (driver != null){
-                req.getSession().setAttribute("role","driver");
-                resp.sendRedirect("/driver");
-            }else {
-                req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
-            }
-        }else {
-            req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
+        }catch (ServiceExeption e){
+
         }
     }
 

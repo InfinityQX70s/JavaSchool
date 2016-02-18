@@ -5,6 +5,7 @@ import com.jschool.entities.Driver;
 import com.jschool.entities.DriverStatusLog;
 import com.jschool.entities.User;
 import com.jschool.services.api.DriverService;
+import com.jschool.services.api.exception.ServiceExeption;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -47,9 +48,13 @@ public class DriverController implements Command{
 
 //    /employee/drivers/ GET
     public void showDrivers(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<Driver> drivers = driverService.findAllDrivers();
-        req.setAttribute("drivers",drivers);
-        req.getRequestDispatcher("/WEB-INF/pages/driver/driver.jsp").forward(req, resp);
+        try {
+            List<Driver> drivers = driverService.findAllDrivers();
+            req.setAttribute("drivers",drivers);
+            req.getRequestDispatcher("/WEB-INF/pages/driver/driver.jsp").forward(req, resp);
+        }catch (ServiceExeption e){
+
+        }
     }
  //   /employee/driver/add GET
     public void showFormForDriverAdd(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -57,49 +62,63 @@ public class DriverController implements Command{
     }
  //   /employee/driver/add POST
     public void addDriver(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        req.setCharacterEncoding("UTF-8");
-        String number = req.getParameter("number");
-        String firstName = req.getParameter("firstName");
-        String lastName = req.getParameter("lastName");
-        String email = req.getParameter("email");
-        User user = new User();
-        user.setEmail(email);
-        user.setPassword(email);
-        user.setRole(true);
-        Driver driver = new Driver();
-        driver.setNumber(Integer.parseInt(number));
-        driver.setFirstName(firstName);
-        driver.setLastName(lastName);
-        driver.setUser(user);
-        driverService.addDriver(driver);
-        resp.sendRedirect("/employee/drivers");
+        try {
+            String number = req.getParameter("number");
+            String firstName = req.getParameter("firstName");
+            String lastName = req.getParameter("lastName");
+            String email = req.getParameter("email");
+            User user = new User();
+            user.setEmail(email);
+            user.setPassword(email);
+            user.setRole(true);
+            Driver driver = new Driver();
+            driver.setNumber(Integer.parseInt(number));
+            driver.setFirstName(firstName);
+            driver.setLastName(lastName);
+            driver.setUser(user);
+            driverService.addDriver(driver);
+            resp.sendRedirect("/employee/drivers");
+        }catch (ServiceExeption e){
+
+        }
     }
 
  //   /employee/driver/delete POST
     public void deleteDriver(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String number = req.getParameter("number");
-        driverService.deleteDriver(Integer.parseInt(number));
-        resp.sendRedirect("/employee/drivers");
+        try {
+            String number = req.getParameter("number");
+            driverService.deleteDriver(Integer.parseInt(number));
+            resp.sendRedirect("/employee/drivers");
+        }catch (ServiceExeption e){
+
+        }
     }
 
  //   /employee/driver/{number}/edit GET
     public void showFormForChangeDriver(HttpServletRequest req, HttpServletResponse resp, int number) throws ServletException, IOException {
-        Driver driver = driverService.getDriverByPersonalNumber(number);
-        req.setAttribute("driver",driver);
-        req.getRequestDispatcher("/WEB-INF/pages/driver/driverEdit.jsp").forward(req, resp);
+        try {
+            Driver driver = driverService.getDriverByPersonalNumber(number);
+            req.setAttribute("driver",driver);
+            req.getRequestDispatcher("/WEB-INF/pages/driver/driverEdit.jsp").forward(req, resp);
+        }catch (ServiceExeption e){
+
+        }
     }
 
  //   /employee/driver/change POST
     public void changeDriver(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        req.setCharacterEncoding("UTF-8");
-        String number = req.getParameter("number");
-        String firstName = req.getParameter("firstName");
-        String lastName = req.getParameter("lastName");
-        Driver driver = new Driver();
-        driver.setNumber(Integer.parseInt(number));
-        driver.setFirstName(firstName);
-        driver.setLastName(lastName);
-        driverService.updateDrive(driver);
-        resp.sendRedirect("/employee/drivers");
+        try {
+            String number = req.getParameter("number");
+            String firstName = req.getParameter("firstName");
+            String lastName = req.getParameter("lastName");
+            Driver driver = new Driver();
+            driver.setNumber(Integer.parseInt(number));
+            driver.setFirstName(firstName);
+            driver.setLastName(lastName);
+            driverService.updateDrive(driver);
+            resp.sendRedirect("/employee/drivers");
+        }catch (ServiceExeption e){
+
+        }
     }
 }

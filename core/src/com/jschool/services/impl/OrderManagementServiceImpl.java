@@ -3,8 +3,10 @@ package com.jschool.services.impl;
 import com.jschool.CustomTransaction;
 import com.jschool.TransactionManager;
 import com.jschool.dao.api.*;
+import com.jschool.dao.api.exception.DaoException;
 import com.jschool.entities.*;
 import com.jschool.services.api.OrderManagementService;
+import com.jschool.services.api.exception.ServiceExeption;
 
 import java.util.Date;
 import java.util.List;
@@ -30,7 +32,7 @@ public class OrderManagementServiceImpl implements OrderManagementService {
         this.transactionManager = transactionManager;
     }
 
-    public void changeCargoStatusByNumber(int cargoNumber, CargoStatus cargoStatus) {
+    public void changeCargoStatusByNumber(int cargoNumber, CargoStatus cargoStatus) throws ServiceExeption {
         CustomTransaction ct = transactionManager.getTransaction();
         ct.begin();
         try {
@@ -64,6 +66,8 @@ public class OrderManagementServiceImpl implements OrderManagementService {
                 }
             }
             ct.commit();
+        }catch (DaoException e) {
+            throw new ServiceExeption(e);
         } finally {
             ct.rollbackIfActive();
         }

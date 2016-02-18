@@ -1,5 +1,6 @@
 package com.jschool.dao.api;
 
+import com.jschool.dao.api.exception.DaoException;
 import com.jschool.entities.Driver;
 import com.jschool.entities.DriverStatistic;
 
@@ -10,5 +11,5 @@ import java.util.List;
  */
 public interface DriverStatisticDao extends GenericDao<DriverStatistic> {
 
-    List<DriverStatistic> findAllByOneMonth(Driver driver);
+    List<DriverStatistic> findAllByOneMonth(Driver driver) throws DaoException;
 }

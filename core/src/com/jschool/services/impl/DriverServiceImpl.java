@@ -6,12 +6,14 @@ import com.jschool.dao.api.DriverDao;
 import com.jschool.dao.api.DriverStatisticDao;
 import com.jschool.dao.api.DriverStatusLogDao;
 import com.jschool.dao.api.UserDao;
+import com.jschool.dao.api.exception.DaoException;
 import com.jschool.dao.impl.DriverDaoImpl;
 import com.jschool.dao.impl.DriverStatisticDaoImpl;
 import com.jschool.dao.impl.DriverStatusLogDaoImpl;
 import com.jschool.dao.impl.UserDaoImpl;
 import com.jschool.entities.*;
 import com.jschool.services.api.DriverService;
+import com.jschool.services.api.exception.ServiceExeption;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.time.Period;
@@ -39,7 +41,7 @@ public class DriverServiceImpl implements DriverService{
         this.transactionManager = transactionManager;
     }
 
-    public void addDriver(Driver driver) {
+    public void addDriver(Driver driver) throws ServiceExeption {
         CustomTransaction ct = transactionManager.getTransaction();
         ct.begin();
         try {
@@ -56,63 +58,81 @@ public class DriverServiceImpl implements DriverService{
             driverDao.create(driver);
             //driverStatusLogDao.create(driverStatusLog);
             ct.commit();
+        }catch (DaoException e){
+            throw new ServiceExeption(e);
         }finally {
             ct.rollbackIfActive();
         }
     }
 
-    public void updateDrive(Driver driver) {
+    public void updateDrive(Driver driver) throws ServiceExeption {
         CustomTransaction ct = transactionManager.getTransaction();
         ct.begin();
         try {
             Driver driverElement = driverDao.findUniqueByNumber(driver.getNumber());
-            if (driverElement != null){
+            if (driverElement != null) {
                 driverElement.setFirstName(driver.getFirstName());
                 driverElement.setLastName(driver.getLastName());
                 driverDao.update(driverElement);
             }
             ct.commit();
+        }catch (DaoException e){
+            throw new ServiceExeption(e);
         }finally {
             ct.rollbackIfActive();
         }
     }
 
-    public void deleteDriver(int number) {
+    public void deleteDriver(int number) throws ServiceExeption {
         CustomTransaction ct = transactionManager.getTransaction();
         ct.begin();
         try {
             Driver driver = driverDao.findUniqueByNumber(number);
-            if (driver != null && driver.getOrder() == null){
+            if (driver != null && driver.getOrder() == null) {
                 User user = driver.getUser();
                 driverDao.delete(driver);
                 userDao.delete(user);
             }
             ct.commit();
+        }catch (DaoException e){
+            throw new ServiceExeption(e);
         }finally {
             ct.rollbackIfActive();
         }
     }
 
-    public Driver getDriverByPersonalNumber(int number) {
-        return driverDao.findUniqueByNumber(number);
-    }
-
-    public List<Driver> findAllDrivers() {
-        return driverDao.findAll();
-    }
-
-    public Map<Driver,Integer> findAllAvailableDrivers(int hoursWorked) {
-        List<Driver> drivers = driverDao.findAllFreeDrivers();
-        Map<Driver,Integer> driverHoursList = new HashMap<>();
-        for (Driver driver : drivers) {
-            List<DriverStatistic> driverStatistics = driverStatisticDao.findAllByOneMonth(driver);
-            int sum = 0;
-            for (DriverStatistic driverStatistic : driverStatistics)
-                sum += driverStatistic.getHoursWorked();
-            if (sum + hoursWorked <= 176) {
-                driverHoursList.put(driver,sum);
-            }
+    public Driver getDriverByPersonalNumber(int number) throws ServiceExeption {
+        try {
+            return driverDao.findUniqueByNumber(number);
+        }catch (DaoException e) {
+            throw new ServiceExeption(e);
         }
-        return driverHoursList;
+    }
+
+    public List<Driver> findAllDrivers() throws ServiceExeption {
+        try {
+            return driverDao.findAll();
+        }catch (DaoException e) {
+            throw new ServiceExeption(e);
+        }
+    }
+
+    public Map<Driver,Integer> findAllAvailableDrivers(int hoursWorked) throws ServiceExeption {
+        try {
+            List<Driver> drivers = driverDao.findAllFreeDrivers();
+            Map<Driver,Integer> driverHoursList = new HashMap<>();
+            for (Driver driver : drivers) {
+                List<DriverStatistic> driverStatistics = driverStatisticDao.findAllByOneMonth(driver);
+                int sum = 0;
+                for (DriverStatistic driverStatistic : driverStatistics)
+                    sum += driverStatistic.getHoursWorked();
+                if (sum + hoursWorked <= 176) {
+                    driverHoursList.put(driver,sum);
+                }
+            }
+            return driverHoursList;
+        }catch (DaoException e) {
+            throw new ServiceExeption(e);
+        }
     }
 }

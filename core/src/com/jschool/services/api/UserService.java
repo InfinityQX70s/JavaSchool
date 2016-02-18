@@ -1,6 +1,7 @@
 package com.jschool.services.api;
 
 import com.jschool.entities.User;
+import com.jschool.services.api.exception.ServiceExeption;
 
 import javax.jws.soap.SOAPBinding;
 
@@ -9,5 +10,5 @@ import javax.jws.soap.SOAPBinding;
  */
 public interface UserService {
 
-    User findUserByEmail(String email);
+    User findUserByEmail(String email) throws ServiceExeption;
 }

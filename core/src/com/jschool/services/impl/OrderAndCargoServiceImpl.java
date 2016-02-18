@@ -3,8 +3,10 @@ package com.jschool.services.impl;
 import com.jschool.CustomTransaction;
 import com.jschool.TransactionManager;
 import com.jschool.dao.api.*;
+import com.jschool.dao.api.exception.DaoException;
 import com.jschool.entities.*;
 import com.jschool.services.api.OrderAndCargoService;
+import com.jschool.services.api.exception.ServiceExeption;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -39,18 +41,20 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
         this.transactionManager = transactionManager;
     }
 
-    public void addOrder(Order order) {
+    public void addOrder(Order order) throws ServiceExeption {
         CustomTransaction ct = transactionManager.getTransaction();
         ct.begin();
         try {
             ordersDao.create(order);
             ct.commit();
+        }catch (DaoException e){
+            throw new ServiceExeption(e);
         } finally {
             ct.rollbackIfActive();
         }
     }
 
-    public void updateOrder(Order order) {
+    public void updateOrder(Order order) throws ServiceExeption {
         CustomTransaction ct = transactionManager.getTransaction();
         ct.begin();
         try {
@@ -60,12 +64,14 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
                 ordersDao.update(order);
             }
             ct.commit();
+        }catch (DaoException e){
+            throw new ServiceExeption(e);
         } finally {
             ct.rollbackIfActive();
         }
     }
 
-    public void deleteOrder(int number) {
+    public void deleteOrder(int number) throws ServiceExeption {
         CustomTransaction ct = transactionManager.getTransaction();
         ct.begin();
         try {
@@ -74,20 +80,30 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
                 ordersDao.delete(element);
             }
             ct.commit();
+        }catch (DaoException e){
+            throw new ServiceExeption(e);
         } finally {
             ct.rollbackIfActive();
         }
     }
 
-    public List<Order> findAllOrders() {
-        return ordersDao.findAll();
+    public List<Order> findAllOrders() throws ServiceExeption {
+        try {
+            return ordersDao.findAll();
+        }catch (DaoException e){
+            throw new ServiceExeption(e);
+        }
     }
 
-    public Order getOrderByNumber(int number) {
-        return ordersDao.findUniqueByNumber(number);
+    public Order getOrderByNumber(int number) throws ServiceExeption {
+        try {
+            return ordersDao.findUniqueByNumber(number);
+        }catch (DaoException e){
+            throw new ServiceExeption(e);
+        }
     }
 
-    public void addCargo(int orderNumber, Cargo cargo) {
+    public void addCargo(int orderNumber, Cargo cargo) throws ServiceExeption {
         CustomTransaction ct = transactionManager.getTransaction();
         ct.begin();
         try {
@@ -117,23 +133,29 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
                 cargoStatusLogDao.create(cargoStatusLogEntity);
             }
             ct.commit();
+        }catch (DaoException e){
+            throw new ServiceExeption(e);
         } finally {
             ct.rollbackIfActive();
         }
     }
 
-    public List<Cargo> findAllCargosByOrderNumber(int number) {
-        Order order = ordersDao.findUniqueByNumber(number);
-        List<RoutePoint> routePoints = order.getRoutePoints();
-        List<Cargo> cargos = new ArrayList<Cargo>();
-        for (RoutePoint routePoint : routePoints) {
-            if (routePoint.getPickup() != null)
-                cargos.add(routePoint.getPickup());
+    public List<Cargo> findAllCargosByOrderNumber(int number) throws ServiceExeption {
+        try {
+            Order order = ordersDao.findUniqueByNumber(number);
+            List<RoutePoint> routePoints = order.getRoutePoints();
+            List<Cargo> cargos = new ArrayList<Cargo>();
+            for (RoutePoint routePoint : routePoints) {
+                if (routePoint.getPickup() != null)
+                    cargos.add(routePoint.getPickup());
+            }
+            return cargos;
+        }catch (DaoException e) {
+            throw new ServiceExeption(e);
         }
-        return cargos;
     }
 
-    public void assignTruckToOrder(String truckNumber, int orderNumber) {
+    public void assignTruckToOrder(String truckNumber, int orderNumber) throws ServiceExeption {
         CustomTransaction ct = transactionManager.getTransaction();
         ct.begin();
         try {
@@ -144,17 +166,23 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
                 ordersDao.update(order);
             }
             ct.commit();
+        }catch (DaoException e) {
+            throw new ServiceExeption(e);
         } finally {
             ct.rollbackIfActive();
         }
     }
 
-    public Truck getAssignedTruckByOrderNumber(int orderNumber) {
-        Order order = ordersDao.findUniqueByNumber(orderNumber);
-        return order.getTruck();
+    public Truck getAssignedTruckByOrderNumber(int orderNumber) throws ServiceExeption {
+        try {
+            Order order = ordersDao.findUniqueByNumber(orderNumber);
+            return order.getTruck();
+        }catch (DaoException e) {
+            throw new ServiceExeption(e);
+        }
     }
 
-    public void assignDriverToOrder(int driverNumber, int orderNumber) {
+    public void assignDriverToOrder(int driverNumber, int orderNumber) throws ServiceExeption {
         CustomTransaction ct = transactionManager.getTransaction();
         ct.begin();
         try {
@@ -167,15 +195,21 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
                 driverDao.update(driver);
             }
             ct.commit();
+        }catch (DaoException e) {
+            throw new ServiceExeption(e);
         } finally {
             ct.rollbackIfActive();
         }
 
     }
 
-    public List<Driver> getAllAssignedDriversByOrderNumber(int orderNumber) {
-        Order order = ordersDao.findUniqueByNumber(orderNumber);
-        return order.getDrivers();
+    public List<Driver> getAllAssignedDriversByOrderNumber(int orderNumber) throws ServiceExeption {
+        try {
+            Order order = ordersDao.findUniqueByNumber(orderNumber);
+            return order.getDrivers();
+        }catch (DaoException e) {
+            throw new ServiceExeption(e);
+        }
     }
 
 }
