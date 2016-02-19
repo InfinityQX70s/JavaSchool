@@ -1,7 +1,8 @@
 <%@ page import="com.jschool.entities.Order" %>
 <%@ page import="com.jschool.entities.Cargo" %>
 <%@ page import="java.util.List" %>
-<%@ page import="java.util.Map" %><%--
+<%@ page import="java.util.Map" %>
+<%@ page import="com.jschool.entities.CargoStatusLog" %><%--
   Created by IntelliJ IDEA.
   User: infinity
   Date: 14.02.16
@@ -52,7 +53,8 @@
                                 <%= " Pickup city: " + cargo.getPickup().getCity().getName()%>
                             </div>
                             <div class="col s4 center-align red-text">
-                                <%= " Status: " + cargo.getStatusLogs().get(cargo.getStatusLogs().size()-1).getStatus()%>
+                                <% List<CargoStatusLog> cargoStatusLogs = cargo.getStatusLogs(); %>
+                                <%= " Status: " + cargoStatusLogs.get(cargoStatusLogs.size()-1).getStatus()%>
                             </div>
                             <div class="col s4 right-align light-green-text text-accent-4">
                                 <%= " Unload city: " + cargo.getUnload().getCity().getName()%>

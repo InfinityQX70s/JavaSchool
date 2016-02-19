@@ -7,6 +7,7 @@ import com.jschool.dao.api.exception.DaoException;
 import com.jschool.entities.*;
 import com.jschool.services.api.OrderManagementService;
 import com.jschool.services.api.exception.ServiceExeption;
+import com.jschool.services.api.exception.StatusCode;
 
 import java.util.Date;
 import java.util.List;
@@ -37,37 +38,40 @@ public class OrderManagementServiceImpl implements OrderManagementService {
         ct.begin();
         try {
             Cargo cargo = cargoDao.findUniqueByNumber(cargoNumber);
-            CargoStatusLog cargoStatusLogEntity = new CargoStatusLog();
-            cargoStatusLogEntity.setStatus(cargoStatus);
-            cargoStatusLogEntity.setTimestamp(new Date());
-            cargoStatusLogEntity.setCargo(cargo);
-            cargoStatusLogDao.create(cargoStatusLogEntity);
-            if (cargoStatus == CargoStatus.delivered) {
-                Order order = cargo.getPickup().getOrder();
-                List<RoutePoint> routePoints = order.getRoutePoints();
-                boolean isAllDelivered = true;
-                for (RoutePoint routePoint : routePoints) {
-                    if (routePoint.getPickup() != null) {
-                        Cargo element = routePoint.getPickup();
-                        List<CargoStatusLog> cargoStatusLogs = element.getStatusLogs();
-                        if (cargoStatusLogs.get(cargoStatusLogs.size() - 1).getStatus() != CargoStatus.delivered)
-                            isAllDelivered = false;
+            if (cargo != null) {
+                CargoStatusLog cargoStatusLogEntity = new CargoStatusLog();
+                cargoStatusLogEntity.setStatus(cargoStatus);
+                cargoStatusLogEntity.setTimestamp(new Date());
+                cargoStatusLogEntity.setCargo(cargo);
+                cargoStatusLogDao.create(cargoStatusLogEntity);
+                if (cargoStatus == CargoStatus.delivered) {
+                    Order order = cargo.getPickup().getOrder();
+                    List<RoutePoint> routePoints = order.getRoutePoints();
+                    boolean isAllDelivered = true;
+                    for (RoutePoint routePoint : routePoints) {
+                        if (routePoint.getPickup() != null) {
+                            Cargo element = routePoint.getPickup();
+                            List<CargoStatusLog> cargoStatusLogs = element.getStatusLogs();
+                            if (cargoStatusLogs.get(cargoStatusLogs.size() - 1).getStatus() != CargoStatus.delivered)
+                                isAllDelivered = false;
+                        }
+                    }
+                    if (isAllDelivered) {
+                        order.setDoneState(true);
+                        order.setTruck(null);
+                        ordersDao.update(order);
+                        List<Driver> drivers = order.getDrivers();
+                        for (Driver driver : drivers) {
+                            driver.setOrder(null);
+                            driverDao.update(driver);
+                        }
                     }
                 }
-                if (isAllDelivered) {
-                    order.setDoneState(true);
-                    order.setTruck(null);
-                    ordersDao.update(order);
-                    List<Driver> drivers = order.getDrivers();
-                    for (Driver driver : drivers) {
-                        driver.setOrder(null);
-                        driverDao.update(driver);
-                    }
-                }
-            }
-            ct.commit();
+                ct.commit();
+            }else
+                throw new ServiceExeption("Cargo not found", StatusCode.NOT_FOUND);
         }catch (DaoException e) {
-            throw new ServiceExeption(e);
+            throw new ServiceExeption("Unknown exception", e, StatusCode.UNKNOWN);
         } finally {
             ct.rollbackIfActive();
         }

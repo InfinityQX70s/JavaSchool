@@ -13,6 +13,7 @@ import com.jschool.entities.DriverStatus;
 import com.jschool.entities.DriverStatusLog;
 import com.jschool.services.api.DutyService;
 import com.jschool.services.api.exception.ServiceExeption;
+import com.jschool.services.api.exception.StatusCode;
 
 import java.util.Date;
 
@@ -70,10 +71,12 @@ public class DutyServiceImpl implements DutyService {
                         driverStatusLogDao.create(driverStatusLog);
                     }
                 }
+                ct.commit();
+            }else {
+                throw new ServiceExeption("Driver not found", StatusCode.NOT_FOUND);
             }
-            ct.commit();
         }catch (DaoException e) {
-            throw new ServiceExeption(e);
+            throw new ServiceExeption("Unknown exception", e, StatusCode.UNKNOWN);
         }finally {
             ct.rollbackIfActive();
         }

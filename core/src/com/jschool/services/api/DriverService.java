@@ -1,8 +1,6 @@
 package com.jschool.services.api;
 
 import com.jschool.entities.Driver;
-import com.jschool.entities.DriverStatus;
-import com.jschool.entities.User;
 import com.jschool.services.api.exception.ServiceExeption;
 
 import java.util.List;

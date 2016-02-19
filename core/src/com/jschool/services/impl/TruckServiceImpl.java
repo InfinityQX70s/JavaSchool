@@ -8,6 +8,7 @@ import com.jschool.dao.impl.TruckDaoImpl;
 import com.jschool.entities.Truck;
 import com.jschool.services.api.TruckService;
 import com.jschool.services.api.exception.ServiceExeption;
+import com.jschool.services.api.exception.StatusCode;
 
 import java.util.List;
 
@@ -28,10 +29,14 @@ public class TruckServiceImpl implements TruckService{
         CustomTransaction ct = transactionManager.getTransaction();
         ct.begin();
         try {
-            truckDao.create(truck);
+            Truck element = truckDao.findUniqueByNumber(truck.getNumber());
+            if (element == null)
+                truckDao.create(truck);
+            else
+                throw new ServiceExeption("Truck with such identifier exist", StatusCode.ALREADY_EXIST);
             ct.commit();
         }catch (DaoException e) {
-            throw new ServiceExeption(e);
+            throw new ServiceExeption("Unknown exception", e, StatusCode.UNKNOWN);
         }finally {
             ct.rollbackIfActive();
         }
@@ -42,14 +47,17 @@ public class TruckServiceImpl implements TruckService{
         ct.begin();
         try {
             Truck element = truckDao.findUniqueByNumber(truck.getNumber());
-            element.setNumber(truck.getNumber());
-            element.setCapacity(truck.getCapacity());
-            element.setShiftSize(truck.getShiftSize());
-            element.setRepairState(truck.isRepairState());
-            truckDao.update(element);
-            ct.commit();
+            if (element != null) {
+                element.setNumber(truck.getNumber());
+                element.setCapacity(truck.getCapacity());
+                element.setShiftSize(truck.getShiftSize());
+                element.setRepairState(truck.isRepairState());
+                truckDao.update(element);
+                ct.commit();
+            }else
+                throw new ServiceExeption("Truck not found", StatusCode.NOT_FOUND);
         }catch (DaoException e) {
-            throw new ServiceExeption(e);
+            throw new ServiceExeption("Unknown exception", e, StatusCode.UNKNOWN);
         }finally {
             ct.rollbackIfActive();
         }
@@ -60,11 +68,16 @@ public class TruckServiceImpl implements TruckService{
         ct.begin();
         try {
             Truck truck = truckDao.findUniqueByNumber(truckNumber);
-            if (truck.getOreder() == null)
+            if (truck != null && truck.getOreder() == null){
                 truckDao.delete(truck);
-            ct.commit();
+                ct.commit();
+            }
+            if (truck == null)
+                throw new ServiceExeption("Truck not found", StatusCode.NOT_FOUND);
+            if (truck.getOreder() != null)
+                throw new ServiceExeption("Truck has an order", StatusCode.ASSIGNED_ORDER);
         }catch (DaoException e) {
-            throw new ServiceExeption(e);
+            throw new ServiceExeption("Unknown exception", e, StatusCode.UNKNOWN);
         }finally {
             ct.rollbackIfActive();
         }
@@ -72,9 +85,12 @@ public class TruckServiceImpl implements TruckService{
 
     public Truck getTruckByNumber(String number) throws ServiceExeption {
         try {
-            return truckDao.findUniqueByNumber(number);
+            Truck truck = truckDao.findUniqueByNumber(number);
+            if (truck == null)
+                throw new ServiceExeption("Truck not found", StatusCode.NOT_FOUND);
+            return truck;
         }catch (DaoException e) {
-            throw new ServiceExeption(e);
+            throw new ServiceExeption("Unknown exception", e, StatusCode.UNKNOWN);
         }
     }
 
@@ -82,7 +98,7 @@ public class TruckServiceImpl implements TruckService{
         try {
             return truckDao.findAll();
         }catch (DaoException e) {
-            throw new ServiceExeption(e);
+            throw new ServiceExeption("Unknown exception", e, StatusCode.UNKNOWN);
         }
     }
 
@@ -90,7 +106,7 @@ public class TruckServiceImpl implements TruckService{
         try {
             return truckDao.findAllFreeByStateAndGreaterThanCapacity(true,capacity);
         }catch (DaoException e) {
-            throw new ServiceExeption(e);
+            throw new ServiceExeption("Unknown exception", e, StatusCode.UNKNOWN);
         }
     }
 }

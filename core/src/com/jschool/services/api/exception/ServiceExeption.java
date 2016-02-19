@@ -4,18 +4,20 @@ package com.jschool.services.api.exception;
  * Created by infinity on 18.02.16.
  */
 public class ServiceExeption extends Exception{
-    public ServiceExeption() {
-    }
 
-    public ServiceExeption(String message) {
+    private StatusCode statusCode;
+
+    public ServiceExeption(String message, StatusCode statusCode) {
         super(message);
+        this.statusCode = statusCode;
     }
 
-    public ServiceExeption(String message, Throwable cause) {
+    public ServiceExeption(String message, Throwable cause, StatusCode statusCode) {
         super(message, cause);
+        this.statusCode = statusCode;
     }
 
-    public ServiceExeption(Throwable cause) {
-        super(cause);
+    public StatusCode getStatusCode() {
+        return statusCode;
     }
 }
