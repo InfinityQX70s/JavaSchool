@@ -4,7 +4,7 @@ import com.jschool.entities.Cargo;
 import com.jschool.entities.Driver;
 import com.jschool.entities.Order;
 import com.jschool.entities.Truck;
-import com.jschool.services.api.exception.ServiceExeption;
+import com.jschool.services.api.exception.ServiceException;
 
 import java.util.List;
 
@@ -13,16 +13,16 @@ import java.util.List;
  */
 public interface OrderAndCargoService {
 
-    void addOrder(Order order) throws ServiceExeption;
-    void updateOrder(Order order) throws ServiceExeption;
-    void deleteOrder(int number) throws ServiceExeption;
-    List<Order> findAllOrders() throws ServiceExeption;
-    Order getOrderByNumber(int number) throws ServiceExeption;
-    void addCargo(int orderNumber, Cargo cargo) throws ServiceExeption;
-    List<Cargo> findAllCargosByOrderNumber(int number) throws ServiceExeption;
-    void assignTruckToOrder(String truckNumber, int orderNumber) throws ServiceExeption;
-    Truck getAssignedTruckByOrderNumber(int orderNumber) throws ServiceExeption;
-    void assignDriverToOrder(int driverNumber, int orderNumber) throws ServiceExeption;
-    List<Driver> getAllAssignedDriversByOrderNumber(int orderNumber) throws ServiceExeption;
+    void addOrder(Order order) throws ServiceException;
+    void updateOrder(Order order) throws ServiceException;
+    void deleteOrder(int number) throws ServiceException;
+    List<Order> findAllOrders() throws ServiceException;
+    Order getOrderByNumber(int number) throws ServiceException;
+    void addCargo(int orderNumber, Cargo cargo) throws ServiceException;
+    List<Cargo> findAllCargosByOrderNumber(int number) throws ServiceException;
+    void assignTruckToOrder(String truckNumber, int orderNumber) throws ServiceException;
+    Truck getAssignedTruckByOrderNumber(int orderNumber) throws ServiceException;
+    void assignDriverToOrder(int driverNumber, int orderNumber) throws ServiceException;
+    List<Driver> getAllAssignedDriversByOrderNumber(int orderNumber) throws ServiceException;
 
 }

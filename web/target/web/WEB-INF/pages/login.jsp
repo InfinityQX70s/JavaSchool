@@ -27,7 +27,7 @@
                     <div id="manager" class="col s12">
                         <div class="row">
                             <div class="input-field col s12">
-                                <input id="email" type="email" name="email" class="validate">
+                                <input id="email" name="email" type="email" class="validate">
                                 <label for="email">Email</label>
                             </div>
                         </div>

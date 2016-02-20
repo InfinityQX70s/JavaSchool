@@ -6,8 +6,8 @@ import com.jschool.dao.api.*;
 import com.jschool.dao.api.exception.DaoException;
 import com.jschool.entities.*;
 import com.jschool.services.api.OrderManagementService;
-import com.jschool.services.api.exception.ServiceExeption;
-import com.jschool.services.api.exception.StatusCode;
+import com.jschool.services.api.exception.ServiceException;
+import com.jschool.services.api.exception.ServiceStatusCode;
 
 import java.util.Date;
 import java.util.List;
@@ -33,7 +33,7 @@ public class OrderManagementServiceImpl implements OrderManagementService {
         this.transactionManager = transactionManager;
     }
 
-    public void changeCargoStatusByNumber(int cargoNumber, CargoStatus cargoStatus) throws ServiceExeption {
+    public void changeCargoStatusByNumber(int cargoNumber, CargoStatus cargoStatus) throws ServiceException {
         CustomTransaction ct = transactionManager.getTransaction();
         ct.begin();
         try {
@@ -69,9 +69,9 @@ public class OrderManagementServiceImpl implements OrderManagementService {
                 }
                 ct.commit();
             }else
-                throw new ServiceExeption("Cargo not found", StatusCode.NOT_FOUND);
+                throw new ServiceException("Cargo not found", ServiceStatusCode.NOT_FOUND);
         }catch (DaoException e) {
-            throw new ServiceExeption("Unknown exception", e, StatusCode.UNKNOWN);
+            throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
         } finally {
             ct.rollbackIfActive();
         }

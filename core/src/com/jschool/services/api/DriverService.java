@@ -1,7 +1,7 @@
 package com.jschool.services.api;
 
 import com.jschool.entities.Driver;
-import com.jschool.services.api.exception.ServiceExeption;
+import com.jschool.services.api.exception.ServiceException;
 
 import java.util.List;
 import java.util.Map;
@@ -11,11 +11,11 @@ import java.util.Map;
  */
 public interface DriverService {
 
-    void addDriver(Driver driver) throws ServiceExeption;
-    void updateDrive(Driver driver) throws ServiceExeption;
-    void deleteDriver(int number) throws ServiceExeption;
-    Driver getDriverByPersonalNumber(int number) throws ServiceExeption;
-    List<Driver> findAllDrivers() throws ServiceExeption;
-    Map<Driver,Integer> findAllAvailableDrivers(int hoursWorked) throws ServiceExeption;
+    void addDriver(Driver driver) throws ServiceException;
+    void updateDrive(Driver driver) throws ServiceException;
+    void deleteDriver(int number) throws ServiceException;
+    Driver getDriverByPersonalNumber(int number) throws ServiceException;
+    List<Driver> findAllDrivers() throws ServiceException;
+    Map<Driver,Integer> findAllAvailableDrivers(int hoursWorked) throws ServiceException;
 
 }

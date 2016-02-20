@@ -5,15 +5,14 @@ import com.jschool.TransactionManager;
 import com.jschool.dao.api.DriverDao;
 import com.jschool.dao.api.DriverStatisticDao;
 import com.jschool.dao.api.DriverStatusLogDao;
-import com.jschool.dao.api.UserDao;
 import com.jschool.dao.api.exception.DaoException;
 import com.jschool.entities.Driver;
 import com.jschool.entities.DriverStatistic;
 import com.jschool.entities.DriverStatus;
 import com.jschool.entities.DriverStatusLog;
 import com.jschool.services.api.DutyService;
-import com.jschool.services.api.exception.ServiceExeption;
-import com.jschool.services.api.exception.StatusCode;
+import com.jschool.services.api.exception.ServiceException;
+import com.jschool.services.api.exception.ServiceStatusCode;
 
 import java.util.Date;
 
@@ -35,19 +34,19 @@ public class DutyServiceImpl implements DutyService {
         this.transactionManager = transactionManager;
     }
 
-    public void loginDriverByNumber(int number, DriverStatus dutyStatus) throws ServiceExeption {
+    public void loginDriverByNumber(int number, DriverStatus dutyStatus) throws ServiceException {
         setDriverStatus(number,dutyStatus);
     }
 
-    public void changeDriverDutyStatusByNumber(int number, DriverStatus dutyStatus) throws ServiceExeption {
+    public void changeDriverDutyStatusByNumber(int number, DriverStatus dutyStatus) throws ServiceException {
         setDriverStatus(number,dutyStatus);
     }
 
-    public void logoutDriverByNumber(int number) throws ServiceExeption {
+    public void logoutDriverByNumber(int number) throws ServiceException {
         setDriverStatus(number, DriverStatus.rest);
     }
 
-    private void setDriverStatus(int number, DriverStatus dutyStatus) throws ServiceExeption {
+    private void setDriverStatus(int number, DriverStatus dutyStatus) throws ServiceException {
         CustomTransaction ct = transactionManager.getTransaction();
         ct.begin();
         try {
@@ -73,10 +72,10 @@ public class DutyServiceImpl implements DutyService {
                 }
                 ct.commit();
             }else {
-                throw new ServiceExeption("Driver not found", StatusCode.NOT_FOUND);
+                throw new ServiceException("Driver not found", ServiceStatusCode.NOT_FOUND);
             }
         }catch (DaoException e) {
-            throw new ServiceExeption("Unknown exception", e, StatusCode.UNKNOWN);
+            throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
         }finally {
             ct.rollbackIfActive();
         }

@@ -1,7 +1,7 @@
 package com.jschool.services.api;
 
 import com.jschool.entities.Truck;
-import com.jschool.services.api.exception.ServiceExeption;
+import com.jschool.services.api.exception.ServiceException;
 
 import java.util.List;
 
@@ -10,10 +10,10 @@ import java.util.List;
  */
 public interface TruckService {
 
-     void addTruck(Truck truck) throws ServiceExeption;
-     void updateTruck(Truck truck) throws ServiceExeption;
-     void deleteTruck(String number) throws ServiceExeption;
-     Truck getTruckByNumber(String number) throws ServiceExeption;
-     List<Truck> findAllTrucks() throws ServiceExeption;
-     List<Truck> findAllAvailableTrucksByMinCapacity(int capacity) throws ServiceExeption;
+     void addTruck(Truck truck) throws ServiceException;
+     void updateTruck(Truck truck) throws ServiceException;
+     void deleteTruck(String number) throws ServiceException;
+     Truck getTruckByNumber(String number) throws ServiceException;
+     List<Truck> findAllTrucks() throws ServiceException;
+     List<Truck> findAllAvailableTrucksByMinCapacity(int capacity) throws ServiceException;
 }

@@ -1,11 +1,12 @@
 package com.jschool.controllers;
 
 import com.jschool.AppContext;
+import com.jschool.Validator;
+import com.jschool.controllers.exception.ControllerException;
 import com.jschool.entities.Truck;
 import com.jschool.services.api.TruckService;
-import com.jschool.services.api.exception.ServiceExeption;
+import com.jschool.services.api.exception.ServiceException;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +21,7 @@ public class TruckController implements Command{
 
     private AppContext appContext = AppContext.getInstance();
     private TruckService truckService = appContext.getTruckService();
+    private Validator validator = appContext.getValidator();
 
     public void execute(ServletContext servletContext, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String[] uri = request.getRequestURI().split("/");
@@ -48,8 +50,9 @@ public class TruckController implements Command{
             List<Truck> trucks = truckService.findAllTrucks();
             req.setAttribute("trucks",trucks);
             req.getRequestDispatcher("/WEB-INF/pages/truck/truck.jsp").forward(req, resp);
-        }catch (ServiceExeption e){
-
+        }catch (ServiceException e){
+            req.setAttribute("error",e);
+            req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
         }
     }
    // /employee/truck/add GET
@@ -57,12 +60,13 @@ public class TruckController implements Command{
         req.getRequestDispatcher("/WEB-INF/pages/truck/truckAdd.jsp").forward(req, resp);
     }
   //  /employee/truck/add POST
-    public void addTruck(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    public void addTruck(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         try {
             String number = req.getParameter("number");
             String capacity = req.getParameter("capacity");
             String shiftSize = req.getParameter("shiftSize");
             String status = req.getParameter("status");
+            validator.validateTruck(number,capacity,shiftSize,status);
             Truck truck = new Truck();
             truck.setNumber(number);
             truck.setCapacity(Integer.parseInt(capacity));
@@ -74,19 +78,21 @@ public class TruckController implements Command{
             }
             truckService.addTruck(truck);
             resp.sendRedirect("/employee/trucks");
-        }catch (ServiceExeption e){
-
+        }catch (ServiceException | ControllerException e){
+            req.setAttribute("error",e);
+            req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
         }
     }
 
  //   /employee/truck/delete POST
-    public void deleteTruck(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    public void deleteTruck(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         try {
             String number = req.getParameter("number");
             truckService.deleteTruck(number);
             resp.sendRedirect("/employee/trucks");
-        }catch (ServiceExeption e){
-
+        }catch (ServiceException e){
+            req.setAttribute("error",e);
+            req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
         }
     }
 
@@ -96,18 +102,20 @@ public class TruckController implements Command{
             Truck truck = truckService.getTruckByNumber(number);
             req.setAttribute("truck",truck);
             req.getRequestDispatcher("/WEB-INF/pages/truck/truckEdit.jsp").forward(req, resp);
-        }catch (ServiceExeption e){
-
+        }catch (ServiceException e){
+            req.setAttribute("error",e);
+            req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
         }
     }
 
  //   /employee/truck/change POST
-    public void changeTruck(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    public void changeTruck(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         try {
             String number = req.getParameter("number");
             String capacity = req.getParameter("capacity");
             String shiftSize = req.getParameter("shiftSize");
             String status = req.getParameter("status");
+            validator.validateTruck(number,capacity,shiftSize,status);
             Truck truck = new Truck();
             truck.setNumber(number);
             truck.setCapacity(Integer.parseInt(capacity));
@@ -119,8 +127,9 @@ public class TruckController implements Command{
             }
             truckService.updateTruck(truck);
             resp.sendRedirect("/employee/trucks");
-        }catch (ServiceExeption e){
-
+        }catch (ServiceException | ControllerException e){
+            req.setAttribute("error",e);
+            req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
         }
     }
 

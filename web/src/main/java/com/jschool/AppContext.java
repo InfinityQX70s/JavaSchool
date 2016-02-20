@@ -41,6 +41,8 @@ public class AppContext {
     private OrderManagementService orderManagementService;
     private TruckService truckService;
 
+    private Validator validator;
+
     private AppContext() {
     }
 
@@ -51,113 +53,113 @@ public class AppContext {
         return instance;
     }
 
-    public EntityManagerFactory getEntityManagerFactory(){
+    public synchronized EntityManagerFactory getEntityManagerFactory(){
         if (entityManagerFactory == null){
             entityManagerFactory = Persistence.createEntityManagerFactory(PERSISTENCE);
         }
         return entityManagerFactory;
     }
 
-    public EntityManager getEntityManager(){
+    public synchronized EntityManager getEntityManager(){
         if (entityManager == null  || !entityManager.isOpen()){
             entityManager = getEntityManagerFactory().createEntityManager();
         }
         return entityManager;
     }
 
-    public TransactionManager getTransactionManager() {
+    public synchronized TransactionManager getTransactionManager() {
         if (transactionManager == null){
             transactionManager = new TransactionManager(getEntityManager());
         }
         return transactionManager;
     }
 
-    public CargoDao getCargoDao(){
+    public synchronized CargoDao getCargoDao(){
         if (cargoDao == null){
             cargoDao = new CargoDaoImpl(getEntityManager());
         }
         return cargoDao;
     }
 
-    public CargoStatusLogDao getCargoStatusLogDao() {
+    public synchronized CargoStatusLogDao getCargoStatusLogDao() {
         if (cargoStatusLogDao == null){
             cargoStatusLogDao = new CargoStatusLogDaoImpl(getEntityManager());
         }
         return cargoStatusLogDao;
     }
 
-    public CityDao getCityDao() {
+    public synchronized CityDao getCityDao() {
         if (cityDao == null){
             cityDao = new CityDaoImpl(getEntityManager());
         }
         return cityDao;
     }
 
-    public DriverDao getDriverDao() {
+    public synchronized DriverDao getDriverDao() {
         if (driverDao == null){
             driverDao = new DriverDaoImpl(getEntityManager());
         }
         return driverDao;
     }
 
-    public DriverStatisticDao getDriverStatisticDao() {
+    public synchronized DriverStatisticDao getDriverStatisticDao() {
         if (driverStatisticDao == null){
             driverStatisticDao = new DriverStatisticDaoImpl(getEntityManager());
         }
         return driverStatisticDao;
     }
 
-    public DriverStatusLogDao getDriverStatusLogDao() {
+    public synchronized DriverStatusLogDao getDriverStatusLogDao() {
         if (driverStatusLogDao == null){
             driverStatusLogDao = new DriverStatusLogDaoImpl(getEntityManager());
         }
         return driverStatusLogDao;
     }
 
-    public OrdersDao getOrdersDao() {
+    public synchronized OrdersDao getOrdersDao() {
         if (ordersDao == null){
             ordersDao = new OrdersDaoImpl(getEntityManager());
         }
         return ordersDao;
     }
 
-    public RoutePointDao getRoutePointDao() {
+    public synchronized RoutePointDao getRoutePointDao() {
         if (routePointDao == null){
             routePointDao = new RoutePointDaoImpl(getEntityManager());
         }
         return routePointDao;
     }
 
-    public TruckDao getTruckDao() {
+    public synchronized TruckDao getTruckDao() {
         if (truckDao == null){
             truckDao = new TruckDaoImpl(getEntityManager());
         }
         return truckDao;
     }
 
-    public UserDao getUserDao() {
+    public synchronized UserDao getUserDao() {
         if (userDao == null){
             userDao = new UserDaoImpl(getEntityManager());
         }
         return userDao;
     }
 
-    public UserService getUserService() {
+    public synchronized UserService getUserService() {
         if (userService == null){
             userService = new UserServiceImpl(getUserDao(), getTransactionManager());
         }
         return userService;
     }
 
-    public DriverService getDriverService() {
+    public synchronized DriverService getDriverService() {
         if (driverService == null){
-            driverService = new DriverServiceImpl(getUserDao(),getDriverDao(),getDriverStatusLogDao(),
+            driverService = new DriverServiceImpl(getUserDao(),getDriverDao(),
                     getDriverStatisticDao(), getTransactionManager());
         }
         return driverService;
     }
 
-    public DutyService getDutyService() {
+    public synchronized DutyService getDutyService() {
         if (dutyService == null){
             dutyService = new DutyServiceImpl(getDriverDao(), getDriverStatusLogDao(),
                     getDriverStatisticDao(), getTransactionManager());
@@ -165,7 +167,7 @@ public class AppContext {
         return dutyService;
     }
 
-    public OrderAndCargoService getOrderAndCargoService() {
+    public synchronized OrderAndCargoService getOrderAndCargoService() {
         if (orderAndCargoService == null){
             orderAndCargoService = new OrderAndCargoServiceImpl(getOrdersDao(),getTruckDao(),
                     getDriverDao(),getCargoDao(),getCargoStatusLogDao(),
@@ -174,7 +176,7 @@ public class AppContext {
         return orderAndCargoService;
     }
 
-    public OrderManagementService getOrderManagementService() {
+    public synchronized OrderManagementService getOrderManagementService() {
         if (orderManagementService == null){
             orderManagementService = new OrderManagementServiceImpl(getOrdersDao(),getDriverDao(),
             getCargoDao(),getCargoStatusLogDao(),getTransactionManager());
@@ -182,10 +184,17 @@ public class AppContext {
         return orderManagementService;
     }
 
-    public TruckService getTruckService() {
+    public synchronized TruckService getTruckService() {
         if (truckService == null){
             truckService = new TruckServiceImpl(getTruckDao(),getTransactionManager());
         }
         return truckService;
+    }
+
+    public synchronized Validator getValidator() {
+        if (validator == null){
+            validator = new Validator();
+        }
+        return validator;
     }
 }

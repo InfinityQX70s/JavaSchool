@@ -5,7 +5,7 @@ import com.jschool.entities.*;
 import com.jschool.services.api.DriverService;
 import com.jschool.services.api.OrderAndCargoService;
 import com.jschool.services.api.TruckService;
-import com.jschool.services.api.exception.ServiceExeption;
+import com.jschool.services.api.exception.ServiceException;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -58,7 +58,7 @@ public class OrderController implements Command{
             }
             req.setAttribute("orderListMap",orderListMap);
             req.getRequestDispatcher("/WEB-INF/pages/order/order.jsp").forward(req,resp);
-        }catch (ServiceExeption e){
+        }catch (ServiceException e){
 
         }
     }
@@ -105,7 +105,7 @@ public class OrderController implements Command{
             req.setAttribute("cities",cities);
             req.setAttribute("order",order.getNumber());
             req.getRequestDispatcher("/WEB-INF/pages/order/orderMap.jsp").forward(req,resp);
-        }catch (ServiceExeption e){
+        }catch (ServiceException e){
 
         }
     }
@@ -127,7 +127,7 @@ public class OrderController implements Command{
             req.setAttribute("trucks",trucks);
             req.setAttribute("max",max);
             req.getRequestDispatcher("/WEB-INF/pages/order/selectTruck.jsp").forward(req,resp);
-        }catch (ServiceExeption e){
+        }catch (ServiceException e){
 
         }
     }
@@ -146,7 +146,7 @@ public class OrderController implements Command{
             req.setAttribute("orderNumber", orderNumber);
             req.setAttribute("shiftSize",truck.getShiftSize());
             req.getRequestDispatcher("/WEB-INF/pages/order/selectDriver.jsp").forward(req,resp);
-        }catch (ServiceExeption e){
+        }catch (ServiceException e){
 
         }
         //:TODO  список по размеру смены !!!
@@ -161,7 +161,7 @@ public class OrderController implements Command{
             for (String driver : driverNumbers)
                 orderAndCargoService.assignDriverToOrder(Integer.parseInt(driver),Integer.parseInt(orderNumber));
             resp.sendRedirect("/employee/orders");
-        }catch (ServiceExeption e){
+        }catch (ServiceException e){
 
         }
     }

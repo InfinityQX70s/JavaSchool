@@ -8,8 +8,8 @@ import com.jschool.dao.api.UserDao;
 import com.jschool.dao.api.exception.DaoException;
 import com.jschool.entities.*;
 import com.jschool.services.api.DriverService;
-import com.jschool.services.api.exception.ServiceExeption;
-import com.jschool.services.api.exception.StatusCode;
+import com.jschool.services.api.exception.ServiceException;
+import com.jschool.services.api.exception.ServiceStatusCode;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.util.*;
@@ -33,7 +33,7 @@ public class DriverServiceImpl implements DriverService{
         this.transactionManager = transactionManager;
     }
 
-    public void addDriver(Driver driver) throws ServiceExeption{
+    public void addDriver(Driver driver) throws ServiceException {
         CustomTransaction ct = transactionManager.getTransaction();
         ct.begin();
         try {
@@ -53,16 +53,16 @@ public class DriverServiceImpl implements DriverService{
                 //driverStatusLogDao.create(driverStatusLog);
                 ct.commit();
             }else {
-                throw new ServiceExeption("User or Driver with such identifier exist", StatusCode.ALREADY_EXIST);
+                throw new ServiceException("User or Driver with such identifier exist", ServiceStatusCode.ALREADY_EXIST);
             }
         }catch (DaoException e){
-            throw new ServiceExeption("Unknown exception", e, StatusCode.UNKNOWN);
+            throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
         }finally {
             ct.rollbackIfActive();
         }
     }
 
-    public void updateDrive(Driver driver) throws ServiceExeption{
+    public void updateDrive(Driver driver) throws ServiceException {
         CustomTransaction ct = transactionManager.getTransaction();
         ct.begin();
         try {
@@ -73,16 +73,16 @@ public class DriverServiceImpl implements DriverService{
                 driverDao.update(driverElement);
                 ct.commit();
             }else {
-                throw new ServiceExeption("Driver not found", StatusCode.NOT_FOUND);
+                throw new ServiceException("Driver not found", ServiceStatusCode.NOT_FOUND);
             }
         }catch (DaoException e){
-            throw new ServiceExeption("Unknown exception", e, StatusCode.UNKNOWN);
+            throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
         }finally {
             ct.rollbackIfActive();
         }
     }
 
-    public void deleteDriver(int number) throws ServiceExeption {
+    public void deleteDriver(int number) throws ServiceException {
         CustomTransaction ct = transactionManager.getTransaction();
         ct.begin();
         try {
@@ -94,39 +94,39 @@ public class DriverServiceImpl implements DriverService{
                 ct.commit();
             }
             if (driver == null){
-                throw new ServiceExeption("Driver not found", StatusCode.NOT_FOUND);
+                throw new ServiceException("Driver not found", ServiceStatusCode.NOT_FOUND);
             }
             if (driver.getOrder() != null){
-                throw new ServiceExeption("Driver has an order", StatusCode.ASSIGNED_ORDER);
+                throw new ServiceException("Driver has an order", ServiceStatusCode.ASSIGNED_ORDER);
             }
         }catch (DaoException e){
-            throw new ServiceExeption("Unknown exception", e, StatusCode.UNKNOWN);
+            throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
         }finally {
             ct.rollbackIfActive();
         }
     }
 
-    public Driver getDriverByPersonalNumber(int number) throws ServiceExeption {
+    public Driver getDriverByPersonalNumber(int number) throws ServiceException {
         try {
             Driver driver = driverDao.findUniqueByNumber(number);
             if (driver == null){
-                throw new ServiceExeption("Driver not found", StatusCode.NOT_FOUND);
+                throw new ServiceException("Driver not found", ServiceStatusCode.NOT_FOUND);
             }
             return driver;
         }catch (DaoException e) {
-            throw new ServiceExeption("Unknown exception", e, StatusCode.UNKNOWN);
+            throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
         }
     }
 
-    public List<Driver> findAllDrivers() throws ServiceExeption {
+    public List<Driver> findAllDrivers() throws ServiceException {
         try {
             return driverDao.findAll();
         }catch (DaoException e) {
-            throw new ServiceExeption("Unknown exception", e, StatusCode.UNKNOWN);
+            throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
         }
     }
 
-    public Map<Driver,Integer> findAllAvailableDrivers(int hoursWorked) throws ServiceExeption {
+    public Map<Driver,Integer> findAllAvailableDrivers(int hoursWorked) throws ServiceException {
         try {
             List<Driver> drivers = driverDao.findAllFreeDrivers();
             Map<Driver,Integer> driverHoursList = new HashMap<>();
@@ -141,7 +141,7 @@ public class DriverServiceImpl implements DriverService{
             }
             return driverHoursList;
         }catch (DaoException e) {
-            throw new ServiceExeption("Unknown exception", e, StatusCode.UNKNOWN);
+            throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
         }
     }
 }

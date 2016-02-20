@@ -6,9 +6,8 @@ import com.jschool.dao.api.*;
 import com.jschool.dao.api.exception.DaoException;
 import com.jschool.entities.*;
 import com.jschool.services.api.OrderAndCargoService;
-import com.jschool.services.api.exception.ServiceExeption;
-import com.jschool.services.api.exception.StatusCode;
-import org.hibernate.internal.CriteriaImpl;
+import com.jschool.services.api.exception.ServiceException;
+import com.jschool.services.api.exception.ServiceStatusCode;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -43,7 +42,7 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
         this.transactionManager = transactionManager;
     }
 
-    public void addOrder(Order order) throws ServiceExeption {
+    public void addOrder(Order order) throws ServiceException {
         CustomTransaction ct = transactionManager.getTransaction();
         ct.begin();
         try {
@@ -52,15 +51,15 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
                 ordersDao.create(order);
                 ct.commit();
             }else
-                throw new ServiceExeption("Order with such identifier exist", StatusCode.ALREADY_EXIST);
+                throw new ServiceException("Order with such identifier exist", ServiceStatusCode.ALREADY_EXIST);
         }catch (DaoException e){
-            throw new ServiceExeption("Unknown exception", e, StatusCode.UNKNOWN);
+            throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
         } finally {
             ct.rollbackIfActive();
         }
     }
 
-    public void updateOrder(Order order) throws ServiceExeption {
+    public void updateOrder(Order order) throws ServiceException {
         CustomTransaction ct = transactionManager.getTransaction();
         ct.begin();
         try {
@@ -71,17 +70,17 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
                 ct.commit();
             }
             if (element == null)
-                throw new ServiceExeption("Order not found", StatusCode.NOT_FOUND);
+                throw new ServiceException("Order not found", ServiceStatusCode.NOT_FOUND);
             if (!element.isDoneState())
-                throw new ServiceExeption("Order did not done", StatusCode.DID_NOT_DONE);
+                throw new ServiceException("Order did not done", ServiceStatusCode.DID_NOT_DONE);
         }catch (DaoException e){
-            throw new ServiceExeption("Unknown exception", e, StatusCode.UNKNOWN);
+            throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
         } finally {
             ct.rollbackIfActive();
         }
     }
 
-    public void deleteOrder(int number) throws ServiceExeption {
+    public void deleteOrder(int number) throws ServiceException {
         CustomTransaction ct = transactionManager.getTransaction();
         ct.begin();
         try {
@@ -91,36 +90,36 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
                 ct.commit();
             }
             if (element == null)
-                throw new ServiceExeption("Order not found", StatusCode.NOT_FOUND);
+                throw new ServiceException("Order not found", ServiceStatusCode.NOT_FOUND);
             if (!element.isDoneState())
-                throw new ServiceExeption("Order did not done", StatusCode.DID_NOT_DONE);
+                throw new ServiceException("Order did not done", ServiceStatusCode.DID_NOT_DONE);
         }catch (DaoException e){
-            throw new ServiceExeption("Unknown exception", e, StatusCode.UNKNOWN);
+            throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
         } finally {
             ct.rollbackIfActive();
         }
     }
 
-    public List<Order> findAllOrders() throws ServiceExeption {
+    public List<Order> findAllOrders() throws ServiceException {
         try {
             return ordersDao.findAll();
         }catch (DaoException e){
-            throw new ServiceExeption("Unknown exception", e, StatusCode.UNKNOWN);
+            throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
         }
     }
 
-    public Order getOrderByNumber(int number) throws ServiceExeption {
+    public Order getOrderByNumber(int number) throws ServiceException {
         try {
             Order order = ordersDao.findUniqueByNumber(number);
             if (order == null)
-                throw new ServiceExeption("Order not found", StatusCode.NOT_FOUND);
+                throw new ServiceException("Order not found", ServiceStatusCode.NOT_FOUND);
             return order;
         }catch (DaoException e){
-            throw new ServiceExeption("Unknown exception", e, StatusCode.UNKNOWN);
+            throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
         }
     }
 
-    public void addCargo(int orderNumber, Cargo cargo) throws ServiceExeption {
+    public void addCargo(int orderNumber, Cargo cargo) throws ServiceException {
         CustomTransaction ct = transactionManager.getTransaction();
         ct.begin();
         try {
@@ -151,17 +150,17 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
                     cargoStatusLogDao.create(cargoStatusLogEntity);
                     ct.commit();
                 }else
-                    throw new ServiceExeption("City not found", StatusCode.NOT_FOUND);
+                    throw new ServiceException("City not found", ServiceStatusCode.NOT_FOUND);
             }else
-                throw new ServiceExeption("Order not found", StatusCode.NOT_FOUND);
+                throw new ServiceException("Order not found", ServiceStatusCode.NOT_FOUND);
         }catch (DaoException e){
-            throw new ServiceExeption("Unknown exception", e, StatusCode.UNKNOWN);
+            throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
         } finally {
             ct.rollbackIfActive();
         }
     }
 
-    public List<Cargo> findAllCargosByOrderNumber(int number) throws ServiceExeption {
+    public List<Cargo> findAllCargosByOrderNumber(int number) throws ServiceException {
         try {
             Order order = ordersDao.findUniqueByNumber(number);
             if (order != null) {
@@ -173,13 +172,13 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
                 }
                 return cargos;
             }else
-                throw new ServiceExeption("Order not found", StatusCode.NOT_FOUND);
+                throw new ServiceException("Order not found", ServiceStatusCode.NOT_FOUND);
         }catch (DaoException e) {
-            throw new ServiceExeption("Unknown exception", e, StatusCode.UNKNOWN);
+            throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
         }
     }
 
-    public void assignTruckToOrder(String truckNumber, int orderNumber) throws ServiceExeption {
+    public void assignTruckToOrder(String truckNumber, int orderNumber) throws ServiceException {
         CustomTransaction ct = transactionManager.getTransaction();
         ct.begin();
         try {
@@ -190,15 +189,15 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
                 ordersDao.update(order);
                 ct.commit();
             }else
-                throw new ServiceExeption("Order or Truck not found", StatusCode.NOT_FOUND);
+                throw new ServiceException("Order or Truck not found", ServiceStatusCode.NOT_FOUND);
         }catch (DaoException e) {
-            throw new ServiceExeption("Unknown exception", e, StatusCode.UNKNOWN);
+            throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
         } finally {
             ct.rollbackIfActive();
         }
     }
 
-    public Truck getAssignedTruckByOrderNumber(int orderNumber) throws ServiceExeption {
+    public Truck getAssignedTruckByOrderNumber(int orderNumber) throws ServiceException {
         try {
             Order order = ordersDao.findUniqueByNumber(orderNumber);
             if (order != null) {
@@ -206,15 +205,15 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
                 if (truck != null)
                     return truck;
                 else
-                    throw new ServiceExeption("Truck not found", StatusCode.NOT_FOUND);
+                    throw new ServiceException("Truck do not assign", ServiceStatusCode.NOT_FOUND);
             }else
-                throw new ServiceExeption("Order not found", StatusCode.NOT_FOUND);
+                throw new ServiceException("Order not found", ServiceStatusCode.NOT_FOUND);
         }catch (DaoException e) {
-            throw new ServiceExeption("Unknown exception", e, StatusCode.UNKNOWN);
+            throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
         }
     }
 
-    public void assignDriverToOrder(int driverNumber, int orderNumber) throws ServiceExeption {
+    public void assignDriverToOrder(int driverNumber, int orderNumber) throws ServiceException {
         CustomTransaction ct = transactionManager.getTransaction();
         ct.begin();
         try {
@@ -231,28 +230,28 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
                             ct.commit();
                         }
                     }else
-                        throw new ServiceExeption("Driver not found", StatusCode.NOT_FOUND);
+                        throw new ServiceException("Driver not found", ServiceStatusCode.NOT_FOUND);
                 }else
-                    throw new ServiceExeption("Truck do not assign", StatusCode.NOT_FOUND);
+                    throw new ServiceException("Truck do not assign", ServiceStatusCode.NOT_FOUND);
             }else
-                throw new ServiceExeption("Order not found", StatusCode.NOT_FOUND);
+                throw new ServiceException("Order not found", ServiceStatusCode.NOT_FOUND);
         }catch (DaoException e) {
-            throw new ServiceExeption("Unknown exception", e, StatusCode.UNKNOWN);
+            throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
         } finally {
             ct.rollbackIfActive();
         }
 
     }
 
-    public List<Driver> getAllAssignedDriversByOrderNumber(int orderNumber) throws ServiceExeption {
+    public List<Driver> getAllAssignedDriversByOrderNumber(int orderNumber) throws ServiceException {
         try {
             Order order = ordersDao.findUniqueByNumber(orderNumber);
             if (order != null)
                 return order.getDrivers();
             else
-                throw new ServiceExeption("Order not found", StatusCode.NOT_FOUND);
+                throw new ServiceException("Order not found", ServiceStatusCode.NOT_FOUND);
         }catch (DaoException e) {
-            throw new ServiceExeption("Unknown exception", e, StatusCode.UNKNOWN);
+            throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
         }
     }
 
