@@ -43,11 +43,18 @@
         <% } else { %>
         <td>Broken</td>
         <% } %>
+        <% if (truck.getOreder() == null) {%>
+        <td>Free</td>
         <td>
             <a href="/employee/truck/<%=truck.getNumber()%>/edit" class="secondary-content">
                 <i class="material-icons">create</i>
             </a>
         </td>
+        <% } else { %>
+        <td>Assigned</td>
+        <td>
+        </td>
+        <% } %>
         <td>
             <form action="/employee/truck/delete" method="post">
                 <input type="hidden" name="number" value="<%=truck.getNumber()%>">

@@ -18,6 +18,7 @@
             <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>
             <property name="hibernate.connection.username" value="logiweb"/>
             <property name="hibernate.connection.password" value="secret"/>
+            <property name="hibernate.cache.use_query_cache" value="false"/>
             <property name="hibernate.show_sql" value="true"/>
         </properties>
 

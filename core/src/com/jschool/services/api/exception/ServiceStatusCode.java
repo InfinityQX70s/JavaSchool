@@ -5,5 +5,5 @@ package com.jschool.services.api.exception;
  */
 public enum ServiceStatusCode {
 
-    DID_NOT_DONE ,ASSIGNED_ORDER ,ALREADY_EXIST, NOT_FOUND, UNKNOWN
+    NOT_EQUAL ,DID_NOT_DONE ,ASSIGNED_ORDER ,ALREADY_EXIST, NOT_FOUND, UNKNOWN
 }

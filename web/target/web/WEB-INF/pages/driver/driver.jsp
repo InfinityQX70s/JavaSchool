@@ -31,13 +31,20 @@
         </td>
         <td><%=driver.getLastName()%>
         </td>
-        <%--<td><%=driver.getStatusLogs().get(driver.getStatusLogs().size() - 1).getStatus().toString()%>--%>
-        <%--</td>--%>
+        <% if (driver.getOrder() == null) {%>
+        <td>Free</td>
         <td>
             <a href="/employee/driver/<%=driver.getNumber()%>/edit" class="secondary-content">
                 <i class="material-icons">create</i>
             </a>
         </td>
+        <% } else { %>
+        <td>Assigned</td>
+        <td>
+        </td>
+        <% } %>
+        <%--<td><%=driver.getStatusLogs().get(driver.getStatusLogs().size() - 1).getStatus().toString()%>--%>
+        <%--</td>--%>
         <td>
             <form action="/employee/driver/delete" method="post">
                 <input type="hidden" name="number" value="<%=driver.getNumber()%>">

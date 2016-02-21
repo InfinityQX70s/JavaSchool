@@ -47,10 +47,10 @@ public class OrdersDaoImpl extends GenericDaoImpl<Order> implements OrdersDao{
 
     public List<Order> findAll() throws DaoException {
         try {
+            entityManager.clear(); //may be bug be cerefull
             TypedQuery<Order> query =
                     entityManager.createNamedQuery("Orders.findAll", Order.class);
             List<Order> orders = query.getResultList();
-            //entityManager.refresh(orders);
             return orders;
         }catch (Exception e){
             throw  new DaoException(e);

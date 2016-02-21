@@ -13,16 +13,13 @@ import java.util.List;
  */
 public interface OrderAndCargoService {
 
-    void addOrder(Order order) throws ServiceException;
+    void addOrder(Order order, List<Cargo> cargos) throws ServiceException;
     void updateOrder(Order order) throws ServiceException;
     void deleteOrder(int number) throws ServiceException;
     List<Order> findAllOrders() throws ServiceException;
     Order getOrderByNumber(int number) throws ServiceException;
-    void addCargo(int orderNumber, Cargo cargo) throws ServiceException;
     List<Cargo> findAllCargosByOrderNumber(int number) throws ServiceException;
-    void assignTruckToOrder(String truckNumber, int orderNumber) throws ServiceException;
     Truck getAssignedTruckByOrderNumber(int orderNumber) throws ServiceException;
-    void assignDriverToOrder(int driverNumber, int orderNumber) throws ServiceException;
     List<Driver> getAllAssignedDriversByOrderNumber(int orderNumber) throws ServiceException;
 
 }

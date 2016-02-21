@@ -46,6 +46,7 @@ public class TruckDaoImpl extends GenericDaoImpl<Truck> implements TruckDao {
 
     public List<Truck> findAll() throws DaoException {
         try {
+            entityManager.clear(); //may be bug be cerefull
             TypedQuery<Truck> query =
                     entityManager.createNamedQuery("Truck.findAll", Truck.class);
             return query.getResultList();
