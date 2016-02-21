@@ -22,7 +22,6 @@ public class DriverDaoImpl extends GenericDaoImpl<Driver> implements DriverDao {
             TypedQuery<Driver> query =
                     entityManager.createNamedQuery("Driver.findByNumber", Driver.class);
             query.setParameter("number", number);
-            entityManager.clear();
             List<Driver> drivers = query.getResultList();
             Driver driver = null;
             if (!drivers.isEmpty())
@@ -49,7 +48,6 @@ public class DriverDaoImpl extends GenericDaoImpl<Driver> implements DriverDao {
         try {
             TypedQuery<Driver> query =
                     entityManager.createNamedQuery("Driver.findAll", Driver.class);
-            entityManager.clear();
             return query.getResultList();
         }catch (Exception e){
             throw  new DaoException(e);

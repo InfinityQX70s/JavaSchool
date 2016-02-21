@@ -142,12 +142,15 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
                     routePointDao.create(unloadRoutePoint);
                     cargo.setPickup(pickupRoutePoint);
                     cargo.setUnload(unloadRoutePoint);
-                    cargoDao.create(cargo);
+                    List<CargoStatusLog> cargoStatusLogs = new ArrayList<>();
                     CargoStatusLog cargoStatusLogEntity = new CargoStatusLog();
                     cargoStatusLogEntity.setStatus(CargoStatus.ready);
                     cargoStatusLogEntity.setTimestamp(new Date());
                     cargoStatusLogEntity.setCargo(cargo);
-                    cargoStatusLogDao.create(cargoStatusLogEntity);
+                    cargoStatusLogs.add(cargoStatusLogEntity);
+                    cargo.setStatusLogs(cargoStatusLogs);
+                    cargoDao.create(cargo);
+                    //cargoStatusLogDao.create(cargoStatusLogEntity);
                     ct.commit();
                 }else
                     throw new ServiceException("City not found", ServiceStatusCode.NOT_FOUND);

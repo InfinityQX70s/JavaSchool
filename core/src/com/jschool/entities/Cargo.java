@@ -33,7 +33,7 @@ public class Cargo {
     @OneToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="unload")
     private RoutePoint unload;
-    @OneToMany(fetch=FetchType.LAZY, mappedBy = "cargo")
+    @OneToMany(fetch=FetchType.EAGER, mappedBy = "cargo", cascade = CascadeType.ALL)
     private List<CargoStatusLog> statusLogs;
 
     public int getId() {
