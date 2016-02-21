@@ -54,7 +54,12 @@
                             </div>
                             <div class="col s4 center-align red-text">
                                 <% List<CargoStatusLog> cargoStatusLogs = cargo.getStatusLogs(); %>
-                                <%= " Status: " + cargoStatusLogs.get(cargoStatusLogs.size()-1).getStatus()%>
+                                <%if (cargoStatusLogs.size() == 0){%>
+                                    <%= " Status: undefined"%>
+                                <%}else{%>
+                                    <% CargoStatusLog cargoStatusLog = cargoStatusLogs.get(cargoStatusLogs.size()-1);%>
+                                    <%= " Status: " + cargoStatusLog.getStatus()%>
+                                <% }%>
                             </div>
                             <div class="col s4 right-align light-green-text text-accent-4">
                                 <%= " Unload city: " + cargo.getUnload().getCity().getName()%>

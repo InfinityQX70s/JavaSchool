@@ -35,7 +35,7 @@ public class Validator {
             throw new ControllerException("Truck status format exception", ControllerStatusCode.VALIDATE);
         }
     }
-    
+
 
     public void validateEmail(String email) throws ControllerException {
         if (!email.matches(EMAIL_PATTERN)){

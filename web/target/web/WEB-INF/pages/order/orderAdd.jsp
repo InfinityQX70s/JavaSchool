@@ -67,11 +67,4 @@
            onclick="moreFields()"><i class="material-icons">add</i></a>
     </div>
 </form>
-<script type="text/javascript">
-    function moreFields() {
-        var newFields = document.getElementById('readroot').cloneNode(true);
-        var insertHere = document.getElementById('writeroot');
-        insertHere.parentNode.insertBefore(newFields, insertHere);
-    }
-</script>
 <jsp:include page="../footer.jsp"/>

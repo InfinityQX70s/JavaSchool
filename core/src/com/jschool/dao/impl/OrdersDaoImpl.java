@@ -22,11 +22,11 @@ public class OrdersDaoImpl extends GenericDaoImpl<Order> implements OrdersDao{
             TypedQuery<Order> query =
                     entityManager.createNamedQuery("Orders.findByNumber", Order.class);
             query.setParameter("number", number);
+            entityManager.clear();
             List<Order> orders = query.getResultList();
             Order order = null;
             if (!orders.isEmpty()){
                 order = orders.get(0);
-                entityManager.refresh(order);
             }
             return order;
         }catch (Exception e){
@@ -49,6 +49,7 @@ public class OrdersDaoImpl extends GenericDaoImpl<Order> implements OrdersDao{
         try {
             TypedQuery<Order> query =
                     entityManager.createNamedQuery("Orders.findAll", Order.class);
+            entityManager.clear();
             return query.getResultList();
         }catch (Exception e){
             throw  new DaoException(e);

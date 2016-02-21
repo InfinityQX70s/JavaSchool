@@ -7,10 +7,5 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 </div>
-<script type="text/javascript" >
-    $(document).ready(function(){
-        $('select').material_select();
-    });
-</script>
 </body>
 </html>

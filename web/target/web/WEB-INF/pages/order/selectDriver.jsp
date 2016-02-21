@@ -40,8 +40,8 @@
         <% Driver driver = element.getKey();%>
         <tr>
             <td><input name="driverNumber" type="checkbox" id="<%= driver.getNumber()%>" value="<%= driver.getNumber()%>"/>
-                <label for="<%= driver.getNumber()%>"><%= driver.getNumber()%>
-                </label></td>
+                <label for="<%= driver.getNumber()%>"><%= driver.getNumber()%></label>
+            </td>
             <td><%= driver.getFirstName()%>
             </td>
             <td><%= driver.getLastName()%>

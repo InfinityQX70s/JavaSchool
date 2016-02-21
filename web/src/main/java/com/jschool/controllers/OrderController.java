@@ -20,7 +20,7 @@ import java.util.Map;
 /**
  * Created by infinity on 12.02.16.
  */
-public class OrderController implements Command{
+public class OrderController implements Command {
 
     private AppContext appContext = AppContext.getInstance();
     private OrderAndCargoService orderAndCargoService = appContext.getOrderAndCargoService();
@@ -29,21 +29,17 @@ public class OrderController implements Command{
 
     public void execute(ServletContext servletContext, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String[] uri = request.getRequestURI().split("/");
-        if (request.getMethod().equals("GET")){
+        if (request.getMethod().equals("GET")) {
             if (uri.length == 4 && uri[3].equals("orders"))
-                showOrders(request,response);
+                showOrders(request, response);
             else if (uri.length == 5 && uri[4].equals("add"))
-                showFormForOrderAdd(request,response);
+                showFormForOrderAdd(request, response);
         }
-        if (request.getMethod().equals("POST")){
+        if (request.getMethod().equals("POST")) {
             if (uri.length == 5 && uri[4].equals("add"))
-                addOrder(request,response);
-            else if (uri.length == 5 && uri[4].equals("map"))
-                mapHandler(request,response);
-            else if (uri.length == 5 && uri[4].equals("truck"))
-                assignTruck(request,response);
-            else if (uri.length == 5 && uri[4].equals("driver"))
-                assignDriver(request,response);
+                addOrder(request, response);
+            else if (uri.length == 5 && uri[4].equals("submit"))
+                submitOrder(request, response);
         }
     }
 
@@ -51,46 +47,94 @@ public class OrderController implements Command{
     public void showOrders(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             List<Order> orders = orderAndCargoService.findAllOrders();
-            Map<Order,List<Cargo>> orderListMap = new HashMap<>();
-            for (Order order : orders){
+            Map<Order, List<Cargo>> orderListMap = new HashMap<>();
+            for (Order order : orders) {
                 List<Cargo> cargos = orderAndCargoService.findAllCargosByOrderNumber(order.getNumber());
-                orderListMap.put(order,cargos);
+                orderListMap.put(order, cargos);
             }
-            req.setAttribute("orderListMap",orderListMap);
-            req.getRequestDispatcher("/WEB-INF/pages/order/order.jsp").forward(req,resp);
-        }catch (ServiceException e){
+            req.setAttribute("orderListMap", orderListMap);
+            req.getRequestDispatcher("/WEB-INF/pages/order/order.jsp").forward(req, resp);
+        } catch (ServiceException e) {
 
         }
     }
 
     // /employee/order/add GET
     public void showFormForOrderAdd(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("/WEB-INF/pages/order/orderAdd.jsp").forward(req,resp);
+        req.getRequestDispatcher("/WEB-INF/pages/order/orderAllAdd.jsp").forward(req, resp);
     }
+
     //   /employee/order/add POST
     public void addOrder(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
+            String stepNumber = req.getParameter("step_number");
+            switch (stepNumber) {
+                case "1":
+                    req.getRequestDispatcher("/WEB-INF/pages/order/one.jsp").forward(req, resp);
+                    break;
+                case "2":
+                    String cargoWeight[] = req.getParameterValues("cargoWeight");
+                    int max = 0;
+                    for (String weight : cargoWeight) {
+                        if (Integer.parseInt(weight) > max)
+                            max = Integer.parseInt(weight);
+                    }
+                    List<Truck> trucks = null;
+                    trucks = truckService.findAllAvailableTrucksByMinCapacity(max);
+                    req.setAttribute("trucks", trucks);
+                    req.setAttribute("max", max);
+                    req.getRequestDispatcher("/WEB-INF/pages/order/two.jsp").forward(req, resp);
+                    break;
+                case "3":
+                    String pickup[] = req.getParameterValues("pickup");
+                    String unload[] = req.getParameterValues("unload");
+                    List<String> cities = new ArrayList<>();
+                    for (int i = 0; i < pickup.length; i++) {
+                        cities.add(pickup[i]);
+                        cities.add(unload[i]);
+                    }
+                    req.setAttribute("cities", cities);
+                    req.getRequestDispatcher("/WEB-INF/pages/order/three.jsp").forward(req, resp);
+                    break;
+                case "4":
+                    String duration = req.getParameter("duration").split(" ")[0];
+                    String truckNumber = req.getParameter("truckNumber");
+                    Truck truck = truckService.getTruckByNumber(truckNumber);
+                    Map<Driver, Integer> driverHoursList = driverService.findAllAvailableDrivers(Integer.parseInt(duration));
+                    req.setAttribute("drivers", driverHoursList);
+                    req.setAttribute("duration", duration);
+                    req.setAttribute("shiftSize", truck.getShiftSize());
+                    req.getRequestDispatcher("/WEB-INF/pages/order/four.jsp").forward(req, resp);
+                    break;
+            }
+        } catch (ServiceException e) {
+
+        }
+    }
+
+    // /employee/order/submit POST
+    public void submitOrder(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        try {
             String orderNumber = req.getParameter("orderNumber");
-            String cargoNumber[] = req.getParameterValues("cargoNumber");
-            String cargoName[] = req.getParameterValues("cargoName");
-            String cargoWeight[] = req.getParameterValues("cargoWeight");
-            String pickup[] = req.getParameterValues("pickup");
-            String unload[] = req.getParameterValues("unload");
+            String[] cargoNumber = req.getParameterValues("cargoNumber");
+            String[] cargoName = req.getParameterValues("cargoName");
+            String[] cargoWeight = req.getParameterValues("cargoWeight");
+            String[] pickup = req.getParameterValues("pickup");
+            String[] unload = req.getParameterValues("unload");
+            String truckNumber = req.getParameter("truckNumber");
+            String[] driverNumbers = req.getParameterValues("driverNumber");
             Order order = new Order();
             order.setNumber(Integer.parseInt(orderNumber));
             order.setDoneState(false);
             orderAndCargoService.addOrder(order);
-            List<String> cities = new ArrayList<>();
-            for (int i = 0; i < cargoNumber.length; i++){
+            for (int i = 0; i < cargoNumber.length; i++) {
                 Cargo cargo = new Cargo();
                 cargo.setNumber(Integer.parseInt(cargoNumber[i]));
                 cargo.setName(cargoName[i]);
                 cargo.setWeight(Integer.parseInt(cargoWeight[i]));
                 City pickCity = new City();
-                cities.add(pickup[i]);
                 pickCity.setName(pickup[i]);
-                City unloadCity =  new City();
-                cities.add(unload[i]);
+                City unloadCity = new City();
                 unloadCity.setName(unload[i]);
                 RoutePoint pickRoute = new RoutePoint();
                 pickRoute.setPoint(i);
@@ -100,11 +144,13 @@ public class OrderController implements Command{
                 unloadRoute.setCity(unloadCity);
                 cargo.setPickup(pickRoute);
                 cargo.setUnload(unloadRoute);
-                orderAndCargoService.addCargo(order.getNumber(),cargo);
+                orderAndCargoService.addCargo(order.getNumber(), cargo);
             }
-            req.setAttribute("cities",cities);
-            req.setAttribute("order",order.getNumber());
-            req.getRequestDispatcher("/WEB-INF/pages/order/orderMap.jsp").forward(req,resp);
+            Truck truck = truckService.getTruckByNumber(truckNumber);
+            orderAndCargoService.assignTruckToOrder(truck.getNumber(), order.getNumber());
+            for (String driver : driverNumbers)
+                orderAndCargoService.assignDriverToOrder(Integer.parseInt(driver), order.getNumber());
+            resp.sendRedirect("/employee/orders");
         }catch (ServiceException e){
 
         }
@@ -116,18 +162,19 @@ public class OrderController implements Command{
             String orderNumber = req.getParameter("number");
             String duration = req.getParameter("duration").split(" ")[0];
             List<Cargo> cargos = orderAndCargoService.findAllCargosByOrderNumber(Integer.parseInt(orderNumber));
+            String cargoWeight[] = req.getParameterValues("cargoWeight");
             int max = 0;
-            for (Cargo cargo : cargos){
-                if (cargo.getWeight() > max)
-                    max = cargo.getWeight();
+            for (String weight : cargoWeight) {
+                if (Integer.parseInt(weight) > max)
+                    max = Integer.parseInt(weight);
             }
-            List<Truck> trucks =truckService.findAllAvailableTrucksByMinCapacity(max);
-            req.setAttribute("orderNumber",orderNumber);
-            req.setAttribute("duration",duration);
-            req.setAttribute("trucks",trucks);
-            req.setAttribute("max",max);
-            req.getRequestDispatcher("/WEB-INF/pages/order/selectTruck.jsp").forward(req,resp);
-        }catch (ServiceException e){
+            List<Truck> trucks = truckService.findAllAvailableTrucksByMinCapacity(max);
+            req.setAttribute("orderNumber", orderNumber);
+            req.setAttribute("duration", duration);
+            req.setAttribute("trucks", trucks);
+            req.setAttribute("max", max);
+            req.getRequestDispatcher("/WEB-INF/pages/order/selectTruck.jsp").forward(req, resp);
+        } catch (ServiceException e) {
 
         }
     }
@@ -139,14 +186,14 @@ public class OrderController implements Command{
             String truckNumber = req.getParameter("truckNumber");
             String orderNumber = req.getParameter("orderNumber");
             Truck truck = truckService.getTruckByNumber(truckNumber);
-            orderAndCargoService.assignTruckToOrder(truckNumber,Integer.parseInt(orderNumber));
-            Map<Driver,Integer> driverHoursList = driverService.findAllAvailableDrivers(Integer.parseInt(duration));
-            req.setAttribute("drivers",driverHoursList);
-            req.setAttribute("duration",duration);
+            orderAndCargoService.assignTruckToOrder(truckNumber, Integer.parseInt(orderNumber));
+            Map<Driver, Integer> driverHoursList = driverService.findAllAvailableDrivers(Integer.parseInt(duration));
+            req.setAttribute("drivers", driverHoursList);
+            req.setAttribute("duration", duration);
             req.setAttribute("orderNumber", orderNumber);
-            req.setAttribute("shiftSize",truck.getShiftSize());
-            req.getRequestDispatcher("/WEB-INF/pages/order/selectDriver.jsp").forward(req,resp);
-        }catch (ServiceException e){
+            req.setAttribute("shiftSize", truck.getShiftSize());
+            req.getRequestDispatcher("/WEB-INF/pages/order/selectDriver.jsp").forward(req, resp);
+        } catch (ServiceException e) {
 
         }
         //:TODO  список по размеру смены !!!
@@ -159,9 +206,9 @@ public class OrderController implements Command{
             String[] driverNumbers = req.getParameterValues("driverNumber");
             String orderNumber = req.getParameter("orderNumber");
             for (String driver : driverNumbers)
-                orderAndCargoService.assignDriverToOrder(Integer.parseInt(driver),Integer.parseInt(orderNumber));
+                orderAndCargoService.assignDriverToOrder(Integer.parseInt(driver), Integer.parseInt(orderNumber));
             resp.sendRedirect("/employee/orders");
-        }catch (ServiceException e){
+        } catch (ServiceException e) {
 
         }
     }
