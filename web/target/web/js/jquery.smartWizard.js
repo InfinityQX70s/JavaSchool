@@ -165,7 +165,22 @@ function SmartWizard(target, options) {
         var out = "step_number=" + stepNum;
         switch(stepIdx) {
             case 1:
+                $.each($(orderNumber).serializeArray(), function(key,value) {
+                    out = out + "&" +value.name + "=" + value.value;
+                });
+                $.each($(cargoNumber).serializeArray(), function(key,value) {
+                    out = out + "&" +value.name + "=" + value.value;
+                });
+                $.each($(cargoName).serializeArray(), function(key,value) {
+                    out = out + "&" +value.name + "=" + value.value;
+                });
                 $.each($(cargoWeight).serializeArray(), function(key,value) {
+                    out = out + "&" +value.name + "=" + value.value;
+                });
+                $.each($(pickup).serializeArray(), function(key,value) {
+                    out = out + "&" +value.name + "=" + value.value;
+                });
+                $.each($(unload).serializeArray(), function(key,value) {
                     out = out + "&" +value.name + "=" + value.value;
                 });
                 break;

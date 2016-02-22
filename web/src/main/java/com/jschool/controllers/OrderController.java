@@ -3,11 +3,13 @@ package com.jschool.controllers;
 import com.jschool.AppContext;
 import com.jschool.Validator;
 import com.jschool.controllers.exception.ControllerException;
+import com.jschool.controllers.exception.ControllerStatusCode;
 import com.jschool.entities.*;
 import com.jschool.services.api.DriverService;
 import com.jschool.services.api.OrderAndCargoService;
 import com.jschool.services.api.TruckService;
 import com.jschool.services.api.exception.ServiceException;
+import org.apache.log4j.Logger;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -22,7 +24,9 @@ import java.util.Map;
 /**
  * Created by infinity on 12.02.16.
  */
-public class OrderController implements Command {
+public class OrderController implements BaseController {
+
+    private static final Logger LOG = Logger.getLogger(OrderController.class);
 
     private AppContext appContext = AppContext.getInstance();
     private OrderAndCargoService orderAndCargoService = appContext.getOrderAndCargoService();
@@ -31,18 +35,28 @@ public class OrderController implements Command {
     private Validator validator = appContext.getValidator();
 
     public void execute(ServletContext servletContext, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String[] uri = request.getRequestURI().split("/");
-        if (request.getMethod().equals("GET")) {
-            if (uri.length == 4 && uri[3].equals("orders"))
-                showOrders(request, response);
-            else if (uri.length == 5 && uri[4].equals("add"))
-                showFormForOrderAdd(request, response);
-        }
-        if (request.getMethod().equals("POST")) {
-            if (uri.length == 5 && uri[4].equals("add"))
-                addOrder(request, response);
-            else if (uri.length == 5 && uri[4].equals("submit"))
-                submitOrder(request, response);
+        try {
+            String[] uri = request.getRequestURI().split("/");
+            if (request.getMethod().equals("GET")) {
+                if (uri.length == 4 && uri[3].equals("orders"))
+                    showOrders(request, response);
+                else if (uri.length == 5 && uri[4].equals("add"))
+                    showFormForOrderAdd(request, response);
+                else
+                    throw new ControllerException("Page not found", ControllerStatusCode.PAGE_NOT_FOUND);
+            }
+            if (request.getMethod().equals("POST")) {
+                if (uri.length == 5 && uri[4].equals("add"))
+                    addOrder(request, response);
+                else if (uri.length == 5 && uri[4].equals("submit"))
+                    submitOrder(request, response);
+                else
+                    throw new ControllerException("Page not found", ControllerStatusCode.PAGE_NOT_FOUND);
+            }
+        } catch (ControllerException e) {
+            LOG.warn(e.getMessage());
+            request.setAttribute("error", e);
+            request.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(request, response);
         }
     }
 
@@ -58,7 +72,8 @@ public class OrderController implements Command {
             req.setAttribute("orderListMap", orderListMap);
             req.getRequestDispatcher("/WEB-INF/pages/order/order.jsp").forward(req, resp);
         } catch (ServiceException e) {
-            req.setAttribute("error",e);
+            LOG.warn(e.getMessage());
+            req.setAttribute("error", e);
             req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
         }
     }
@@ -77,8 +92,13 @@ public class OrderController implements Command {
                     req.getRequestDispatcher("/WEB-INF/pages/order/orderCargo.jsp").forward(req, resp);
                     break;
                 case "2":
-                    String cargoWeight[] = req.getParameterValues("cargoWeight");
-                    validator.validateCargoWeight(cargoWeight);
+                    String orderNumber = req.getParameter("orderNumber");
+                    String[] cargoNumber = req.getParameterValues("cargoNumber");
+                    String[] cargoName = req.getParameterValues("cargoName");
+                    String[] cargoWeight = req.getParameterValues("cargoWeight");
+                    String[] pickup = req.getParameterValues("pickup");
+                    String[] unload = req.getParameterValues("unload");
+                    validator.validateOrderAndCargo(orderNumber, cargoNumber, cargoName, cargoWeight, pickup, unload);
                     int max = 0;
                     for (String weight : cargoWeight) {
                         if (Integer.parseInt(weight) > max)
@@ -90,13 +110,13 @@ public class OrderController implements Command {
                     req.getRequestDispatcher("/WEB-INF/pages/order/orderTruck.jsp").forward(req, resp);
                     break;
                 case "3":
-                    String pickup[] = req.getParameterValues("pickup");
-                    String unload[] = req.getParameterValues("unload");
-                    validator.validateCargoCities(pickup,unload);
+                    String pickupCity[] = req.getParameterValues("pickup");
+                    String unloadCity[] = req.getParameterValues("unload");
+                    validator.validateCargoCities(pickupCity, unloadCity);
                     List<String> cities = new ArrayList<>();
-                    for (int i = 0; i < pickup.length; i++) {
-                        cities.add(pickup[i]);
-                        cities.add(unload[i]);
+                    for (int i = 0; i < pickupCity.length; i++) {
+                        cities.add(pickupCity[i]);
+                        cities.add(unloadCity[i]);
                     }
                     req.setAttribute("cities", cities);
                     req.getRequestDispatcher("/WEB-INF/pages/order/orderMap.jsp").forward(req, resp);
@@ -114,7 +134,8 @@ public class OrderController implements Command {
                     break;
             }
         } catch (ServiceException | ControllerException e) {
-            req.setAttribute("error",e);
+            LOG.warn(e.getMessage());
+            req.setAttribute("error", e);
             req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
         }
     }
@@ -142,16 +163,21 @@ public class OrderController implements Command {
                 cargo.setNumber(Integer.parseInt(cargoNumber[i]));
                 cargo.setName(cargoName[i]);
                 cargo.setWeight(Integer.parseInt(cargoWeight[i]));
+
                 City pickCity = new City();
                 pickCity.setName(pickup[i]);
+
                 City unloadCity = new City();
                 unloadCity.setName(unload[i]);
+
                 RoutePoint pickRoute = new RoutePoint();
                 pickRoute.setPoint(i);
                 pickRoute.setCity(pickCity);
+
                 RoutePoint unloadRoute = new RoutePoint();
                 unloadRoute.setPoint(i);
                 unloadRoute.setCity(unloadCity);
+
                 cargo.setPickup(pickRoute);
                 cargo.setUnload(unloadRoute);
                 cargos.add(cargo);
@@ -163,10 +189,11 @@ public class OrderController implements Command {
                 drivers.add(driverService.getDriverByPersonalNumber(Integer.parseInt(driver)));
             order.setTruck(truck);
             order.setDrivers(drivers);
-            orderAndCargoService.addOrder(order,cargos);
+            orderAndCargoService.addOrder(order, cargos);
             resp.sendRedirect("/employee/orders");
-        }catch (ServiceException | ControllerException e){
-            req.setAttribute("error",e);
+        } catch (ServiceException | ControllerException e) {
+            LOG.warn(e.getMessage());
+            req.setAttribute("error", e);
             req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
         }
     }

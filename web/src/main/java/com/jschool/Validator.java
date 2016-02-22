@@ -20,15 +20,6 @@ public class Validator {
         }
     }
 
-    public void validateCargoWeight(String[] cargoWeight) throws ControllerException {
-        for (String weight : cargoWeight){
-            try {
-                Integer.parseInt(weight);
-            }catch (NumberFormatException e){
-                throw new ControllerException("Cargo weight format exception", ControllerStatusCode.VALIDATE);
-            }
-        }
-    }
 
     public void validateOrderAndCargo(String orderNumber, String[] cargoNumber, String[] cargoName, String[] cargoWeight, String[] pickup, String[] unload) throws ControllerException {
         try {
@@ -47,7 +38,13 @@ public class Validator {
                 throw new ControllerException("Cargo number format exception", ControllerStatusCode.VALIDATE);
             }
         }
-        validateCargoWeight(cargoWeight);
+        for (String weight : cargoWeight){
+            try {
+                Integer.parseInt(weight);
+            }catch (NumberFormatException e){
+                throw new ControllerException("Cargo weight format exception", ControllerStatusCode.VALIDATE);
+            }
+        }
     }
 
     public void validateTruckAndDrivers(String number, String[] driverNumbers) throws ControllerException {
@@ -68,9 +65,7 @@ public class Validator {
     }
 
     public void validateTruck(String number, String capacity, String shiftSize, String status) throws ControllerException {
-        if (!number.matches(TRUCK_PATTERN)){
-            throw new ControllerException("Truck number format exception", ControllerStatusCode.VALIDATE);
-        }
+        validateTruckNumber(number);
         if (capacity.length() > 2)
             throw new ControllerException("Truck capacity unbelievable", ControllerStatusCode.VALIDATE);
         try {
@@ -102,6 +97,12 @@ public class Validator {
             Integer.parseInt(number);
         }catch (NumberFormatException e){
             throw new ControllerException("Driver number format exception", ControllerStatusCode.VALIDATE);
+        }
+    }
+
+    public void validateFirstAndLastName(String firstName, String lastName) throws ControllerException {
+        if (firstName.isEmpty() || lastName.isEmpty()){
+            throw new ControllerException("Empty fields exception", ControllerStatusCode.VALIDATE);
         }
     }
 }

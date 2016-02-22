@@ -8,8 +8,7 @@
 
 	<changeSet id="1" author="Mikhail">
 		<sql>
-      ALTER TABLE user ADD COLUMN address VARCHAR(1024);
-   	</sql>
+   		</sql>
 	</changeSet>
 
 </databaseChangeLog>

@@ -1,9 +1,11 @@
 package com.jschool;
 
+import com.jschool.controllers.*;
 import com.jschool.dao.api.*;
 import com.jschool.dao.impl.*;
 import com.jschool.services.api.*;
 import com.jschool.services.impl.*;
+
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -40,6 +42,15 @@ public class AppContext {
     private OrderAndCargoService orderAndCargoService;
     private OrderManagementService orderManagementService;
     private TruckService truckService;
+
+    private DriverController driverController;
+    private OrderController orderController;
+    private TruckController truckController;
+    private LoginController loginController;
+    private DriverInfoController driverInfoController;
+    private ErrorController errorController;
+
+    private ControllerFactory controllerFactory;
 
     private Validator validator;
 
@@ -169,8 +180,8 @@ public class AppContext {
 
     public synchronized OrderAndCargoService getOrderAndCargoService() {
         if (orderAndCargoService == null){
-            orderAndCargoService = new OrderAndCargoServiceImpl(getOrdersDao(),getTruckDao(),
-                    getDriverDao(),getCargoDao(),getCargoStatusLogDao(),
+            orderAndCargoService = new OrderAndCargoServiceImpl(getOrdersDao(),
+                    getDriverDao(),getCargoDao(),
                     getRoutePointDao(),getCityDao(),getTransactionManager());
         }
         return orderAndCargoService;
@@ -189,6 +200,55 @@ public class AppContext {
             truckService = new TruckServiceImpl(getTruckDao(),getTransactionManager());
         }
         return truckService;
+    }
+
+    public synchronized DriverController getDriverController() {
+        if (driverController == null){
+            driverController = new DriverController();
+        }
+        return driverController;
+    }
+
+    public synchronized OrderController getOrderController() {
+        if (orderController == null){
+            orderController = new OrderController();
+        }
+        return orderController;
+    }
+
+    public synchronized TruckController getTruckController() {
+        if (truckController == null){
+            truckController = new TruckController();
+        }
+        return truckController;
+    }
+
+    public synchronized LoginController getLoginController() {
+        if (loginController == null){
+            loginController = new LoginController();
+        }
+        return loginController;
+    }
+
+    public synchronized DriverInfoController getDriverInfoController() {
+        if (driverInfoController == null){
+            driverInfoController = new DriverInfoController();
+        }
+        return driverInfoController;
+    }
+
+    public synchronized ErrorController getErrorController() {
+        if (errorController == null){
+            errorController = new ErrorController();
+        }
+        return errorController;
+    }
+
+    public synchronized ControllerFactory getControllerFactory() {
+        if (controllerFactory == null){
+            controllerFactory = new ControllerFactory();
+        }
+        return controllerFactory;
     }
 
     public synchronized Validator getValidator() {

@@ -5,5 +5,5 @@ package com.jschool.controllers.exception;
  */
 public enum  ControllerStatusCode {
 
-    VALIDATE, WRONG_EMAIL_OR_PASS, WRONG_DRIVER, UNDEFINED_LOGIN
+    PAGE_NOT_FOUND ,VALIDATE, WRONG_EMAIL_OR_PASS, WRONG_DRIVER, UNDEFINED_LOGIN
 }

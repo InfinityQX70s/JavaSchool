@@ -1,8 +1,7 @@
 package com.jschool;
 
-import com.jschool.controllers.Command;
+import com.jschool.controllers.BaseController;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -14,11 +13,13 @@ import java.io.IOException;
  */
 public class FrontController extends HttpServlet {
 
+    private AppContext appContext = AppContext.getInstance();
+
     protected void processRequest(HttpServletRequest
                                           request, HttpServletResponse response)
             throws ServletException, IOException {
-            Command command = CommandFactory.create(request);
-            command.execute(getServletContext(), request, response);
+            BaseController controller = appContext.getControllerFactory().getControllerByUri(request.getRequestURI());
+            controller.execute(getServletContext(), request, response);
     }
 
     protected void doGet(HttpServletRequest request,
