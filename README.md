@@ -6,3 +6,8 @@ DB logiweb user:logiweb pass:secret
 jdbc:mysql://localhost:3306/logiweb
 
 Need to dump db city table. 
+
+
+1) запустить сонар сервер
+2) стартануть сонар раннер из папки проекта
+3)http://localhost:9000/

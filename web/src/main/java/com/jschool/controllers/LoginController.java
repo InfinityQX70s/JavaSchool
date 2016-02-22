@@ -70,6 +70,7 @@ public class LoginController implements BaseController {
                 User user = userService.findUserByEmail(email);
                 if (user != null && !user.isRole() && DigestUtils.md5Hex(password).equals(user.getPassword())) {
                     req.getSession().setAttribute("role", "employee");
+                    req.getSession().setAttribute("entity", user);
                     resp.sendRedirect("/employee/orders");
                 } else {
                     throw new ControllerException("Wrong email or pass", ControllerStatusCode.WRONG_EMAIL_OR_PASS);
@@ -79,6 +80,7 @@ public class LoginController implements BaseController {
                 Driver driver = driverService.getDriverByPersonalNumber(Integer.parseInt(number));
                 if (driver != null) {
                     req.getSession().setAttribute("role", "driver");
+                    req.getSession().setAttribute("entity", driver);
                     resp.sendRedirect("/driver");
                 } else {
                     throw new ControllerException("Wrong driver number", ControllerStatusCode.WRONG_DRIVER);

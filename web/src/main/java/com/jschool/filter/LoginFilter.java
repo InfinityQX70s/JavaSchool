@@ -1,5 +1,8 @@
 package com.jschool.filter;
 
+import com.jschool.controllers.exception.ControllerException;
+import com.jschool.controllers.exception.ControllerStatusCode;
+
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,7 +14,7 @@ import java.io.IOException;
 public class LoginFilter implements Filter {
 
     private static final String regExpEmployee = ".*/employee/.*";
-    private static final String regExpDriver = "/logiweb/driver/.*";
+    private static final String regExpDriver = "/logiweb/driv.*";
     private static final String regExpLog = "/logiweb/log.*";
     private static final String employeeRole = "employee";
     private static final String driverRole = "driver";
@@ -44,7 +47,12 @@ public class LoginFilter implements Filter {
                 || path.matches(regExpLog))
             chain.doFilter(request, response);
         else
-            req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
+            try {
+                throw new ControllerException("Page not found", ControllerStatusCode.PAGE_NOT_FOUND);
+            } catch (ControllerException e) {
+                req.setAttribute("error", e);
+                req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
+            }
     }
 
     @Override
