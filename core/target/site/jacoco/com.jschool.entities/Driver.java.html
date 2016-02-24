@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>Driver.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">core Maven Webapp</a> &gt; <a href="index.source.html" class="el_package">com.jschool.entities</a> &gt; <span class="el_source">Driver.java</span></div><h1>Driver.java</h1><pre class="source lang-java linenums">package com.jschool.entities;
+
+import javax.persistence.*;
+import java.util.List;
+
+/**
+ * Created by infinity on 06.02.16.
+ */
+@Entity
+@NamedQueries({
+        @NamedQuery(name=&quot;Driver.findByNumber&quot;,
+                query=&quot;SELECT d FROM Driver d WHERE d.number = :number&quot;),
+        @NamedQuery(name=&quot;Driver.findAllFreeDrivers&quot;,
+                query=&quot;SELECT d FROM Driver d LEFT JOIN d.order o WHERE o IS NULL&quot;),
+        @NamedQuery(name=&quot;Driver.findAllByFirstNameAndLastName&quot;,
+                query=&quot;SELECT d FROM Driver d WHERE d.firstName = :firstName AND d.lastName = :lastName&quot;),
+        @NamedQuery(name=&quot;Driver.findAll&quot;,
+                query=&quot;SELECT d FROM Driver d&quot;)
+})
+@Table(name = &quot;Driver&quot;, schema = &quot;logiweb&quot;)
+<span class="fc" id="L21">public class Driver {</span>
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = &quot;idDriver&quot;, unique = true, nullable = false)
+    private int id;
+    @Column(name = &quot;number&quot;, unique = true, nullable = false)
+    private int number;
+    @Column(name = &quot;firstName&quot;, nullable = false)
+    private String firstName;
+    @Column(name = &quot;lastName&quot;, nullable = false)
+    private String lastName;
+    @OneToOne(optional=false)
+    @JoinColumn(name=&quot;user_id&quot;, nullable=false)
+    private User user;
+    @OneToMany(fetch=FetchType.LAZY, mappedBy = &quot;driver&quot;, cascade = CascadeType.ALL)//cascade=CascadeType.ALL
+    private List&lt;DriverStatusLog&gt; statusLogs;
+    @OneToMany(fetch=FetchType.LAZY, mappedBy = &quot;driver&quot;, cascade = CascadeType.ALL)//cascade=CascadeType.ALL
+    private List&lt;DriverStatistic&gt; statistics;
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name=&quot;order_id&quot;)
+    private Order order;
+
+    public int getId() {
+<span class="nc" id="L44">        return id;</span>
+    }
+
+    public void setId(int id) {
+<span class="nc" id="L48">        this.id = id;</span>
+<span class="nc" id="L49">    }</span>
+
+    public int getNumber() {
+<span class="fc" id="L52">        return number;</span>
+    }
+
+    public void setNumber(int number) {
+<span class="fc" id="L56">        this.number = number;</span>
+<span class="fc" id="L57">    }</span>
+
+    public String getFirstName() {
+<span class="fc" id="L60">        return firstName;</span>
+    }
+
+    public void setFirstName(String firstName) {
+<span class="fc" id="L64">        this.firstName = firstName;</span>
+<span class="fc" id="L65">    }</span>
+
+    public String getLastName() {
+<span class="fc" id="L68">        return lastName;</span>
+    }
+
+    public void setLastName(String lastName) {
+<span class="fc" id="L72">        this.lastName = lastName;</span>
+<span class="fc" id="L73">    }</span>
+
+    public User getUser() {
+<span class="fc" id="L76">        return user;</span>
+    }
+
+    public void setUser(User user) {
+<span class="fc" id="L80">        this.user = user;</span>
+<span class="fc" id="L81">    }</span>
+
+    public List&lt;DriverStatusLog&gt; getStatusLogs() {
+<span class="nc" id="L84">        return statusLogs;</span>
+    }
+
+    public void setStatusLogs(List&lt;DriverStatusLog&gt; statusLogs) {
+<span class="fc" id="L88">        this.statusLogs = statusLogs;</span>
+<span class="fc" id="L89">    }</span>
+
+    public List&lt;DriverStatistic&gt; getStatistics() {
+<span class="nc" id="L92">        return statistics;</span>
+    }
+
+    public void setStatistics(List&lt;DriverStatistic&gt; statistics) {
+<span class="nc" id="L96">        this.statistics = statistics;</span>
+<span class="nc" id="L97">    }</span>
+
+    public Order getOrder() {
+<span class="fc" id="L100">        return order;</span>
+    }
+
+    public void setOrder(Order order) {
+<span class="fc" id="L104">        this.order = order;</span>
+<span class="fc" id="L105">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

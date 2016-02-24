@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>DriverStatistic.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">core Maven Webapp</a> &gt; <a href="index.source.html" class="el_package">com.jschool.entities</a> &gt; <span class="el_source">DriverStatistic.java</span></div><h1>DriverStatistic.java</h1><pre class="source lang-java linenums">package com.jschool.entities;
+
+import javax.persistence.*;
+import java.util.Date;
+
+/**
+ * Created by infinity on 06.02.16.
+ */
+@Entity
+@NamedQuery(name=&quot;DriverStatistic.findAllByOneMonth&quot;,
+        query=&quot;SELECT d FROM DriverStatistic d WHERE d.driver = :driver AND d.timestamp &gt;= :endDate&quot;)
+@Table(name = &quot;DriverStatistic&quot;, schema = &quot;logiweb&quot;)
+<span class="fc" id="L13">public class DriverStatistic {</span>
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = &quot;idDriverStatistic&quot;, unique = true, nullable = false)
+    private int id;
+    @Column(name = &quot;timestamp&quot;, nullable = false)
+    @Temporal(value = TemporalType.DATE)
+    private Date timestamp;
+    @Column(name = &quot;hoursWorked&quot;, nullable = false)
+    private int hoursWorked;
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name=&quot;driver_id&quot;, nullable = false)
+    private Driver driver;
+
+    public int getId() {
+<span class="nc" id="L28">        return id;</span>
+    }
+
+    public void setId(int id) {
+<span class="nc" id="L32">        this.id = id;</span>
+<span class="nc" id="L33">    }</span>
+
+    public Date getTimestamp() {
+<span class="nc" id="L36">        return timestamp;</span>
+    }
+
+    public void setTimestamp(Date timestamp) {
+<span class="fc" id="L40">        this.timestamp = timestamp;</span>
+<span class="fc" id="L41">    }</span>
+
+    public int getHoursWorked() {
+<span class="fc" id="L44">        return hoursWorked;</span>
+    }
+
+    public void setHoursWorked(int hoursWorked) {
+<span class="fc" id="L48">        this.hoursWorked = hoursWorked;</span>
+<span class="fc" id="L49">    }</span>
+
+    public Driver getDriver() {
+<span class="nc" id="L52">        return driver;</span>
+    }
+
+    public void setDriver(Driver driver) {
+<span class="nc" id="L56">        this.driver = driver;</span>
+<span class="nc" id="L57">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

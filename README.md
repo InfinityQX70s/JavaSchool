@@ -9,5 +9,11 @@ Need to dump db city table.
 
 
 1) запустить сонар сервер
-2) стартануть сонар раннер из папки проекта
+
+mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install
+
+mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install -Pcoverage-per-test
+
+mvn sonar:sonar      you can see covarage of your code
+
 3)http://localhost:9000/

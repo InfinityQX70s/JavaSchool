@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>DriverStatisticDaoImpl.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">core Maven Webapp</a> &gt; <a href="index.source.html" class="el_package">com.jschool.dao.impl</a> &gt; <span class="el_source">DriverStatisticDaoImpl.java</span></div><h1>DriverStatisticDaoImpl.java</h1><pre class="source lang-java linenums">package com.jschool.dao.impl;
+
+import com.jschool.dao.api.DriverStatisticDao;
+import com.jschool.dao.api.exception.DaoException;
+import com.jschool.entities.Driver;
+import com.jschool.entities.DriverStatistic;
+import org.apache.log4j.Logger;
+
+import javax.persistence.EntityManager;
+import javax.persistence.TemporalType;
+import javax.persistence.TypedQuery;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+/**
+ * Created by infinity on 07.02.16.
+ */
+public class DriverStatisticDaoImpl extends GenericDaoImpl&lt;DriverStatistic&gt; implements DriverStatisticDao{
+
+<span class="nc" id="L21">    private static final Logger LOG = Logger.getLogger(DriverStatisticDaoImpl.class);</span>
+
+    public DriverStatisticDaoImpl(EntityManager entityManager) {
+<span class="nc" id="L24">        super(entityManager);</span>
+<span class="nc" id="L25">    }</span>
+
+    public List&lt;DriverStatistic&gt; findAllByOneMonth(Driver driver) throws DaoException {
+        try {
+<span class="nc" id="L29">            TypedQuery&lt;DriverStatistic&gt; query =</span>
+<span class="nc" id="L30">                    entityManager.createNamedQuery(&quot;DriverStatistic.findAllByOneMonth&quot;, DriverStatistic.class);</span>
+<span class="nc" id="L31">            Calendar calendar = Calendar.getInstance();</span>
+<span class="nc" id="L32">            calendar.setTime(new Date());</span>
+<span class="nc" id="L33">            calendar.add(Calendar.MONTH, -1);</span>
+<span class="nc" id="L34">            Date endDate = calendar.getTime();</span>
+<span class="nc" id="L35">            query.setParameter(&quot;driver&quot;, driver);</span>
+<span class="nc" id="L36">            query.setParameter(&quot;endDate&quot;, endDate, TemporalType.DATE);</span>
+<span class="nc" id="L37">            return query.getResultList();</span>
+<span class="nc" id="L38">        }catch (Exception e){</span>
+<span class="nc" id="L39">            LOG.error(&quot;Unexpected DB exception&quot;, e);</span>
+<span class="nc" id="L40">            throw  new DaoException(e);</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
