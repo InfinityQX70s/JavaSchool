@@ -20,6 +20,7 @@ public class TruckDaoImpl extends GenericDaoImpl<Truck> implements TruckDao {
         super(entityManager);
     }
 
+    @Override
     public Truck findUniqueByNumber(String number) throws DaoException {
         try {
             TypedQuery<Truck> query =
@@ -36,6 +37,7 @@ public class TruckDaoImpl extends GenericDaoImpl<Truck> implements TruckDao {
         }
     }
 
+    @Override
     public List<Truck> findAllFreeByStateAndGreaterThanCapacity(boolean isRepair, int capacity) throws DaoException {
         try {
             TypedQuery<Truck> query =
@@ -49,6 +51,7 @@ public class TruckDaoImpl extends GenericDaoImpl<Truck> implements TruckDao {
         }
     }
 
+    @Override
     public List<Truck> findAll() throws DaoException {
         try {
             entityManager.clear(); //may be bug be cerefull

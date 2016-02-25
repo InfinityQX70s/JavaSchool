@@ -37,14 +37,17 @@ public class DutyServiceImpl implements DutyService {
         this.transactionManager = transactionManager;
     }
 
+    @Override
     public void loginDriverByNumber(int number, DriverStatus dutyStatus) throws ServiceException {
         setDriverStatus(number,dutyStatus);
     }
 
+    @Override
     public void changeDriverDutyStatusByNumber(int number, DriverStatus dutyStatus) throws ServiceException {
         setDriverStatus(number,dutyStatus);
     }
 
+    @Override
     public void logoutDriverByNumber(int number) throws ServiceException {
         setDriverStatus(number, DriverStatus.rest);
     }

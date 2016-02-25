@@ -36,6 +36,7 @@ public class DriverServiceImpl implements DriverService{
         this.transactionManager = transactionManager;
     }
 
+    @Override
     public void addDriver(Driver driver) throws ServiceException {
         CustomTransaction ct = transactionManager.getTransaction();
         ct.begin();
@@ -66,6 +67,7 @@ public class DriverServiceImpl implements DriverService{
         }
     }
 
+    @Override
     public void updateDrive(Driver driver) throws ServiceException {
         CustomTransaction ct = transactionManager.getTransaction();
         ct.begin();
@@ -91,6 +93,7 @@ public class DriverServiceImpl implements DriverService{
         }
     }
 
+    @Override
     public void deleteDriver(int number) throws ServiceException {
         CustomTransaction ct = transactionManager.getTransaction();
         ct.begin();
@@ -116,6 +119,7 @@ public class DriverServiceImpl implements DriverService{
         }
     }
 
+    @Override
     public Driver getDriverByPersonalNumber(int number) throws ServiceException {
         try {
             Driver driver = driverDao.findUniqueByNumber(number);
@@ -129,6 +133,7 @@ public class DriverServiceImpl implements DriverService{
         }
     }
 
+    @Override
     public List<Driver> findAllDrivers() throws ServiceException {
         try {
             return driverDao.findAll();
@@ -138,6 +143,7 @@ public class DriverServiceImpl implements DriverService{
         }
     }
 
+    @Override
     public Map<Driver,Integer> findAllAvailableDrivers(int hoursWorked) throws ServiceException {
         try {
             List<Driver> drivers = driverDao.findAllFreeDrivers();

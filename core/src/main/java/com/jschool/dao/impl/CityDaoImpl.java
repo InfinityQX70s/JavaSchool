@@ -20,6 +20,7 @@ public class CityDaoImpl extends GenericDaoImpl<City> implements CityDao{
         super(entityManager);
     }
 
+    @Override
     public City findUniqueByName(String name) throws DaoException {
         try {
             TypedQuery<City> query =
@@ -36,6 +37,7 @@ public class CityDaoImpl extends GenericDaoImpl<City> implements CityDao{
         }
     }
 
+    @Override
     public List<City> findAll() throws DaoException {
         try {
             TypedQuery<City> query =

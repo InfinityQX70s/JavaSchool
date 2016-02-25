@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>DriverStatusLog.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">core Maven Webapp</a> &gt; <a href="index.source.html" class="el_package">com.jschool.entities</a> &gt; <span class="el_source">DriverStatusLog.java</span></div><h1>DriverStatusLog.java</h1><pre class="source lang-java linenums">package com.jschool.entities;
+
+import javax.persistence.*;
+import java.util.Date;
+
+/**
+ * Created by infinity on 06.02.16.
+ */
+@Entity
+@NamedQuery(name=&quot;DriverStatusLog.findLastStatus&quot;,
+        query=&quot;SELECT d FROM DriverStatusLog d WHERE d.driver = :driver ORDER BY d.timestamp DESC&quot;)
+@Table(name = &quot;DriverStatusLog&quot;, schema = &quot;logiweb&quot;)
+<span class="fc" id="L13">public class DriverStatusLog {</span>
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = &quot;idDriverStatusLog&quot;, unique = true, nullable = false)
+    private int id;
+    @Column(name = &quot;status&quot;, nullable = false)
+    @Enumerated(EnumType.STRING)
+    private DriverStatus status;
+    @Column(name = &quot;timestamp&quot;, nullable = false)
+    @Temporal(value = TemporalType.TIMESTAMP)
+    private Date timestamp;
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name=&quot;driver_id&quot;, nullable = false)
+    private Driver driver;
+
+    public int getId() {
+<span class="nc" id="L29">        return id;</span>
+    }
+
+    public void setId(int id) {
+<span class="nc" id="L33">        this.id = id;</span>
+<span class="nc" id="L34">    }</span>
+
+    public DriverStatus getStatus() {
+<span class="fc" id="L37">        return status;</span>
+    }
+
+    public void setStatus(DriverStatus status) {
+<span class="fc" id="L41">        this.status = status;</span>
+<span class="fc" id="L42">    }</span>
+
+    public Date getTimestamp() {
+<span class="fc" id="L45">        return timestamp;</span>
+    }
+
+    public void setTimestamp(Date timestamp) {
+<span class="fc" id="L49">        this.timestamp = timestamp;</span>
+<span class="fc" id="L50">    }</span>
+
+    public Driver getDriver() {
+<span class="nc" id="L53">        return driver;</span>
+    }
+
+    public void setDriver(Driver driver) {
+<span class="fc" id="L57">        this.driver = driver;</span>
+<span class="fc" id="L58">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

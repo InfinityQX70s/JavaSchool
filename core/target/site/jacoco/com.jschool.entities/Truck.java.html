@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>Truck.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">core Maven Webapp</a> &gt; <a href="index.source.html" class="el_package">com.jschool.entities</a> &gt; <span class="el_source">Truck.java</span></div><h1>Truck.java</h1><pre class="source lang-java linenums">package com.jschool.entities;
+
+import javax.persistence.*;
+
+/**
+ * Created by infinity on 06.02.16.
+ */
+@Entity
+@NamedQueries({
+        @NamedQuery(name=&quot;Truck.findByNumber&quot;,
+                query=&quot;SELECT t FROM Truck t WHERE t.number = :number&quot;),
+        @NamedQuery(name=&quot;Truck.findAllFreeByStateAndCapacity&quot;,
+                query=&quot;SELECT t FROM Truck t LEFT JOIN t.oreder o WHERE t.repairState = :repairState AND t.capacity &gt;= :capacity AND o IS NULL&quot;),
+        @NamedQuery(name=&quot;Truck.findAll&quot;,
+                query=&quot;SELECT t FROM Truck t&quot;)
+})
+@Table(name = &quot;Truck&quot;, schema = &quot;logiweb&quot;)
+<span class="fc" id="L18">public class Truck {</span>
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = &quot;idTruck&quot;, unique = true, nullable = false)
+    private int id;
+    @Column(name = &quot;number&quot;, unique = true, nullable = false)
+    private String number;
+    @Column(name = &quot;capacity&quot;, nullable = false)
+    private int capacity;
+    @Column(name = &quot;shiftSize&quot;, nullable = false)
+    private int shiftSize;
+    @Column(name = &quot;repairState&quot;, nullable = false)
+    private boolean repairState;
+    @OneToOne(mappedBy=&quot;truck&quot;)
+    private Order oreder;
+
+    public int getId() {
+<span class="nc" id="L35">        return id;</span>
+    }
+
+    public void setId(int id) {
+<span class="nc" id="L39">        this.id = id;</span>
+<span class="nc" id="L40">    }</span>
+
+    public String getNumber() {
+<span class="fc" id="L43">        return number;</span>
+    }
+
+    public void setNumber(String number) {
+<span class="fc" id="L47">        this.number = number;</span>
+<span class="fc" id="L48">    }</span>
+
+    public int getCapacity() {
+<span class="fc" id="L51">        return capacity;</span>
+    }
+
+    public void setCapacity(int capacity) {
+<span class="fc" id="L55">        this.capacity = capacity;</span>
+<span class="fc" id="L56">    }</span>
+
+    public int getShiftSize() {
+<span class="fc" id="L59">        return shiftSize;</span>
+    }
+
+    public void setShiftSize(int shiftSize) {
+<span class="fc" id="L63">        this.shiftSize = shiftSize;</span>
+<span class="fc" id="L64">    }</span>
+
+    public boolean isRepairState() {
+<span class="fc" id="L67">        return repairState;</span>
+    }
+
+    public void setRepairState(boolean repairState) {
+<span class="fc" id="L71">        this.repairState = repairState;</span>
+<span class="fc" id="L72">    }</span>
+
+    public Order getOreder() {
+<span class="fc" id="L75">        return oreder;</span>
+    }
+
+    public void setOreder(Order oreder) {
+<span class="fc" id="L79">        this.oreder = oreder;</span>
+<span class="fc" id="L80">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

@@ -34,21 +34,22 @@ public class OrderController implements BaseController {
     private DriverService driverService = appContext.getDriverService();
     private Validator validator = appContext.getValidator();
 
+    @Override
     public void execute(ServletContext servletContext, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             String[] uri = request.getRequestURI().split("/");
-            if (request.getMethod().equals("GET")) {
-                if (uri.length == 4 && uri[3].equals("orders"))
+            if ("GET".equals(request.getMethod())) {
+                if (uri.length == 4 && "orders".equals(uri[3]))
                     showOrders(request, response);
-                else if (uri.length == 5 && uri[4].equals("add"))
+                else if (uri.length == 5 && "add".equals(uri[4]))
                     showFormForOrderAdd(request, response);
                 else
                     throw new ControllerException("Page not found", ControllerStatusCode.PAGE_NOT_FOUND);
             }
-            if (request.getMethod().equals("POST")) {
-                if (uri.length == 5 && uri[4].equals("add"))
+            if ("POST".equals(request.getMethod())) {
+                if (uri.length == 5 && "add".equals(uri[4]))
                     addOrder(request, response);
-                else if (uri.length == 5 && uri[4].equals("submit"))
+                else if (uri.length == 5 && "submit".equals(uri[4]))
                     submitOrder(request, response);
                 else
                     throw new ControllerException("Page not found", ControllerStatusCode.PAGE_NOT_FOUND);
@@ -183,7 +184,6 @@ public class OrderController implements BaseController {
                 cargos.add(cargo);
             }
             Truck truck = truckService.getTruckByNumber(truckNumber);
-            order.setTruck(truck);
             List<Driver> drivers = new ArrayList<>();
             for (String driver : driverNumbers)
                 drivers.add(driverService.getDriverByPersonalNumber(Integer.parseInt(driver)));

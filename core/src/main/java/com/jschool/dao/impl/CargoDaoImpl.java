@@ -20,6 +20,7 @@ public class CargoDaoImpl extends GenericDaoImpl<Cargo> implements CargoDao {
         super(entityManager);
     }
 
+    @Override
     public Cargo findUniqueByNumber(int number) throws DaoException {
         try {
             TypedQuery<Cargo> query =
@@ -36,6 +37,7 @@ public class CargoDaoImpl extends GenericDaoImpl<Cargo> implements CargoDao {
         }
     }
 
+    @Override
     public List<Cargo> findAllByName(String name) throws DaoException {
         try {
             TypedQuery<Cargo> query =
@@ -48,6 +50,7 @@ public class CargoDaoImpl extends GenericDaoImpl<Cargo> implements CargoDao {
         }
     }
 
+    @Override
     public List<Cargo> findAll() throws DaoException {
         try {
             TypedQuery<Cargo> query =

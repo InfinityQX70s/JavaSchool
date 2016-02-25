@@ -27,6 +27,7 @@ public class TruckServiceImpl implements TruckService{
         this.transactionManager = transactionManager;
     }
 
+    @Override
     public void addTruck(Truck truck) throws ServiceException {
         CustomTransaction ct = transactionManager.getTransaction();
         ct.begin();
@@ -45,6 +46,7 @@ public class TruckServiceImpl implements TruckService{
         }
     }
 
+    @Override
     public void updateTruck(Truck truck) throws ServiceException {
         CustomTransaction ct = transactionManager.getTransaction();
         ct.begin();
@@ -70,6 +72,7 @@ public class TruckServiceImpl implements TruckService{
         }
     }
 
+    @Override
     public void deleteTruck(String truckNumber) throws ServiceException {
         CustomTransaction ct = transactionManager.getTransaction();
         ct.begin();
@@ -91,6 +94,7 @@ public class TruckServiceImpl implements TruckService{
         }
     }
 
+    @Override
     public Truck getTruckByNumber(String number) throws ServiceException {
         try {
             Truck truck = truckDao.findUniqueByNumber(number);
@@ -103,6 +107,7 @@ public class TruckServiceImpl implements TruckService{
         }
     }
 
+    @Override
     public List<Truck> findAllTrucks() throws ServiceException {
         try {
             return truckDao.findAll();
@@ -112,6 +117,7 @@ public class TruckServiceImpl implements TruckService{
         }
     }
 
+    @Override
     public List<Truck> findAllAvailableTrucksByMinCapacity(int capacity) throws ServiceException {
         try {
             return truckDao.findAllFreeByStateAndGreaterThanCapacity(true,capacity);

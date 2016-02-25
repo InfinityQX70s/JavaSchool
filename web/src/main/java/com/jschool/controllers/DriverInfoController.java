@@ -31,8 +31,8 @@ public class DriverInfoController implements BaseController {
     public void execute(ServletContext servletContext, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             String[] uri = request.getRequestURI().split("/");
-            if (request.getMethod().equals("GET")) {
-                if (uri.length == 3 && uri[2].equals("driver"))
+            if ("GET".equals(request.getMethod())) {
+                if (uri.length == 3 && "driver".equals(uri[2]))
                     showDriverInfo(request, response);
                 else
                     throw new ControllerException("Page not found", ControllerStatusCode.PAGE_NOT_FOUND);

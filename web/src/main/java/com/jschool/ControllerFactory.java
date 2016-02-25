@@ -2,7 +2,6 @@ package com.jschool;
 
 import com.jschool.controllers.*;
 
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * Created by infinity on 12.02.16.

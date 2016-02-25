@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>DutyServiceImpl.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">core Maven Webapp</a> &gt; <a href="index.source.html" class="el_package">com.jschool.services.impl</a> &gt; <span class="el_source">DutyServiceImpl.java</span></div><h1>DutyServiceImpl.java</h1><pre class="source lang-java linenums">package com.jschool.services.impl;
+
+import com.jschool.CustomTransaction;
+import com.jschool.TransactionManager;
+import com.jschool.dao.api.DriverDao;
+import com.jschool.dao.api.DriverStatisticDao;
+import com.jschool.dao.api.DriverStatusLogDao;
+import com.jschool.dao.api.exception.DaoException;
+import com.jschool.entities.Driver;
+import com.jschool.entities.DriverStatistic;
+import com.jschool.entities.DriverStatus;
+import com.jschool.entities.DriverStatusLog;
+import com.jschool.services.api.DutyService;
+import com.jschool.services.api.exception.ServiceException;
+import com.jschool.services.api.exception.ServiceStatusCode;
+import org.apache.log4j.Logger;
+
+import java.util.Date;
+
+/**
+ * Created by infinity on 13.02.16.
+ */
+public class DutyServiceImpl implements DutyService {
+
+<span class="fc" id="L25">    private static final Logger LOG = Logger.getLogger(DutyServiceImpl.class);</span>
+
+    private DriverDao driverDao;
+    private DriverStatusLogDao driverStatusLogDao;
+    private DriverStatisticDao driverStatisticDao;
+    private TransactionManager transactionManager;
+
+    public DutyServiceImpl(DriverDao driverDao, DriverStatusLogDao driverStatusLogDao,
+<span class="fc" id="L33">                           DriverStatisticDao driverStatisticDao, TransactionManager transactionManager) {</span>
+<span class="fc" id="L34">        this.driverDao = driverDao;</span>
+<span class="fc" id="L35">        this.driverStatusLogDao = driverStatusLogDao;</span>
+<span class="fc" id="L36">        this.driverStatisticDao = driverStatisticDao;</span>
+<span class="fc" id="L37">        this.transactionManager = transactionManager;</span>
+<span class="fc" id="L38">    }</span>
+
+    public void loginDriverByNumber(int number, DriverStatus dutyStatus) throws ServiceException {
+<span class="nc" id="L41">        setDriverStatus(number,dutyStatus);</span>
+<span class="nc" id="L42">    }</span>
+
+    public void changeDriverDutyStatusByNumber(int number, DriverStatus dutyStatus) throws ServiceException {
+<span class="fc" id="L45">        setDriverStatus(number,dutyStatus);</span>
+<span class="fc" id="L46">    }</span>
+
+    public void logoutDriverByNumber(int number) throws ServiceException {
+<span class="nc" id="L49">        setDriverStatus(number, DriverStatus.rest);</span>
+<span class="nc" id="L50">    }</span>
+
+    private void setDriverStatus(int number, DriverStatus dutyStatus) throws ServiceException {
+<span class="fc" id="L53">        CustomTransaction ct = transactionManager.getTransaction();</span>
+<span class="fc" id="L54">        ct.begin();</span>
+        try {
+<span class="fc" id="L56">            Driver driver = driverDao.findUniqueByNumber(number);</span>
+<span class="fc bfc" id="L57" title="All 2 branches covered.">            if (driver != null){</span>
+<span class="fc" id="L58">                DriverStatusLog statusLog = driverStatusLogDao.findLastStatus(driver);</span>
+<span class="fc bfc" id="L59" title="All 2 branches covered.">                if (statusLog.getStatus() != dutyStatus){</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">                    if (statusLog.getStatus() == DriverStatus.driving){</span>
+<span class="fc" id="L61">                        long diff = new Date().getTime() - statusLog.getTimestamp().getTime();</span>
+<span class="fc" id="L62">                        int diffHours = (int) (diff / (60 * 60 * 1000));</span>
+<span class="fc" id="L63">                        DriverStatistic driverStatistic = new DriverStatistic();</span>
+<span class="fc" id="L64">                        driverStatistic.setTimestamp(new Date());</span>
+<span class="fc" id="L65">                        driverStatistic.setHoursWorked(diffHours);</span>
+<span class="fc" id="L66">                        driverStatistic.setDriver(driver);</span>
+<span class="fc" id="L67">                        driverStatisticDao.create(driverStatistic);</span>
+<span class="fc" id="L68">                    }else {</span>
+<span class="fc" id="L69">                        DriverStatusLog driverStatusLog = new DriverStatusLog();</span>
+<span class="fc" id="L70">                        driverStatusLog.setStatus(dutyStatus);</span>
+<span class="fc" id="L71">                        driverStatusLog.setTimestamp(new Date());</span>
+<span class="fc" id="L72">                        driverStatusLog.setDriver(driver);</span>
+<span class="fc" id="L73">                        driverStatusLogDao.create(driverStatusLog);</span>
+                    }
+                }
+<span class="fc" id="L76">                ct.commit();</span>
+<span class="fc" id="L77">            }else {</span>
+<span class="fc" id="L78">                throw new ServiceException(&quot;Driver not found&quot;, ServiceStatusCode.NOT_FOUND);</span>
+            }
+<span class="nc" id="L80">        }catch (DaoException e) {</span>
+<span class="nc" id="L81">            LOG.warn(e.getMessage());</span>
+<span class="nc" id="L82">            throw new ServiceException(&quot;Unknown exception&quot;, e, ServiceStatusCode.UNKNOWN);</span>
+        }finally {
+<span class="fc" id="L84">            ct.rollbackIfActive();</span>
+<span class="fc" id="L85">        }</span>
+<span class="fc" id="L86">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

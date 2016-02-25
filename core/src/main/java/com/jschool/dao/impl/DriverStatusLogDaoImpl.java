@@ -21,6 +21,7 @@ public class DriverStatusLogDaoImpl extends GenericDaoImpl<DriverStatusLog> impl
         super(entityManager);
     }
 
+    @Override
     public DriverStatusLog findLastStatus(Driver driver) throws DaoException {
         try {
             TypedQuery<DriverStatusLog> query =

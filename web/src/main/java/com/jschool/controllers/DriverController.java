@@ -28,26 +28,26 @@ public class DriverController implements BaseController {
     private DriverService driverService = appContext.getDriverService();
     private Validator validator = appContext.getValidator();
 
-
+    @Override
     public void execute(ServletContext servletContext, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             String[] uri = request.getRequestURI().split("/");
-            if (request.getMethod().equals("GET")) {
-                if (uri.length == 4 && uri[3].equals("drivers"))
+            if ("GET".equals(request.getMethod())) {
+                if (uri.length == 4 && "drivers".equals(uri[3]))
                     showDrivers(request, response);
-                else if (uri.length == 5 && uri[4].equals("add"))
+                else if (uri.length == 5 && "add".equals(uri[4]))
                     showFormForDriverAdd(request, response);
-                else if (uri.length == 6 && uri[5].equals("edit"))
+                else if (uri.length == 6 && "edit".equals(uri[5]))
                     showFormForChangeDriver(request, response, uri[4]);
                 else
                     throw new ControllerException("Page not found", ControllerStatusCode.PAGE_NOT_FOUND);
             }
-            if (request.getMethod().equals("POST")) {
-                if (uri.length == 5 && uri[4].equals("add"))
+            if ("POST".equals(request.getMethod())) {
+                if (uri.length == 5 && "add".equals(uri[4]))
                     addDriver(request, response);
-                else if (uri.length == 5 && uri[4].equals("delete"))
+                else if (uri.length == 5 && "delete".equals(uri[4]))
                     deleteDriver(request, response);
-                else if (uri.length == 5 && uri[4].equals("change"))
+                else if (uri.length == 5 && "change".equals(uri[4]))
                     changeDriver(request, response);
                 else
                     throw new ControllerException("Page not found", ControllerStatusCode.PAGE_NOT_FOUND);

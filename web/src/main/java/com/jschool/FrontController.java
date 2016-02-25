@@ -13,7 +13,7 @@ import java.io.IOException;
  */
 public class FrontController extends HttpServlet {
 
-    private AppContext appContext = AppContext.getInstance();
+    private final AppContext appContext = AppContext.getInstance();
 
     protected void processRequest(HttpServletRequest
                                           request, HttpServletResponse response)
@@ -22,12 +22,14 @@ public class FrontController extends HttpServlet {
             controller.execute(getServletContext(), request, response);
     }
 
+    @Override
     protected void doGet(HttpServletRequest request,
                          HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
 
+    @Override
     protected void doPost(HttpServletRequest request,
                           HttpServletResponse response)
             throws ServletException, IOException {

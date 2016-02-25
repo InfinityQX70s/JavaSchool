@@ -24,6 +24,7 @@ public class DriverStatisticDaoImpl extends GenericDaoImpl<DriverStatistic> impl
         super(entityManager);
     }
 
+    @Override
     public List<DriverStatistic> findAllByOneMonth(Driver driver) throws DaoException {
         try {
             TypedQuery<DriverStatistic> query =

@@ -20,6 +20,7 @@ public class DriverDaoImpl extends GenericDaoImpl<Driver> implements DriverDao {
         super(entityManager);
     }
 
+    @Override
     public Driver findUniqueByNumber(int number) throws DaoException {
         try {
             TypedQuery<Driver> query =
@@ -36,6 +37,7 @@ public class DriverDaoImpl extends GenericDaoImpl<Driver> implements DriverDao {
         }
     }
 
+    @Override
     public List<Driver> findAllByFirstNameAndLastName(String firstName, String lastName) throws DaoException {
         try {
             TypedQuery<Driver> query =
@@ -49,6 +51,7 @@ public class DriverDaoImpl extends GenericDaoImpl<Driver> implements DriverDao {
         }
     }
 
+    @Override
     public List<Driver> findAll() throws DaoException {
         try {
             TypedQuery<Driver> query =
@@ -60,6 +63,7 @@ public class DriverDaoImpl extends GenericDaoImpl<Driver> implements DriverDao {
         }
     }
 
+    @Override
     public List<Driver> findAllFreeDrivers() throws DaoException {
         try {
             TypedQuery<Driver> query =

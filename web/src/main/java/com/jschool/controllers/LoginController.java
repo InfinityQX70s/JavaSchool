@@ -30,19 +30,20 @@ public class LoginController implements BaseController {
     private UserService userService = appContext.getUserService();
     private Validator validator = appContext.getValidator();
 
+    @Override
     public void execute(ServletContext servletContext, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             String[] uri = request.getRequestURI().split("/");
-            if (request.getMethod().equals("GET")) {
-                if (uri.length == 3 && uri[2].equals("login"))
+            if ("GET".equals(request.getMethod())) {
+                if (uri.length == 3 && "login".equals(uri[2]))
                     showUserLoginForm(request, response);
-                else if (uri.length == 3 && uri[2].equals("logout"))
+                else if (uri.length == 3 && "logout".equals(uri[2]))
                     logoutUser(request, response);
                 else
                     throw new ControllerException("Page not found", ControllerStatusCode.PAGE_NOT_FOUND);
             }
-            if (request.getMethod().equals("POST")) {
-                if (uri.length == 3 && uri[2].equals("login"))
+            if ("POST".equals(request.getMethod())) {
+                if (uri.length == 3 && "login".equals(uri[2]))
                     loginUser(request, response);
                 else
                     throw new ControllerException("Page not found", ControllerStatusCode.PAGE_NOT_FOUND);

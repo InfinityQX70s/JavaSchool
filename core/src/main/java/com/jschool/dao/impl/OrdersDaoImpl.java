@@ -20,6 +20,7 @@ public class OrdersDaoImpl extends GenericDaoImpl<Order> implements OrdersDao{
         super(entityManager);
     }
 
+    @Override
     public Order findUniqueByNumber(int number) throws DaoException {
         try {
             TypedQuery<Order> query =
@@ -38,6 +39,7 @@ public class OrdersDaoImpl extends GenericDaoImpl<Order> implements OrdersDao{
         }
     }
 
+    @Override
     public List<Order> findAllByState(boolean isDone) throws DaoException {
         try {
             TypedQuery<Order> query =
@@ -50,6 +52,7 @@ public class OrdersDaoImpl extends GenericDaoImpl<Order> implements OrdersDao{
         }
     }
 
+    @Override
     public List<Order> findAll() throws DaoException {
         try {
             entityManager.clear(); //may be bug be cerefull

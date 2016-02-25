@@ -20,6 +20,7 @@ public class UserDaoImpl extends GenericDaoImpl<User> implements UserDao{
         super(entityManager);
     }
 
+    @Override
     public User findUniqueByEmail(String email) throws DaoException {
         try {
             TypedQuery<User> query =
@@ -36,6 +37,7 @@ public class UserDaoImpl extends GenericDaoImpl<User> implements UserDao{
         }
     }
 
+    @Override
     public List<User> findAllByRole(boolean isDriver) throws DaoException {
         try {
             TypedQuery<User> query =
@@ -48,6 +50,7 @@ public class UserDaoImpl extends GenericDaoImpl<User> implements UserDao{
         }
     }
 
+    @Override
     public List<User> findAll() throws DaoException {
         try {
             TypedQuery<User> query =

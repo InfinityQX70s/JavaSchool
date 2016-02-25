@@ -40,6 +40,7 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
         this.transactionManager = transactionManager;
     }
 
+    @Override
     public void addOrder(Order order, List<Cargo> cargos) throws ServiceException {
         CustomTransaction ct = transactionManager.getTransaction();
         ct.begin();
@@ -116,6 +117,7 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
         }
     }
 
+    @Override
     public void updateOrder(Order order) throws ServiceException {
         CustomTransaction ct = transactionManager.getTransaction();
         ct.begin();
@@ -138,6 +140,7 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
         }
     }
 
+    @Override
     public void deleteOrder(int number) throws ServiceException {
         CustomTransaction ct = transactionManager.getTransaction();
         ct.begin();
@@ -159,6 +162,7 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
         }
     }
 
+    @Override
     public List<Order> findAllOrders() throws ServiceException {
         try {
             return ordersDao.findAll();
@@ -168,6 +172,7 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
         }
     }
 
+    @Override
     public Order getOrderByNumber(int number) throws ServiceException {
         try {
             Order order = ordersDao.findUniqueByNumber(number);
@@ -180,6 +185,7 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
         }
     }
 
+    @Override
     public List<Cargo> findAllCargosByOrderNumber(int number) throws ServiceException {
         try {
             Order order = ordersDao.findUniqueByNumber(number);
@@ -199,6 +205,7 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
         }
     }
 
+    @Override
     public Truck getAssignedTruckByOrderNumber(int orderNumber) throws ServiceException {
         try {
             Order order = ordersDao.findUniqueByNumber(orderNumber);
@@ -216,6 +223,7 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
         }
     }
 
+    @Override
     public List<Driver> getAllAssignedDriversByOrderNumber(int orderNumber) throws ServiceException {
         try {
             Order order = ordersDao.findUniqueByNumber(orderNumber);
