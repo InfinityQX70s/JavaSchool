@@ -78,7 +78,7 @@ public class DutyServiceImpl implements DutyService {
                 }
                 ct.commit();
             }else {
-                throw new ServiceException("Driver not found", ServiceStatusCode.NOT_FOUND);
+                throw new ServiceException("Driver not found", ServiceStatusCode.DRIVER_NOT_FOUND);
             }
         }catch (DaoException e) {
             LOG.warn(e.getMessage());

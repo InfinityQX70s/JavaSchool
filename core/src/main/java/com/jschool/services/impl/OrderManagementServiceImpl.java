@@ -73,7 +73,7 @@ public class OrderManagementServiceImpl implements OrderManagementService {
                 }
                 ct.commit();
             }else
-                throw new ServiceException("Cargo not found", ServiceStatusCode.NOT_FOUND);
+                throw new ServiceException("Cargo not found", ServiceStatusCode.CARGO_NOT_FOUND);
         }catch (DaoException e) {
             LOG.warn(e.getMessage());
             throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);

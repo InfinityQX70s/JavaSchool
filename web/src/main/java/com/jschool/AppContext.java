@@ -1,6 +1,7 @@
 package com.jschool;
 
 import com.jschool.controllers.*;
+import com.jschool.controllers.exception.ControllerStatusCode;
 import com.jschool.dao.api.*;
 import com.jschool.dao.impl.*;
 import com.jschool.services.api.*;
@@ -10,6 +11,12 @@ import com.jschool.services.impl.*;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URL;
+import java.util.Properties;
 
 /**
  * Created by infinity on 14.02.16.
@@ -49,6 +56,7 @@ public class AppContext {
     private LoginController loginController;
     private DriverInfoController driverInfoController;
     private ErrorController errorController;
+    private Properties errorProperties;
 
     private ControllerFactory controllerFactory;
 
@@ -182,7 +190,7 @@ public class AppContext {
         if (orderAndCargoService == null){
             orderAndCargoService = new OrderAndCargoServiceImpl(getOrdersDao(),
                     getDriverDao(),getCargoDao(),
-                    getRoutePointDao(),getCityDao(),getTransactionManager());
+                    getRoutePointDao(),getCityDao(),getTruckDao(),getTransactionManager());
         }
         return orderAndCargoService;
     }
@@ -204,42 +212,42 @@ public class AppContext {
 
     public synchronized DriverController getDriverController() {
         if (driverController == null){
-            driverController = new DriverController();
+            driverController = new DriverController(getDriverService(),getErrorProperties(),getValidator());
         }
         return driverController;
     }
 
     public synchronized OrderController getOrderController() {
         if (orderController == null){
-            orderController = new OrderController();
+            orderController = new OrderController(getErrorProperties(),getOrderAndCargoService(),getTruckService(),getDriverService(),getValidator());
         }
         return orderController;
     }
 
     public synchronized TruckController getTruckController() {
         if (truckController == null){
-            truckController = new TruckController();
+            truckController = new TruckController(getErrorProperties(),getTruckService(),getValidator());
         }
         return truckController;
     }
 
     public synchronized LoginController getLoginController() {
         if (loginController == null){
-            loginController = new LoginController();
+            loginController = new LoginController(getErrorProperties(),getDriverService(),getUserService(),getValidator());
         }
         return loginController;
     }
 
     public synchronized DriverInfoController getDriverInfoController() {
         if (driverInfoController == null){
-            driverInfoController = new DriverInfoController();
+            driverInfoController = new DriverInfoController(getErrorProperties(),getOrderAndCargoService());
         }
         return driverInfoController;
     }
 
     public synchronized ErrorController getErrorController() {
         if (errorController == null){
-            errorController = new ErrorController();
+            errorController = new ErrorController(getErrorProperties());
         }
         return errorController;
     }
@@ -256,5 +264,19 @@ public class AppContext {
             validator = new Validator();
         }
         return validator;
+    }
+
+    public synchronized Properties getErrorProperties() {
+        if (errorProperties == null){
+            try {
+                errorProperties = new Properties();
+                InputStream in = getClass().getClassLoader().getResourceAsStream("error.properties");
+                errorProperties.load(in);
+                in.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return errorProperties;
     }
 }

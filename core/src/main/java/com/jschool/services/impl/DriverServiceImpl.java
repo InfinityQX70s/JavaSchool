@@ -57,7 +57,7 @@ public class DriverServiceImpl implements DriverService{
                 //driverStatusLogDao.create(driverStatusLog);
                 ct.commit();
             }else {
-                throw new ServiceException("User or Driver with such identifier exist", ServiceStatusCode.ALREADY_EXIST);
+                throw new ServiceException("User or Driver with such identifier exist", ServiceStatusCode.USER_OR_DRIVER_ALREADY_EXIST);
             }
         }catch (DaoException e){
             LOG.warn(e.getMessage());
@@ -80,10 +80,10 @@ public class DriverServiceImpl implements DriverService{
                 ct.commit();
             }
             if (driverElement == null) {
-                throw new ServiceException("Driver not found", ServiceStatusCode.NOT_FOUND);
+                throw new ServiceException("Driver not found", ServiceStatusCode.DRIVER_NOT_FOUND);
             }
             if (driverElement.getOrder() != null) {
-                throw new ServiceException("Driver has an order", ServiceStatusCode.ASSIGNED_ORDER);
+                throw new ServiceException("Driver has an order", ServiceStatusCode.DRIVER_ASSIGNED_ORDER);
             }
         }catch (DaoException e){
             LOG.warn(e.getMessage());
@@ -106,10 +106,10 @@ public class DriverServiceImpl implements DriverService{
                 ct.commit();
             }
             if (driver == null){
-                throw new ServiceException("Driver not found", ServiceStatusCode.NOT_FOUND);
+                throw new ServiceException("Driver not found", ServiceStatusCode.DRIVER_NOT_FOUND);
             }
             if (driver.getOrder() != null){
-                throw new ServiceException("Driver has an order", ServiceStatusCode.ASSIGNED_ORDER);
+                throw new ServiceException("Driver has an order", ServiceStatusCode.DRIVER_ASSIGNED_ORDER);
             }
         }catch (DaoException e){
             LOG.warn(e.getMessage());
@@ -124,7 +124,7 @@ public class DriverServiceImpl implements DriverService{
         try {
             Driver driver = driverDao.findUniqueByNumber(number);
             if (driver == null){
-                throw new ServiceException("Driver not found", ServiceStatusCode.NOT_FOUND);
+                throw new ServiceException("Driver not found", ServiceStatusCode.DRIVER_NOT_FOUND);
             }
             return driver;
         }catch (DaoException e) {

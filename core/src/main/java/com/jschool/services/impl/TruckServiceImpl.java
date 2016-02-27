@@ -36,7 +36,7 @@ public class TruckServiceImpl implements TruckService{
             if (element == null)
                 truckDao.create(truck);
             else
-                throw new ServiceException("Truck with such identifier exist", ServiceStatusCode.ALREADY_EXIST);
+                throw new ServiceException("Truck with such identifier exist", ServiceStatusCode.TRUCK_ALREADY_EXIST);
             ct.commit();
         }catch (DaoException e) {
             LOG.warn(e.getMessage());
@@ -61,9 +61,9 @@ public class TruckServiceImpl implements TruckService{
                 ct.commit();
             }
             if (element == null)
-                throw new ServiceException("Truck not found", ServiceStatusCode.NOT_FOUND);
+                throw new ServiceException("Truck not found", ServiceStatusCode.TRUCK_NOT_FOUND);
             if (element.getOreder() != null)
-                throw new ServiceException("Truck has an order", ServiceStatusCode.ASSIGNED_ORDER);
+                throw new ServiceException("Truck has an order", ServiceStatusCode.TRUCK_ASSIGNED_ORDER);
         }catch (DaoException e) {
             LOG.warn(e.getMessage());
             throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
@@ -83,9 +83,9 @@ public class TruckServiceImpl implements TruckService{
                 ct.commit();
             }
             if (truck == null)
-                throw new ServiceException("Truck not found", ServiceStatusCode.NOT_FOUND);
+                throw new ServiceException("Truck not found", ServiceStatusCode.TRUCK_NOT_FOUND);
             if (truck.getOreder() != null)
-                throw new ServiceException("Truck has an order", ServiceStatusCode.ASSIGNED_ORDER);
+                throw new ServiceException("Truck has an order", ServiceStatusCode.TRUCK_ASSIGNED_ORDER);
         }catch (DaoException e) {
             LOG.warn(e.getMessage());
             throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
@@ -99,7 +99,7 @@ public class TruckServiceImpl implements TruckService{
         try {
             Truck truck = truckDao.findUniqueByNumber(number);
             if (truck == null)
-                throw new ServiceException("Truck not found", ServiceStatusCode.NOT_FOUND);
+                throw new ServiceException("Truck not found", ServiceStatusCode.TRUCK_NOT_FOUND);
             return truck;
         }catch (DaoException e) {
             LOG.warn(e.getMessage());

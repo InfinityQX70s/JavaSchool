@@ -17,7 +17,7 @@ public class ControllerException extends Exception {
         this.controllerStatusCode = controllerStatusCode;
     }
 
-    public ControllerStatusCode getControllerStatusCode() {
+    public ControllerStatusCode getStatusCode() {
         return controllerStatusCode;
     }
 }

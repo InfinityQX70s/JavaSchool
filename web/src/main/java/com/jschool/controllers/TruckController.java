@@ -15,17 +15,23 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * Created by infinity on 12.02.16.
  */
-public class TruckController implements BaseController {
+public class TruckController extends BaseController {
 
     private static final Logger LOG = Logger.getLogger(TruckController.class);
 
-    private AppContext appContext = AppContext.getInstance();
-    private TruckService truckService = appContext.getTruckService();
-    private Validator validator = appContext.getValidator();
+    private TruckService truckService;
+    private Validator validator;
+
+    public TruckController(Properties errorProperties, TruckService truckService, Validator validator) {
+        super(errorProperties);
+        this.truckService = truckService;
+        this.validator = validator;
+    }
 
     @Override
     public void execute(ServletContext servletContext, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -53,8 +59,7 @@ public class TruckController implements BaseController {
             }
         } catch (ControllerException e) {
             LOG.warn(e.getMessage());
-            request.setAttribute("error", e);
-            request.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(request, response);
+            showError(e,request,response);
         }
     }
 
@@ -67,8 +72,7 @@ public class TruckController implements BaseController {
             req.getRequestDispatcher("/WEB-INF/pages/truck/truck.jsp").forward(req, resp);
         } catch (ServiceException e) {
             LOG.warn(e.getMessage());
-            req.setAttribute("error", e);
-            req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
+            showError(e,req,resp);
         }
     }
 
@@ -96,10 +100,12 @@ public class TruckController implements BaseController {
             }
             truckService.addTruck(truck);
             resp.sendRedirect("/employee/trucks");
-        } catch (ServiceException | ControllerException e) {
+        } catch (ServiceException e) {
             LOG.warn(e.getMessage());
-            req.setAttribute("error", e);
-            req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
+            showError(e,req,resp);
+        }catch (ControllerException e){
+            LOG.warn(e.getMessage());
+            showError(e,req,resp);
         }
     }
 
@@ -110,10 +116,12 @@ public class TruckController implements BaseController {
             validator.validateTruckNumber(number);
             truckService.deleteTruck(number);
             resp.sendRedirect("/employee/trucks");
-        } catch (ServiceException | ControllerException e) {
+        } catch (ServiceException e) {
             LOG.warn(e.getMessage());
-            req.setAttribute("error", e);
-            req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
+            showError(e,req,resp);
+        }catch (ControllerException e){
+            LOG.warn(e.getMessage());
+            showError(e,req,resp);
         }
     }
 
@@ -124,10 +132,12 @@ public class TruckController implements BaseController {
             Truck truck = truckService.getTruckByNumber(number);
             req.setAttribute("truck", truck);
             req.getRequestDispatcher("/WEB-INF/pages/truck/truckEdit.jsp").forward(req, resp);
-        } catch (ServiceException | ControllerException e) {
+        } catch (ServiceException e) {
             LOG.warn(e.getMessage());
-            req.setAttribute("error", e);
-            req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
+            showError(e,req,resp);
+        }catch (ControllerException e){
+            LOG.warn(e.getMessage());
+            showError(e,req,resp);
         }
     }
 
@@ -150,10 +160,12 @@ public class TruckController implements BaseController {
             }
             truckService.updateTruck(truck);
             resp.sendRedirect("/employee/trucks");
-        } catch (ServiceException | ControllerException e) {
+        } catch (ServiceException e) {
             LOG.warn(e.getMessage());
-            req.setAttribute("error", e);
-            req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
+            showError(e,req,resp);
+        }catch (ControllerException e){
+            LOG.warn(e.getMessage());
+            showError(e,req,resp);
         }
     }
 

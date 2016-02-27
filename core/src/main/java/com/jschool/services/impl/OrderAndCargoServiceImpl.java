@@ -26,17 +26,20 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
     private CargoDao cargoDao;
     private RoutePointDao routePointDao;
     private CityDao cityDao;
+    private TruckDao truckDao;
     private TransactionManager transactionManager;
 
     public OrderAndCargoServiceImpl(OrdersDao ordersDao,
                                     DriverDao driverDao, CargoDao cargoDao,
                                     RoutePointDao routePointDao, CityDao cityDao,
+                                    TruckDao truckDao,
                                     TransactionManager transactionManager) {
         this.ordersDao = ordersDao;
         this.driverDao = driverDao;
         this.cargoDao = cargoDao;
         this.routePointDao = routePointDao;
         this.cityDao = cityDao;
+        this.truckDao = truckDao;
         this.transactionManager = transactionManager;
     }
 
@@ -47,7 +50,7 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
         try {
             Order element = ordersDao.findUniqueByNumber(order.getNumber());
             if (element == null) {
-                if (order.getTruck().getOreder() == null) {
+                if (truckDao.findUniqueByNumber(order.getTruck().getNumber()).getOreder() == null) {
                     List<Driver> drivers = order.getDrivers();
                     order.setRoutePoints(null);
                     order.setDrivers(null);
@@ -56,9 +59,9 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
                     assignCargos(order, cargos);
                     ct.commit();
                 }else
-                    throw new ServiceException("Truck has an order", ServiceStatusCode.ASSIGNED_ORDER);
+                    throw new ServiceException("Truck has an order", ServiceStatusCode.TRUCK_ASSIGNED_ORDER);
             }else
-                throw new ServiceException("Order with such identifier exist", ServiceStatusCode.ALREADY_EXIST);
+                throw new ServiceException("Order with such identifier exist", ServiceStatusCode.ORDER_ALREADY_EXIST);
         }catch (DaoException e){
             LOG.warn(e.getMessage());
             throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
@@ -74,14 +77,14 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
                 RoutePoint pickupRoutePoint = cargo.getPickup();
                 City city = cityDao.findUniqueByName(pickupRoutePoint.getCity().getName());
                 if (city == null)
-                    throw new ServiceException("City with such name not found", ServiceStatusCode.ALREADY_EXIST);
+                    throw new ServiceException("City with such name not found", ServiceStatusCode.CITY_NOT_FOUND);
                 pickupRoutePoint.setCity(city);
                 pickupRoutePoint.setOrder(order);
                 routePointDao.create(pickupRoutePoint);
                 RoutePoint unloadRoutePoint = cargo.getUnload();
                 city = cityDao.findUniqueByName(unloadRoutePoint.getCity().getName());
                 if (city == null)
-                    throw new ServiceException("City with such name not found", ServiceStatusCode.ALREADY_EXIST);
+                    throw new ServiceException("City with such name not found", ServiceStatusCode.CITY_NOT_FOUND);
                 unloadRoutePoint.setCity(city);
                 unloadRoutePoint.setOrder(order);
                 routePointDao.create(unloadRoutePoint);
@@ -96,7 +99,7 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
                 cargo.setStatusLogs(cargoStatusLogs);
                 cargoDao.create(cargo);
             }else {
-                throw new ServiceException("Cargo with such identifier exist", ServiceStatusCode.ALREADY_EXIST);
+                throw new ServiceException("Cargo with such identifier exist", ServiceStatusCode.CARGO_ALREADY_EXIST);
             }
         }
     }
@@ -105,15 +108,15 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
         Truck truck = order.getTruck();
         if (truck.getShiftSize()==drivers.size()){
             for (Driver driver : drivers) {
-                if (driver.getOrder() == null) {
+                if (driverDao.findUniqueByNumber(driver.getNumber()).getOrder() == null) {
                     driver.setOrder(order);
                     driverDao.update(driver);
                 }else {
-                    throw new ServiceException("Driver has an order", ServiceStatusCode.ASSIGNED_ORDER);
+                    throw new ServiceException("Driver has an order", ServiceStatusCode.DRIVER_ASSIGNED_ORDER);
                 }
             }
         }else {
-            throw new ServiceException("Shift size and drivers count do not equals", ServiceStatusCode.NOT_EQUAL);
+            throw new ServiceException("Shift size and drivers count do not equals", ServiceStatusCode.DRIVER_AND_SHIFT_SIZE_NOT_EQUAL);
         }
     }
 
@@ -129,9 +132,9 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
                 ct.commit();
             }
             if (element == null)
-                throw new ServiceException("Order not found", ServiceStatusCode.NOT_FOUND);
+                throw new ServiceException("Order not found", ServiceStatusCode.ORDER_NOT_FOUND);
             if (!element.isDoneState())
-                throw new ServiceException("Order did not done", ServiceStatusCode.DID_NOT_DONE);
+                throw new ServiceException("Order did not done", ServiceStatusCode.ORDER_DID_NOT_DONE);
         }catch (DaoException e){
             LOG.warn(e.getMessage());
             throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
@@ -151,9 +154,9 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
                 ct.commit();
             }
             if (element == null)
-                throw new ServiceException("Order not found", ServiceStatusCode.NOT_FOUND);
+                throw new ServiceException("Order not found", ServiceStatusCode.ORDER_NOT_FOUND);
             if (!element.isDoneState())
-                throw new ServiceException("Order did not done", ServiceStatusCode.DID_NOT_DONE);
+                throw new ServiceException("Order did not done", ServiceStatusCode.ORDER_DID_NOT_DONE);
         }catch (DaoException e){
             LOG.warn(e.getMessage());
             throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
@@ -177,7 +180,7 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
         try {
             Order order = ordersDao.findUniqueByNumber(number);
             if (order == null)
-                throw new ServiceException("Order not found", ServiceStatusCode.NOT_FOUND);
+                throw new ServiceException("Order not found", ServiceStatusCode.ORDER_NOT_FOUND);
             return order;
         }catch (DaoException e){
             LOG.warn(e.getMessage());
@@ -198,7 +201,7 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
                 }
                 return cargos;
             }else
-                throw new ServiceException("Order not found", ServiceStatusCode.NOT_FOUND);
+                throw new ServiceException("Order not found", ServiceStatusCode.ORDER_NOT_FOUND);
         }catch (DaoException e) {
             LOG.warn(e.getMessage());
             throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
@@ -214,9 +217,9 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
                 if (truck != null)
                     return truck;
                 else
-                    throw new ServiceException("Truck do not assign", ServiceStatusCode.NOT_FOUND);
+                    throw new ServiceException("Truck do not assign", ServiceStatusCode.TRUCK_DID_NOT_ASSIGNED_ORDER);
             }else
-                throw new ServiceException("Order not found", ServiceStatusCode.NOT_FOUND);
+                throw new ServiceException("Order not found", ServiceStatusCode.ORDER_NOT_FOUND);
         }catch (DaoException e) {
             LOG.warn(e.getMessage());
             throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
@@ -230,7 +233,7 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
             if (order != null)
                 return order.getDrivers();
             else
-                throw new ServiceException("Order not found", ServiceStatusCode.NOT_FOUND);
+                throw new ServiceException("Order not found", ServiceStatusCode.ORDER_NOT_FOUND);
         }catch (DaoException e) {
             LOG.warn(e.getMessage());
             throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);

@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService{
         try {
             User user = userDao.findUniqueByEmail(email);
             if (user == null){
-                throw new ServiceException("User not found", ServiceStatusCode.NOT_FOUND);
+                throw new ServiceException("User not found", ServiceStatusCode.USER_NOT_FOUND);
             }
             return user;
         }catch (DaoException e) {

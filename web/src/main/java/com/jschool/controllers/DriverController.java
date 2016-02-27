@@ -16,17 +16,24 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * Created by infinity on 12.02.16.
  */
-public class DriverController implements BaseController {
+public class DriverController extends BaseController {
 
     private static final Logger LOG = Logger.getLogger(DriverController.class);
 
-    private AppContext appContext = AppContext.getInstance();
-    private DriverService driverService = appContext.getDriverService();
-    private Validator validator = appContext.getValidator();
+    private DriverService driverService;
+
+    private Validator validator;
+
+    public DriverController(DriverService driverService,Properties errorProperties, Validator validator) {
+        super(errorProperties);
+        this.driverService = driverService;
+        this.validator = validator;
+    }
 
     @Override
     public void execute(ServletContext servletContext, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -54,8 +61,7 @@ public class DriverController implements BaseController {
             }
         } catch (ControllerException e) {
             LOG.warn(e.getMessage());
-            request.setAttribute("error", e);
-            request.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(request, response);
+            showError(e,request,response);
         }
     }
 
@@ -67,8 +73,7 @@ public class DriverController implements BaseController {
             req.getRequestDispatcher("/WEB-INF/pages/driver/driver.jsp").forward(req, resp);
         } catch (ServiceException e) {
             LOG.warn(e.getMessage());
-            req.setAttribute("error", e);
-            req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
+            showError(e,req,resp);
         }
     }
 
@@ -98,10 +103,12 @@ public class DriverController implements BaseController {
             driver.setUser(user);
             driverService.addDriver(driver);
             resp.sendRedirect("/employee/drivers");
-        } catch (ServiceException | ControllerException e) {
+        } catch (ServiceException e) {
             LOG.warn(e.getMessage());
-            req.setAttribute("error", e);
-            req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
+            showError(e,req,resp);
+        }catch (ControllerException e){
+            LOG.warn(e.getMessage());
+            showError(e,req,resp);
         }
     }
 
@@ -112,10 +119,12 @@ public class DriverController implements BaseController {
             validator.validateDriverNumber(number);
             driverService.deleteDriver(Integer.parseInt(number));
             resp.sendRedirect("/employee/drivers");
-        } catch (ServiceException | ControllerException e) {
+        } catch (ServiceException e) {
             LOG.warn(e.getMessage());
-            req.setAttribute("error", e);
-            req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
+            showError(e,req,resp);
+        }catch (ControllerException e){
+            LOG.warn(e.getMessage());
+            showError(e,req,resp);
         }
     }
 
@@ -126,10 +135,12 @@ public class DriverController implements BaseController {
             Driver driver = driverService.getDriverByPersonalNumber(Integer.parseInt(number));
             req.setAttribute("driver", driver);
             req.getRequestDispatcher("/WEB-INF/pages/driver/driverEdit.jsp").forward(req, resp);
-        } catch (ServiceException | ControllerException e) {
+        } catch (ServiceException e) {
             LOG.warn(e.getMessage());
-            req.setAttribute("error", e);
-            req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
+            showError(e,req,resp);
+        }catch (ControllerException e){
+            LOG.warn(e.getMessage());
+            showError(e,req,resp);
         }
     }
 
@@ -147,10 +158,14 @@ public class DriverController implements BaseController {
             driver.setLastName(lastName);
             driverService.updateDrive(driver);
             resp.sendRedirect("/employee/drivers");
-        } catch (ServiceException | ControllerException e) {
+        } catch (ServiceException e) {
             LOG.warn(e.getMessage());
-            req.setAttribute("error", e);
-            req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
+            showError(e,req,resp);
+        }catch (ControllerException e){
+            LOG.warn(e.getMessage());
+            showError(e,req,resp);
         }
     }
+
+
 }

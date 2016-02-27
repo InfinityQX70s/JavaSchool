@@ -16,23 +16,27 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by infinity on 12.02.16.
  */
-public class OrderController implements BaseController {
+public class OrderController extends BaseController {
 
     private static final Logger LOG = Logger.getLogger(OrderController.class);
 
-    private AppContext appContext = AppContext.getInstance();
-    private OrderAndCargoService orderAndCargoService = appContext.getOrderAndCargoService();
-    private TruckService truckService = appContext.getTruckService();
-    private DriverService driverService = appContext.getDriverService();
-    private Validator validator = appContext.getValidator();
+    private OrderAndCargoService orderAndCargoService;
+    private TruckService truckService;
+    private DriverService driverService;
+    private Validator validator;
+
+    public OrderController(Properties errorProperties, OrderAndCargoService orderAndCargoService, TruckService truckService, DriverService driverService, Validator validator) {
+        super(errorProperties);
+        this.orderAndCargoService = orderAndCargoService;
+        this.truckService = truckService;
+        this.driverService = driverService;
+        this.validator = validator;
+    }
 
     @Override
     public void execute(ServletContext servletContext, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -56,8 +60,7 @@ public class OrderController implements BaseController {
             }
         } catch (ControllerException e) {
             LOG.warn(e.getMessage());
-            request.setAttribute("error", e);
-            request.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(request, response);
+            showError(e,request,response);
         }
     }
 
@@ -74,8 +77,7 @@ public class OrderController implements BaseController {
             req.getRequestDispatcher("/WEB-INF/pages/order/order.jsp").forward(req, resp);
         } catch (ServiceException e) {
             LOG.warn(e.getMessage());
-            req.setAttribute("error", e);
-            req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
+            showError(e,req,resp);
         }
     }
 
@@ -134,10 +136,12 @@ public class OrderController implements BaseController {
                     req.getRequestDispatcher("/WEB-INF/pages/order/orderDrivers.jsp").forward(req, resp);
                     break;
             }
-        } catch (ServiceException | ControllerException e) {
+        } catch (ServiceException e) {
             LOG.warn(e.getMessage());
-            req.setAttribute("error", e);
-            req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
+            showError(e,req,resp);
+        }catch (ControllerException e){
+            LOG.warn(e.getMessage());
+            showError(e,req,resp);
         }
     }
 
@@ -191,10 +195,12 @@ public class OrderController implements BaseController {
             order.setDrivers(drivers);
             orderAndCargoService.addOrder(order, cargos);
             resp.sendRedirect("/employee/orders");
-        } catch (ServiceException | ControllerException e) {
+        } catch (ServiceException e) {
             LOG.warn(e.getMessage());
-            req.setAttribute("error", e);
-            req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
+            showError(e,req,resp);
+        }catch (ControllerException e){
+            LOG.warn(e.getMessage());
+            showError(e,req,resp);
         }
     }
 

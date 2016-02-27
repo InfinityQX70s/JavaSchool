@@ -9,6 +9,7 @@ import com.jschool.entities.User;
 import com.jschool.services.api.DriverService;
 import com.jschool.services.api.UserService;
 import com.jschool.services.api.exception.ServiceException;
+import com.mysql.jdbc.jdbc2.optional.SuspendableXAConnection;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.log4j.Logger;
 
@@ -17,18 +18,26 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URL;
+import java.util.Properties;
 
 /**
  * Created by infinity on 12.02.16.
  */
-public class LoginController implements BaseController {
+public class LoginController extends BaseController {
 
     private static final Logger LOG = Logger.getLogger(LoginController.class);
 
-    private AppContext appContext = AppContext.getInstance();
-    private DriverService driverService = appContext.getDriverService();
-    private UserService userService = appContext.getUserService();
-    private Validator validator = appContext.getValidator();
+    private DriverService driverService;
+    private UserService userService;
+    private Validator validator;
+
+    public LoginController(Properties errorProperties,  DriverService driverService, UserService userService, Validator validator) {
+        super(errorProperties);
+        this.driverService = driverService;
+        this.userService = userService;
+        this.validator = validator;
+    }
 
     @Override
     public void execute(ServletContext servletContext, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -50,8 +59,7 @@ public class LoginController implements BaseController {
             }
         } catch (ControllerException e) {
             LOG.warn(e.getMessage());
-            request.setAttribute("error", e);
-            request.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(request, response);
+            showError(e,request,response);
         }
     }
 
@@ -89,10 +97,12 @@ public class LoginController implements BaseController {
             } else {
                 throw new ControllerException("Undefined login", ControllerStatusCode.UNDEFINED_LOGIN);
             }
-        } catch (ServiceException | ControllerException e) {
+        } catch (ServiceException e) {
             LOG.warn(e.getMessage());
-            req.setAttribute("error", e);
-            req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
+            showError(e,req,resp);
+        }catch (ControllerException e){
+            LOG.warn(e.getMessage());
+            showError(e,req,resp);
         }
     }
 

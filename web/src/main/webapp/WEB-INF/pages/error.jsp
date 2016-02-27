@@ -22,11 +22,8 @@
         <div class="card-panel">
           <span class="black-text">
                  <blockquote>
-                     <h5><c:out value="${requestScope.error.message}"/></h5>
+                     <h5><c:out value="${requestScope.errorMessage}"/></h5>
                  </blockquote>
-                  <c:forEach begin="0" end="4" var="stackTraceElem" items="${requestScope.error.stackTrace}">
-                      <c:out value="${stackTraceElem}"/><br/>
-                  </c:forEach>
           </span>
             <div class="row center" style="margin-top:30px;">
                 <button class="btn waves-effect waves-light" onclick="window.history.back();">Back

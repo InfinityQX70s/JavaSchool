@@ -16,7 +16,7 @@ public class Validator {
 
     public void validateCargoCities(String[] pickup, String[] unload) throws ControllerException {
         if (pickup.length!=unload.length){
-            throw new ControllerException("Some of catie's fields are empty", ControllerStatusCode.VALIDATE);
+            throw new ControllerException("Some of citie's fields are empty", ControllerStatusCode.EMPTY_FIELDS);
         }
     }
 
@@ -25,24 +25,24 @@ public class Validator {
         try {
             Integer.parseInt(orderNumber);
         }catch (NumberFormatException e){
-            throw new ControllerException("Order number format exception", ControllerStatusCode.VALIDATE);
+            throw new ControllerException("Order number format exception", ControllerStatusCode.ORDER_NUMBER_FORMAT);
         }
         int size = cargoName.length;
         if (cargoNumber.length!=size || cargoWeight.length!=size || pickup.length!=size || unload.length!=size){
-            throw new ControllerException("Some of cargo's fields are empty exception", ControllerStatusCode.VALIDATE);
+            throw new ControllerException("Some of cargo's fields are empty exception", ControllerStatusCode.EMPTY_FIELDS);
         }
         for (String number : cargoNumber){
             try {
                 Integer.parseInt(number);
             }catch (NumberFormatException e){
-                throw new ControllerException("Cargo number format exception", ControllerStatusCode.VALIDATE);
+                throw new ControllerException("Cargo number format exception", ControllerStatusCode.CARGO_NUMBER_FORMAT);
             }
         }
         for (String weight : cargoWeight){
             try {
                 Integer.parseInt(weight);
             }catch (NumberFormatException e){
-                throw new ControllerException("Cargo weight format exception", ControllerStatusCode.VALIDATE);
+                throw new ControllerException("Cargo weight format exception", ControllerStatusCode.CARGO_WEIGHT_FORMAT);
             }
         }
     }
@@ -52,7 +52,7 @@ public class Validator {
             try {
                 Integer.parseInt(driverNumber);
             }catch (NumberFormatException e){
-                throw new ControllerException("Driver number format exception", ControllerStatusCode.VALIDATE);
+                throw new ControllerException("Driver number format exception", ControllerStatusCode.DRIVER_NUMBER_FORMAT);
             }
         }
         validateTruckNumber(number);
@@ -60,7 +60,7 @@ public class Validator {
 
     public void validateTruckNumber(String number) throws ControllerException {
         if (!number.matches(TRUCK_PATTERN)){
-            throw new ControllerException("Truck number format exception", ControllerStatusCode.VALIDATE);
+            throw new ControllerException("Truck number format exception", ControllerStatusCode.TRUCK_NUMBER_FORMAT);
         }
     }
 
@@ -69,27 +69,19 @@ public class Validator {
         try {
             Integer.parseInt(capacity);
         }catch (NumberFormatException e){
-            throw new ControllerException("Truck capacity format exception", ControllerStatusCode.VALIDATE);
+            throw new ControllerException("Truck capacity format exception", ControllerStatusCode.TRUCK_CAPACITY_FORMAT);
         }
-        if (capacity.length() > 2)
-            throw new ControllerException("Truck capacity unbelievable", ControllerStatusCode.VALIDATE);
         try {
             Integer.parseInt(shiftSize);
         }catch (NumberFormatException e){
-            throw new ControllerException("Truck shift size format exception", ControllerStatusCode.VALIDATE);
-        }
-        if (shiftSize.length() > 1)
-            throw new ControllerException("Truck shift size unbelievable", ControllerStatusCode.VALIDATE);
-
-        if (!"ok".equals(status) && !"broken".equals(status)){
-            throw new ControllerException("Truck status format exception", ControllerStatusCode.VALIDATE);
+            throw new ControllerException("Truck shift size format exception", ControllerStatusCode.TRUCK_SHIFT_FORMAT);
         }
     }
 
 
     public void validateEmail(String email) throws ControllerException {
         if (!email.matches(EMAIL_PATTERN)){
-            throw new ControllerException("User email format exception", ControllerStatusCode.VALIDATE);
+            throw new ControllerException("User email format exception", ControllerStatusCode.EMAIL_FORMAT);
         }
     }
 
@@ -97,13 +89,13 @@ public class Validator {
         try {
             Integer.parseInt(number);
         }catch (NumberFormatException e){
-            throw new ControllerException("Driver number format exception", ControllerStatusCode.VALIDATE);
+            throw new ControllerException("Driver number format exception", ControllerStatusCode.DRIVER_NUMBER_FORMAT);
         }
     }
 
     public void validateFirstAndLastName(String firstName, String lastName) throws ControllerException {
         if (firstName.isEmpty() || lastName.isEmpty()){
-            throw new ControllerException("Empty fields exception", ControllerStatusCode.VALIDATE);
+            throw new ControllerException("Empty fields exception", ControllerStatusCode.EMPTY_FIELDS);
         }
     }
 }

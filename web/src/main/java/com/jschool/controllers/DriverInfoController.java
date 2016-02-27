@@ -16,16 +16,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * Created by infinity on 17.02.16.
  */
-public class DriverInfoController implements BaseController {
+public class DriverInfoController extends BaseController {
 
     private static final Logger LOG = Logger.getLogger(DriverInfoController.class);
 
-    private AppContext appContext = AppContext.getInstance();
-    private OrderAndCargoService orderAndCargoService = appContext.getOrderAndCargoService();
+    private OrderAndCargoService orderAndCargoService;
+
+    public DriverInfoController(Properties errorProperties, OrderAndCargoService orderAndCargoService) {
+        super(errorProperties);
+        this.orderAndCargoService = orderAndCargoService;
+    }
 
     @Override
     public void execute(ServletContext servletContext, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -39,8 +44,7 @@ public class DriverInfoController implements BaseController {
             }
         } catch (ControllerException e) {
             LOG.warn(e.getMessage());
-            request.setAttribute("error", e);
-            request.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(request, response);
+            showError(e,request,response);
         }
     }
 
@@ -63,8 +67,7 @@ public class DriverInfoController implements BaseController {
             req.getRequestDispatcher("/WEB-INF/pages/driverInfo.jsp").forward(req, resp);
         } catch (ServiceException e) {
             LOG.warn(e.getMessage());
-            req.setAttribute("error", e);
-            req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
+            showError(e,req,resp);
         }
 
     }
