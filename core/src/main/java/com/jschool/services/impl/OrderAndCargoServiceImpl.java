@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -27,12 +28,13 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
     private RoutePointDao routePointDao;
     private CityDao cityDao;
     private TruckDao truckDao;
+    private DriverStatisticDao driverStatisticDao;
     private TransactionManager transactionManager;
 
     public OrderAndCargoServiceImpl(OrdersDao ordersDao,
                                     DriverDao driverDao, CargoDao cargoDao,
                                     RoutePointDao routePointDao, CityDao cityDao,
-                                    TruckDao truckDao,
+                                    TruckDao truckDao,DriverStatisticDao driverStatisticDao,
                                     TransactionManager transactionManager) {
         this.ordersDao = ordersDao;
         this.driverDao = driverDao;
@@ -40,23 +42,26 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
         this.routePointDao = routePointDao;
         this.cityDao = cityDao;
         this.truckDao = truckDao;
+        this.driverStatisticDao = driverStatisticDao;
         this.transactionManager = transactionManager;
     }
 
     @Override
-    public void addOrder(Order order, List<Cargo> cargos) throws ServiceException {
+    public void addOrder(Order order, List<Cargo> cargos, int duration) throws ServiceException {
         CustomTransaction ct = transactionManager.getTransaction();
         ct.begin();
         try {
             Order element = ordersDao.findUniqueByNumber(order.getNumber());
             if (element == null) {
-                if (truckDao.findUniqueByNumber(order.getTruck().getNumber()).getOreder() == null) {
+                Truck truck = truckDao.findUniqueByNumber(order.getTruck().getNumber());
+                if (truck.getOreder() == null) {
                     List<Driver> drivers = order.getDrivers();
                     order.setRoutePoints(null);
                     order.setDrivers(null);
+                    order.setTruck(truck);
                     ordersDao.create(order);
-                    assignDrivers(order, drivers);
-                    assignCargos(order, cargos);
+                    assignDrivers(order, drivers,duration);
+                    assignCargos(order, cargos, truck.getCapacity());
                     ct.commit();
                 }else
                     throw new ServiceException("Truck has an order", ServiceStatusCode.TRUCK_ASSIGNED_ORDER);
@@ -70,10 +75,14 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
         }
     }
 
-    private void assignCargos(Order order, List<Cargo> cargos) throws DaoException, ServiceException {
+    private void assignCargos(Order order, List<Cargo> cargos, int capacity) throws DaoException, ServiceException {
+        int maxWeight = 0;
         for (Cargo cargo : cargos){
             Cargo check = cargoDao.findUniqueByNumber(cargo.getNumber());
             if (check == null) {
+                if (cargo.getWeight()>maxWeight)
+                    maxWeight = cargo.getWeight();
+
                 RoutePoint pickupRoutePoint = cargo.getPickup();
                 City city = cityDao.findUniqueByName(pickupRoutePoint.getCity().getName());
                 if (city == null)
@@ -81,6 +90,7 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
                 pickupRoutePoint.setCity(city);
                 pickupRoutePoint.setOrder(order);
                 routePointDao.create(pickupRoutePoint);
+
                 RoutePoint unloadRoutePoint = cargo.getUnload();
                 city = cityDao.findUniqueByName(unloadRoutePoint.getCity().getName());
                 if (city == null)
@@ -90,27 +100,39 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
                 routePointDao.create(unloadRoutePoint);
                 cargo.setPickup(pickupRoutePoint);
                 cargo.setUnload(unloadRoutePoint);
+
                 List<CargoStatusLog> cargoStatusLogs = new ArrayList<>();
                 CargoStatusLog cargoStatusLogEntity = new CargoStatusLog();
                 cargoStatusLogEntity.setStatus(CargoStatus.ready);
                 cargoStatusLogEntity.setTimestamp(new Date());
                 cargoStatusLogEntity.setCargo(cargo);
                 cargoStatusLogs.add(cargoStatusLogEntity);
+
                 cargo.setStatusLogs(cargoStatusLogs);
                 cargoDao.create(cargo);
             }else {
                 throw new ServiceException("Cargo with such identifier exist", ServiceStatusCode.CARGO_ALREADY_EXIST);
             }
         }
+        if (capacity < maxWeight)
+            throw new ServiceException("Truck weight not enough", ServiceStatusCode.TRUCK_WEIGHT_NOT_ENOUGH);
+
     }
 
-    private void assignDrivers(Order order, List<Driver> drivers) throws ServiceException, DaoException {
+    private void assignDrivers(Order order, List<Driver> drivers, int duration) throws ServiceException, DaoException {
         Truck truck = order.getTruck();
         if (truck.getShiftSize()==drivers.size()){
             for (Driver driver : drivers) {
                 if (driverDao.findUniqueByNumber(driver.getNumber()).getOrder() == null) {
-                    driver.setOrder(order);
-                    driverDao.update(driver);
+                    List<DriverStatistic> driverStatistics = driverStatisticDao.findAllByOneMonth(driver);
+                    int sum = 0;
+                    for (DriverStatistic driverStatistic : driverStatistics)
+                        sum += driverStatistic.getHoursWorked();
+                    if (sum + duration <= 176) {
+                        driver.setOrder(order);
+                        driverDao.update(driver);
+                    }else
+                        throw new ServiceException("Driver hours limit is exhausted", ServiceStatusCode.DRIVER_HOURS_LIMIT);
                 }else {
                     throw new ServiceException("Driver has an order", ServiceStatusCode.DRIVER_ASSIGNED_ORDER);
                 }

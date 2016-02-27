@@ -156,8 +156,9 @@ public class OrderController extends BaseController {
             String[] unload = req.getParameterValues("unload");
             String truckNumber = req.getParameter("truckNumber");
             String[] driverNumbers = req.getParameterValues("driverNumber");
+            String duration = req.getParameter("duration").split(" ")[0];
             validator.validateOrderAndCargo(orderNumber,cargoNumber,cargoName,cargoWeight,pickup,unload);
-            validator.validateTruckAndDrivers(truckNumber,driverNumbers);
+            validator.validateTruckDriversAndDuration(truckNumber,driverNumbers,duration);
 
             Order order = new Order();
             order.setNumber(Integer.parseInt(orderNumber));
@@ -193,7 +194,8 @@ public class OrderController extends BaseController {
                 drivers.add(driverService.getDriverByPersonalNumber(Integer.parseInt(driver)));
             order.setTruck(truck);
             order.setDrivers(drivers);
-            orderAndCargoService.addOrder(order, cargos);
+
+            orderAndCargoService.addOrder(order, cargos, Integer.parseInt(duration));
             resp.sendRedirect("/employee/orders");
         } catch (ServiceException e) {
             LOG.warn(e.getMessage());

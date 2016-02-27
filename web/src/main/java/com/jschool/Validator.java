@@ -47,13 +47,18 @@ public class Validator {
         }
     }
 
-    public void validateTruckAndDrivers(String number, String[] driverNumbers) throws ControllerException {
+    public void validateTruckDriversAndDuration(String number, String[] driverNumbers, String duration) throws ControllerException {
         for (String driverNumber : driverNumbers){
             try {
                 Integer.parseInt(driverNumber);
             }catch (NumberFormatException e){
                 throw new ControllerException("Driver number format exception", ControllerStatusCode.DRIVER_NUMBER_FORMAT);
             }
+        }
+        try {
+            Integer.parseInt(duration);
+        }catch (NumberFormatException e){
+            throw new ControllerException("Duration format exception", ControllerStatusCode.DURATION_FORMAT);
         }
         validateTruckNumber(number);
     }

@@ -1,39 +1,6 @@
-12:55:06,932 WARN  http-nio-8080-exec-2 DriverManagerConnectionProviderImpl:configure:76 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
-12:55:30,060 WARN  http-nio-8080-exec-9 LoginController:loginUser:104 - User email format exception
-14:09:03,886 WARN  http-nio-8080-exec-2 DriverManagerConnectionProviderImpl:configure:76 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
-14:09:15,130 WARN  http-nio-8080-exec-5 LoginController:loginUser:104 - User email format exception
-14:09:25,661 WARN  http-nio-8080-exec-10 LoginController:loginUser:104 - Wrong email or pass
-14:09:29,681 WARN  http-nio-8080-exec-1 LoginController:loginUser:104 - Wrong email or pass
-14:09:37,425 WARN  http-nio-8080-exec-2 LoginController:loginUser:104 - Undefined login
-14:09:46,534 WARN  http-nio-8080-exec-2 LoginController:loginUser:104 - Driver number format exception
-14:10:06,047 WARN  http-nio-8080-exec-9 LoginFilter:doFilter:61 - Page not found
-14:10:07,751 WARN  http-nio-8080-exec-6 LoginFilter:doFilter:61 - Page not found
-14:10:12,558 WARN  http-nio-8080-exec-8 LoginFilter:doFilter:61 - Page not found
-14:10:25,281 WARN  http-nio-8080-exec-1 OrderController:addOrder:143 - Cargo weight format exception
-14:10:28,086 WARN  http-nio-8080-exec-4 LoginFilter:doFilter:61 - Page not found
-14:10:30,477 WARN  http-nio-8080-exec-10 LoginFilter:doFilter:61 - Page not found
-14:10:34,665 WARN  http-nio-8080-exec-6 LoginFilter:doFilter:61 - Page not found
-14:10:47,902 WARN  http-nio-8080-exec-7 DriverController:addDriver:107 - User or Driver with such identifier exist
-14:10:48,623 WARN  http-nio-8080-exec-10 LoginFilter:doFilter:61 - Page not found
-14:10:50,557 WARN  http-nio-8080-exec-2 LoginFilter:doFilter:61 - Page not found
-14:10:57,104 WARN  http-nio-8080-exec-1 LoginFilter:doFilter:61 - Page not found
-14:10:59,233 WARN  http-nio-8080-exec-4 LoginFilter:doFilter:61 - Page not found
-14:11:05,188 WARN  http-nio-8080-exec-6 TruckController:addTruck:107 - Truck number format exception
-14:11:05,535 WARN  http-nio-8080-exec-8 LoginFilter:doFilter:61 - Page not found
-14:11:07,259 WARN  http-nio-8080-exec-1 LoginFilter:doFilter:61 - Page not found
-14:11:12,829 WARN  http-nio-8080-exec-5 TruckController:addTruck:107 - Truck number format exception
-14:11:13,181 WARN  http-nio-8080-exec-7 LoginFilter:doFilter:61 - Page not found
-14:11:14,486 WARN  http-nio-8080-exec-9 LoginFilter:doFilter:61 - Page not found
-14:11:18,430 WARN  http-nio-8080-exec-1 TruckController:addTruck:107 - Truck number format exception
-14:11:18,741 WARN  http-nio-8080-exec-3 LoginFilter:doFilter:61 - Page not found
-14:11:20,463 WARN  http-nio-8080-exec-4 LoginFilter:doFilter:61 - Page not found
-14:11:26,426 WARN  http-nio-8080-exec-2 TruckController:addTruck:107 - Truck capacity format exception
-14:11:27,045 WARN  http-nio-8080-exec-9 LoginFilter:doFilter:61 - Page not found
-14:11:28,957 WARN  http-nio-8080-exec-10 LoginFilter:doFilter:61 - Page not found
-14:11:37,896 WARN  http-nio-8080-exec-5 TruckController:addTruck:107 - Truck shift size format exception
-14:11:38,508 WARN  http-nio-8080-exec-2 LoginFilter:doFilter:61 - Page not found
-14:11:40,183 WARN  http-nio-8080-exec-6 LoginFilter:doFilter:61 - Page not found
-14:11:43,310 WARN  http-nio-8080-exec-6 LoginFilter:doFilter:61 - Page not found
-14:13:30,481 WARN  http-nio-8080-exec-7 LoginFilter:doFilter:61 - Page not found
-14:13:36,803 WARN  http-nio-8080-exec-9 LoginFilter:doFilter:61 - Page not found
-14:13:37,370 WARN  http-nio-8080-exec-4 LoginFilter:doFilter:61 - Page not found
+14:49:09,052 WARN  http-nio-8080-exec-2 DriverManagerConnectionProviderImpl:configure:76 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+14:49:46,821 WARN  http-nio-8080-exec-1 LoginController:loginUser:104 - Wrong email or pass
+15:06:24,904 WARN  http-nio-8080-exec-1 DriverManagerConnectionProviderImpl:configure:76 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+15:07:03,131 WARN  http-nio-8080-exec-12 DriverManagerConnectionProviderImpl:configure:76 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+15:07:54,729 WARN  http-nio-8080-exec-2 DriverManagerConnectionProviderImpl:configure:76 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+15:08:42,282 WARN  http-nio-8080-exec-3 DriverManagerConnectionProviderImpl:configure:76 - HHH000402: Using Hibernate built-in connection pool (not for production use!)

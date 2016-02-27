@@ -51,7 +51,7 @@ public class DutyServiceImplTest {
     }
 
     @Test
-    public void testChangeDriverDutyStatusFromDriving() throws Exception {
+    public void testChangeDriverStatusFromDriving() throws Exception {
         Driver driver = getDriverForTest();
         DriverStatusLog driverStatusLog = new DriverStatusLog();
         driverStatusLog.setStatus(DriverStatus.driving);
@@ -62,7 +62,7 @@ public class DutyServiceImplTest {
     }
 
     @Test
-    public void testChangeDriverDutyStatusFromOther() throws Exception {
+    public void testChangeDriverStatusFromOther() throws Exception {
         Driver driver = getDriverForTest();
         DriverStatusLog driverStatusLog = new DriverStatusLog();
         driverStatusLog.setStatus(DriverStatus.rest);
@@ -73,7 +73,7 @@ public class DutyServiceImplTest {
     }
 
     @Test
-    public void testChangeDriverDutyStatusSame() throws Exception {
+    public void testChangeDriverStatusOnSame() throws Exception {
         Driver driver = getDriverForTest();
         DriverStatusLog driverStatusLog = new DriverStatusLog();
         driverStatusLog.setStatus(DriverStatus.rest);
@@ -83,7 +83,7 @@ public class DutyServiceImplTest {
     }
 
     @Test(expected = ServiceException.class)
-    public void testChangeDriverDutyStatusError() throws Exception {
+    public void testChangeDriverStatusError() throws Exception {
         Mockito.when(driverDaoMoc.findUniqueByNumber(getDriverForTest().getNumber())).thenReturn(null);
         dutyService.changeDriverDutyStatusByNumber(getDriverForTest().getNumber(), DriverStatus.driving);
     }

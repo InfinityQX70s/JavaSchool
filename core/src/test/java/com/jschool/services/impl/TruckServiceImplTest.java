@@ -52,7 +52,7 @@ public class TruckServiceImplTest {
     }
 
     @Test(expected = ServiceException.class)
-    public void testAddTruckError() throws Exception {
+    public void testAddTruckTruckExist() throws Exception {
         Mockito.when(truckDaoMoc.findUniqueByNumber(getTruckForTest().getNumber())).thenReturn(getTruckForTest());
         truckService.addTruck(getTruckForTest());
     }
@@ -99,21 +99,6 @@ public class TruckServiceImplTest {
         truck.setOreder(order);
         Mockito.when(truckDaoMoc.findUniqueByNumber(getTruckForTest().getNumber())).thenReturn(truck);
         truckService.deleteTruck(truck.getNumber());
-    }
-
-    @Test
-    public void testGetTruckByNumber() throws Exception {
-        Mockito.when(truckDaoMoc.findUniqueByNumber("ER45678")).thenReturn(getTruckForTest());
-        Truck truck = truckService.getTruckByNumber("ER45678");
-        Assert.assertEquals(truck.getNumber(),"ER45678");
-        Assert.assertEquals(truck.getCapacity(),50);
-        Assert.assertEquals(truck.isRepairState(),true);
-    }
-
-    @Test(expected = ServiceException.class)
-    public void testGetTruckByNumberError() throws Exception {
-        Mockito.when(truckDaoMoc.findUniqueByNumber("ER45678")).thenReturn(null);
-        truckService.getTruckByNumber("ER45678");
     }
 
     @Test

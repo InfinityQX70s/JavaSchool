@@ -5,12 +5,14 @@ import com.jschool.TransactionManager;
 import com.jschool.dao.api.DriverDao;
 import com.jschool.dao.api.DriverStatisticDao;
 import com.jschool.dao.api.UserDao;
+import com.jschool.dao.api.exception.DaoException;
 import com.jschool.entities.Driver;
 import com.jschool.entities.DriverStatistic;
 import com.jschool.entities.Order;
 import com.jschool.entities.User;
 import com.jschool.services.api.DriverService;
 import com.jschool.services.api.exception.ServiceException;
+import com.jschool.services.api.exception.ServiceStatusCode;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -71,54 +73,74 @@ public class DriverServiceImplTest {
     }
 
     @Test
-    public void testAddDriverOk() throws Exception {
+    public void testAddDriver() throws Exception {
         Mockito.when(userDaoMoc.findUniqueByEmail("Test@gmail.com")).thenReturn(null);
         Mockito.when(driverDaoMoc.findUniqueByNumber(13)).thenReturn(null);
         driverService.addDriver(getDriverForTest());
     }
 
-    @Test(expected = ServiceException.class)
-    public void testAddDriverErrorIsUser() throws Exception {
-        Mockito.when(userDaoMoc.findUniqueByEmail("Test@gmail.com")).thenReturn(getDriverForTest().getUser());
-        driverService.addDriver(getDriverForTest());
-        Mockito.when(userDaoMoc.findUniqueByEmail("Test@gmail.com")).thenReturn(null);
-        Mockito.when(driverDaoMoc.findUniqueByNumber(13)).thenReturn(getDriverForTest());
-        driverService.addDriver(getDriverForTest());
+    @Test
+    public void testAddDriverUserExist(){
+        try {
+            Mockito.when(userDaoMoc.findUniqueByEmail("Test@gmail.com")).thenReturn(getDriverForTest().getUser());
+            driverService.addDriver(getDriverForTest());
+        } catch (ServiceException e) {
+            Assert.assertEquals(ServiceStatusCode.USER_OR_DRIVER_ALREADY_EXIST,e.getStatusCode());
+        } catch (DaoException e) {
+            e.printStackTrace();
+        }
+
     }
 
-    @Test(expected = ServiceException.class)
-    public void testAddDriverErrorIsDriver() throws Exception {
-        Mockito.when(userDaoMoc.findUniqueByEmail("Test@gmail.com")).thenReturn(null);
-        Mockito.when(driverDaoMoc.findUniqueByNumber(13)).thenReturn(getDriverForTest());
-        driverService.addDriver(getDriverForTest());
+    @Test
+    public void testAddDriverDriverExist() {
+        try {
+            Mockito.when(userDaoMoc.findUniqueByEmail("Test@gmail.com")).thenReturn(null);
+            Mockito.when(driverDaoMoc.findUniqueByNumber(13)).thenReturn(getDriverForTest());
+            driverService.addDriver(getDriverForTest());
+        } catch (ServiceException e) {
+            Assert.assertEquals(ServiceStatusCode.USER_OR_DRIVER_ALREADY_EXIST,e.getStatusCode());
+        } catch (DaoException e) {
+            e.printStackTrace();
+        }
     }
 
 
     @Test
-    public void testUpdateAndDeleteDrive() throws Exception {
+    public void testUpdateDrive() throws Exception {
         Mockito.when(driverDaoMoc.findUniqueByNumber(13)).thenReturn(getDriverForTest());
         driverService.updateDrive(getDriverForTest());
-        driverService.deleteDriver(getDriverForTest().getNumber());
-
     }
 
 
-    @Test(expected = ServiceException.class)
-    public void testUpdateAndDeleteDriveNotFound() throws Exception {
-        Mockito.when(driverDaoMoc.findUniqueByNumber(13)).thenReturn(null);
-        driverService.updateDrive(getDriverForTest());
-        driverService.deleteDriver(getDriverForTest().getNumber());
+    @Test
+    public void testUpdateDriveNotFound() {
+        try {
+            Mockito.when(driverDaoMoc.findUniqueByNumber(13)).thenReturn(null);
+            driverService.updateDrive(getDriverForTest());
+        } catch (ServiceException e) {
+            Assert.assertEquals(ServiceStatusCode.DRIVER_NOT_FOUND,e.getStatusCode());
+        } catch (DaoException e) {
+            e.printStackTrace();
+        }
+
     }
 
-    @Test(expected = ServiceException.class)
-    public void testUpdateAndDeleteDriveHasOrder() throws Exception {
-        Driver driver = getDriverForTest();
-        Order order = new Order();
-        order.setNumber(2323);
-        driver.setOrder(order);
-        Mockito.when(driverDaoMoc.findUniqueByNumber(13)).thenReturn(driver);
-        driverService.updateDrive(driver);
-        driverService.deleteDriver(driver.getNumber());
+    @Test
+    public void testUpdateDriveHasOrder(){
+        try {
+            Driver driver = getDriverForTest();
+            Order order = new Order();
+            order.setNumber(2323);
+            driver.setOrder(order);
+            Mockito.when(driverDaoMoc.findUniqueByNumber(13)).thenReturn(driver);
+            driverService.updateDrive(driver);
+        } catch (ServiceException e) {
+            Assert.assertEquals(ServiceStatusCode.DRIVER_ASSIGNED_ORDER,e.getStatusCode());
+        } catch (DaoException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Test
@@ -128,43 +150,32 @@ public class DriverServiceImplTest {
 
     }
 
-    @Test(expected = ServiceException.class)
-    public void testDeleteDriveNotFound() throws Exception {
-        Mockito.when(driverDaoMoc.findUniqueByNumber(13)).thenReturn(null);
-        driverService.deleteDriver(getDriverForTest().getNumber());
+    @Test
+    public void testDeleteDriveNotFound(){
+        try {
+            Mockito.when(driverDaoMoc.findUniqueByNumber(13)).thenReturn(null);
+            driverService.deleteDriver(getDriverForTest().getNumber());
+        } catch (ServiceException e) {
+            Assert.assertEquals(ServiceStatusCode.DRIVER_NOT_FOUND,e.getStatusCode());
+        } catch (DaoException e) {
+            e.printStackTrace();
+        }
     }
 
-    @Test(expected = ServiceException.class)
+    @Test
     public void testDeleteDriveHasOrder() throws Exception {
-        Driver driver = getDriverForTest();
-        Order order = new Order();
-        order.setNumber(2323);
-        driver.setOrder(order);
-        Mockito.when(driverDaoMoc.findUniqueByNumber(13)).thenReturn(driver);
-        driverService.deleteDriver(driver.getNumber());
-    }
-
-    @Test
-    public void testGetDriverByPersonalNumber() throws Exception {
-        Mockito.when(driverDaoMoc.findUniqueByNumber(13)).thenReturn(getDriverForTest());
-        Driver driver = driverService.getDriverByPersonalNumber(getDriverForTest().getNumber());
-        Assert.assertEquals(driver.getNumber(),13);
-        Assert.assertEquals(driver.getFirstName(),"Ivan");
-        Assert.assertEquals(driver.getLastName(),"Ivanov");
-        Assert.assertEquals(driver.getUser().getEmail(),"Test@gmail.com");
-    }
-
-    @Test(expected = ServiceException.class)
-    public void testGetDriverByPersonalNumberError() throws Exception {
-        Mockito.when(driverDaoMoc.findUniqueByNumber(13)).thenReturn(null);
-        driverService.getDriverByPersonalNumber(getDriverForTest().getNumber());
-    }
-
-    @Test
-    public void testFindAllDrivers() throws Exception {
-        Mockito.when(driverDaoMoc.findAll()).thenReturn(getDriversList());
-        List<Driver> drive = driverService.findAllDrivers();
-        Assert.assertEquals(drive.size(),getDriversList().size());
+        try {
+            Driver driver = getDriverForTest();
+            Order order = new Order();
+            order.setNumber(2323);
+            driver.setOrder(order);
+            Mockito.when(driverDaoMoc.findUniqueByNumber(13)).thenReturn(driver);
+            driverService.deleteDriver(driver.getNumber());
+        } catch (ServiceException e) {
+            Assert.assertEquals(ServiceStatusCode.DRIVER_ASSIGNED_ORDER,e.getStatusCode());
+        } catch (DaoException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
@@ -174,6 +185,7 @@ public class DriverServiceImplTest {
         driverStatistic.setHoursWorked(30);
         driverStatistic.setTimestamp(new Date());
         driverStatistics.add(driverStatistic);
+
         DriverStatistic driverStatistic1 = new DriverStatistic();
         driverStatistic1.setHoursWorked(40);
         driverStatistic1.setTimestamp(new Date());

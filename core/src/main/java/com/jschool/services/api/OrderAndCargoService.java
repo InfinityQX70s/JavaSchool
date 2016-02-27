@@ -13,7 +13,7 @@ import java.util.List;
  */
 public interface OrderAndCargoService {
 
-    void addOrder(Order order, List<Cargo> cargos) throws ServiceException;
+    void addOrder(Order order, List<Cargo> cargos, int duration) throws ServiceException;
     void updateOrder(Order order) throws ServiceException;
     void deleteOrder(int number) throws ServiceException;
     List<Order> findAllOrders() throws ServiceException;

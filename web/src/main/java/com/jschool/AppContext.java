@@ -190,7 +190,7 @@ public class AppContext {
         if (orderAndCargoService == null){
             orderAndCargoService = new OrderAndCargoServiceImpl(getOrdersDao(),
                     getDriverDao(),getCargoDao(),
-                    getRoutePointDao(),getCityDao(),getTruckDao(),getTransactionManager());
+                    getRoutePointDao(),getCityDao(),getTruckDao(),getDriverStatisticDao(),getTransactionManager());
         }
         return orderAndCargoService;
     }
