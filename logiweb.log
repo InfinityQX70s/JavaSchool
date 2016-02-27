@@ -4,3 +4,8 @@
 15:07:03,131 WARN  http-nio-8080-exec-12 DriverManagerConnectionProviderImpl:configure:76 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
 15:07:54,729 WARN  http-nio-8080-exec-2 DriverManagerConnectionProviderImpl:configure:76 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
 15:08:42,282 WARN  http-nio-8080-exec-3 DriverManagerConnectionProviderImpl:configure:76 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+18:03:50,782 WARN  http-nio-8080-exec-2 DriverManagerConnectionProviderImpl:configure:76 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+18:04:08,877 WARN  http-nio-8080-exec-2 LoginController:loginUser:104 - Wrong email or pass
+18:05:05,594 WARN  http-nio-8080-exec-7 OrderController:submitOrder:201 - Shift size and drivers count do not equals
+18:06:32,480 WARN  http-nio-8080-exec-7 DriverController:deleteDriver:123 - Driver has an order
+18:07:18,739 WARN  http-nio-8080-exec-2 TruckController:deleteTruck:120 - Truck has an order
