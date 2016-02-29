@@ -27,6 +27,10 @@ public class TruckServiceImpl implements TruckService{
         this.transactionManager = transactionManager;
     }
 
+    /**Add truck if it is not exist in db
+     * @param truck entity with filling fields
+     * @throws ServiceException status code TRUCK_ALREADY_EXIST
+     */
     @Override
     public void addTruck(Truck truck) throws ServiceException {
         CustomTransaction ct = transactionManager.getTransaction();
@@ -46,6 +50,10 @@ public class TruckServiceImpl implements TruckService{
         }
     }
 
+    /**Update truck if it exist and do not have order
+     * @param truck entity
+     * @throws ServiceException status codes TRUCK_NOT_FOUND, TRUCK_ASSIGNED_ORDER
+     */
     @Override
     public void updateTruck(Truck truck) throws ServiceException {
         CustomTransaction ct = transactionManager.getTransaction();
@@ -72,6 +80,10 @@ public class TruckServiceImpl implements TruckService{
         }
     }
 
+    /**Delete truck with curent number and if it did not has order
+     * @param truckNumber
+     * @throws ServiceException
+     */
     @Override
     public void deleteTruck(String truckNumber) throws ServiceException {
         CustomTransaction ct = transactionManager.getTransaction();
@@ -117,6 +129,11 @@ public class TruckServiceImpl implements TruckService{
         }
     }
 
+    /**Return list of trucks with "ok" state and with capacity more or equals then needed
+     * @param capacity
+     * @return
+     * @throws ServiceException
+     */
     @Override
     public List<Truck> findAllAvailableTrucksByMinCapacity(int capacity) throws ServiceException {
         try {

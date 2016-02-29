@@ -37,29 +37,51 @@ public class DutyServiceImpl implements DutyService {
         this.transactionManager = transactionManager;
     }
 
+    /** Login driver and change his status
+     * @param number  personal number of driver in db
+     * @param dutyStatus status of driver
+     * @throws ServiceException
+     */
     @Override
     public void loginDriverByNumber(int number, DriverStatus dutyStatus) throws ServiceException {
         setDriverStatus(number,dutyStatus);
     }
 
+    /**Change driver status then he is on work
+     * @param number driver personal number
+     * @param dutyStatus his current status
+     * @throws ServiceException
+     */
     @Override
     public void changeDriverDutyStatusByNumber(int number, DriverStatus dutyStatus) throws ServiceException {
         setDriverStatus(number,dutyStatus);
     }
 
+    /**Logout driver and set his curretn status to rest
+     * @param number personal number of driver
+     * @throws ServiceException
+     */
     @Override
     public void logoutDriverByNumber(int number) throws ServiceException {
         setDriverStatus(number, DriverStatus.rest);
     }
 
+    /** Util method set driver status
+     * @param number of driver
+     * @param dutyStatus driver's current status
+     * @throws ServiceException with status code DRIVER_NOT_FOUND if driver not exist in db
+     */
     private void setDriverStatus(int number, DriverStatus dutyStatus) throws ServiceException {
         CustomTransaction ct = transactionManager.getTransaction();
         ct.begin();
         try {
             Driver driver = driverDao.findUniqueByNumber(number);
             if (driver != null){
+                // find last status of driver and check if it is same as current then do nothing
                 DriverStatusLog statusLog = driverStatusLogDao.findLastStatus(driver);
                 if (statusLog.getStatus() != dutyStatus){
+                    //check if last status is "driving" then set new status and count hours of worked and
+                    // insert this information in table driver statistic with current date and hours worked
                     if (statusLog.getStatus() == DriverStatus.driving){
                         long diff = new Date().getTime() - statusLog.getTimestamp().getTime();
                         int diffHours = (int) (diff / (60 * 60 * 1000));
@@ -68,7 +90,7 @@ public class DutyServiceImpl implements DutyService {
                         driverStatistic.setHoursWorked(diffHours);
                         driverStatistic.setDriver(driver);
                         driverStatisticDao.create(driverStatistic);
-                    }else {
+                    }else {                                        //insert status in db for current driver
                         DriverStatusLog driverStatusLog = new DriverStatusLog();
                         driverStatusLog.setStatus(dutyStatus);
                         driverStatusLog.setTimestamp(new Date());

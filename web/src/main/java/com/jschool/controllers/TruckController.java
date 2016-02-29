@@ -36,6 +36,8 @@ public class TruckController extends BaseController {
     @Override
     public void execute(ServletContext servletContext, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
+            //split uri by "/" and check url on correct and pass it to needed method
+            // by uri and "get" or "post" method
             String[] uri = request.getRequestURI().split("/");
             if ("GET".equals(request.getMethod())) {
                 if (uri.length == 4 && "trucks".equals(uri[3]))

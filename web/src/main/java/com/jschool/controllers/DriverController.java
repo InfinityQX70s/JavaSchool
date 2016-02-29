@@ -38,6 +38,8 @@ public class DriverController extends BaseController {
     @Override
     public void execute(ServletContext servletContext, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
+            //split uri by "/" and check url on correct and pass it to needed method
+            // by uri and "get" or "post" method
             String[] uri = request.getRequestURI().split("/");
             if ("GET".equals(request.getMethod())) {
                 if (uri.length == 4 && "drivers".equals(uri[3]))
@@ -89,6 +91,7 @@ public class DriverController extends BaseController {
             String firstName = req.getParameter("firstName");
             String lastName = req.getParameter("lastName");
             String email = req.getParameter("email");
+            //get fields from form validate them and fill entity, pass it to service
             validator.validateEmail(email);
             validator.validateDriverNumber(number);
             validator.validateFirstAndLastName(firstName, lastName);

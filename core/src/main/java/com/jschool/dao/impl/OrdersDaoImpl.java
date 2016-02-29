@@ -39,6 +39,12 @@ public class OrdersDaoImpl extends GenericDaoImpl<Order> implements OrdersDao{
         }
     }
 
+    /**Return list of orders  finded by state "done" orders  or
+     * "not done" orders
+     * @param isDone param equals state true if order done or false in other wise
+     * @return
+     * @throws DaoException
+     */
     @Override
     public List<Order> findAllByState(boolean isDone) throws DaoException {
         try {

@@ -20,6 +20,10 @@ public abstract class GenericDaoImpl<T> implements GenericDao<T> {
         this.entityManager = entityManager;
     }
 
+    /**Do basic operation for all entities such as create
+     * @param entity
+     * @throws DaoException
+     */
     @Override
     public void create(T entity) throws DaoException {
         try {
@@ -30,6 +34,10 @@ public abstract class GenericDaoImpl<T> implements GenericDao<T> {
         }
     }
 
+    /**Do basic operation for all entities such as update
+     * @param entity
+     * @throws DaoException
+     */
     @Override
     public void update(T entity) throws DaoException {
         try {
@@ -40,6 +48,10 @@ public abstract class GenericDaoImpl<T> implements GenericDao<T> {
         }
     }
 
+    /**Do basic operation for all entities such as delete
+     * @param entity
+     * @throws DaoException
+     */
     @Override
     public void delete(T entity) throws DaoException {
         try {

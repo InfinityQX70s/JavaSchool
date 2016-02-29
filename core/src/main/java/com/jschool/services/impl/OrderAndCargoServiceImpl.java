@@ -46,6 +46,14 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
         this.transactionManager = transactionManager;
     }
 
+    /**Add full order in db, large transaction with adding cargos, crago status,
+     * route pints, assign driver and truck
+     * @param order entity with filled fields
+     * @param cargos list of cargos for order
+     * @param duration of order
+     * @throws ServiceException with status code TRUCK_ASSIGNED_ORDER - Truck has an order,
+     * ORDER_ALREADY_EXIST - order with such identifier exist in db
+     */
     @Override
     public void addOrder(Order order, List<Cargo> cargos, int duration) throws ServiceException {
         CustomTransaction ct = transactionManager.getTransaction();
@@ -53,14 +61,18 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
         try {
             Order element = ordersDao.findUniqueByNumber(order.getNumber());
             if (element == null) {
+                // find truck and check that it did not has order
                 Truck truck = truckDao.findUniqueByNumber(order.getTruck().getNumber());
                 if (truck.getOreder() == null) {
+                    // get list of drivers we want to assign
                     List<Driver> drivers = order.getDrivers();
                     order.setRoutePoints(null);
                     order.setDrivers(null);
                     order.setTruck(truck);
                     ordersDao.create(order);
+                    //method assign drivers to order
                     assignDrivers(order, drivers,duration);
+                    // method add cargos to order and check capacity
                     assignCargos(order, cargos, truck.getCapacity());
                     ct.commit();
                 }else
@@ -75,14 +87,24 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
         }
     }
 
+    /**Add cargoes to order and check that all cargoes enter in current truck
+     * @param order
+     * @param cargos list of cargoes and route points for order
+     * @param capacity of truck
+     * @throws DaoException
+     * @throws ServiceException status CITY_NOT_FOUND, CARGO_ALREADY_EXIST, TRUCK_WEIGHT_NOT_ENOUGH
+     */
     private void assignCargos(Order order, List<Cargo> cargos, int capacity) throws DaoException, ServiceException {
         int maxWeight = 0;
         for (Cargo cargo : cargos){
+            //check cargo has unique number
             Cargo check = cargoDao.findUniqueByNumber(cargo.getNumber());
             if (check == null) {
+                //count max weight of cargoes
                 if (cargo.getWeight()>maxWeight)
                     maxWeight = cargo.getWeight();
 
+                //create  pick up route point for current cargo
                 RoutePoint pickupRoutePoint = cargo.getPickup();
                 City city = cityDao.findUniqueByName(pickupRoutePoint.getCity().getName());
                 if (city == null)
@@ -91,6 +113,7 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
                 pickupRoutePoint.setOrder(order);
                 routePointDao.create(pickupRoutePoint);
 
+                // create unload route point for cargo
                 RoutePoint unloadRoutePoint = cargo.getUnload();
                 city = cityDao.findUniqueByName(unloadRoutePoint.getCity().getName());
                 if (city == null)
@@ -98,9 +121,12 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
                 unloadRoutePoint.setCity(city);
                 unloadRoutePoint.setOrder(order);
                 routePointDao.create(unloadRoutePoint);
+
+                //set points to cargo
                 cargo.setPickup(pickupRoutePoint);
                 cargo.setUnload(unloadRoutePoint);
 
+                //set cargo default status "ready"
                 List<CargoStatusLog> cargoStatusLogs = new ArrayList<>();
                 CargoStatusLog cargoStatusLogEntity = new CargoStatusLog();
                 cargoStatusLogEntity.setStatus(CargoStatus.ready);
@@ -114,22 +140,34 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
                 throw new ServiceException("Cargo with such identifier exist", ServiceStatusCode.CARGO_ALREADY_EXIST);
             }
         }
+        //check capacity of truck
         if (capacity < maxWeight)
             throw new ServiceException("Truck weight not enough", ServiceStatusCode.TRUCK_WEIGHT_NOT_ENOUGH);
 
     }
 
+    /** Assign drivers to order and check hours of work for every driver
+     * @param order
+     * @param drivers list of drivers
+     * @param duration of order
+     * @throws ServiceException status codes DRIVER_ASSIGNED_ORDER, DRIVER_HOURS_LIMIT, DRIVER_AND_SHIFT_SIZE_NOT_EQUAL
+     * @throws DaoException
+     */
     private void assignDrivers(Order order, List<Driver> drivers, int duration) throws ServiceException, DaoException {
         Truck truck = order.getTruck();
+        //check that driver's count equals truck shift size
         if (truck.getShiftSize()==drivers.size()){
             for (Driver driver : drivers) {
+                //check driver do not has order
                 if (driverDao.findUniqueByNumber(driver.getNumber()).getOrder() == null) {
+                    // count hours of work for current driver per month
                     List<DriverStatistic> driverStatistics = driverStatisticDao.findAllByOneMonth(driver);
                     int sum = 0;
                     for (DriverStatistic driverStatistic : driverStatistics)
                         sum += driverStatistic.getHoursWorked();
                     if (sum + duration <= 176) {
                         driver.setOrder(order);
+                        // assign driver to order
                         driverDao.update(driver);
                     }else
                         throw new ServiceException("Driver hours limit is exhausted", ServiceStatusCode.DRIVER_HOURS_LIMIT);
@@ -142,6 +180,10 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
         }
     }
 
+    /** Update order if it is exist and done. Do not use right now
+     * @param order
+     * @throws ServiceException statuses ORDER_NOT_FOUND,ORDER_DID_NOT_DONE
+     */
     @Override
     public void updateOrder(Order order) throws ServiceException {
         CustomTransaction ct = transactionManager.getTransaction();
@@ -165,6 +207,10 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
         }
     }
 
+    /** Delete order if it is exist and done. Do not use right now
+     * @param number of order
+     * @throws ServiceException statuses ORDER_NOT_FOUND,ORDER_DID_NOT_DONE
+     */
     @Override
     public void deleteOrder(int number) throws ServiceException {
         CustomTransaction ct = transactionManager.getTransaction();
@@ -210,6 +256,11 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
         }
     }
 
+    /**Return list of cargoes assign with order
+     * @param number of order
+     * @return list of cargoes assign with order
+     * @throws ServiceException status ORDER_NOT_FOUND
+     */
     @Override
     public List<Cargo> findAllCargosByOrderNumber(int number) throws ServiceException {
         try {

@@ -20,6 +20,11 @@ public class CargoDaoImpl extends GenericDaoImpl<Cargo> implements CargoDao {
         super(entityManager);
     }
 
+    /**Return Cargo finded by unique in DB
+     * @param number
+     * @return
+     * @throws DaoException if something goes wrong
+     */
     @Override
     public Cargo findUniqueByNumber(int number) throws DaoException {
         try {
@@ -37,6 +42,11 @@ public class CargoDaoImpl extends GenericDaoImpl<Cargo> implements CargoDao {
         }
     }
 
+    /** Return all Cargoes named like param.
+     * @param name
+     * @return
+     * @throws DaoException if something goes wrong
+     */
     @Override
     public List<Cargo> findAllByName(String name) throws DaoException {
         try {
@@ -50,6 +60,10 @@ public class CargoDaoImpl extends GenericDaoImpl<Cargo> implements CargoDao {
         }
     }
 
+    /**Return all cargoes finded in DB
+     * @return
+     * @throws DaoException if something goes wrong
+     */
     @Override
     public List<Cargo> findAll() throws DaoException {
         try {

@@ -41,6 +41,8 @@ public class OrderController extends BaseController {
     @Override
     public void execute(ServletContext servletContext, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
+            //split uri by "/" and check url on correct and pass it to needed method
+            // by uri and "get" or "post" method
             String[] uri = request.getRequestURI().split("/");
             if ("GET".equals(request.getMethod())) {
                 if (uri.length == 4 && "orders".equals(uri[3]))
@@ -89,6 +91,7 @@ public class OrderController extends BaseController {
     //   /employee/order/add POST
     public void addOrder(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
+            //return needed page equals step on wizard and passed params from wizard form
             String stepNumber = req.getParameter("step_number");
             switch (stepNumber) {
                 case "1":
@@ -148,6 +151,8 @@ public class OrderController extends BaseController {
     // /employee/order/submit POST
     public void submitOrder(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         try {
+            //get params from form, validate them, fill entities and pass them to
+            //service for full order add
             String orderNumber = req.getParameter("orderNumber");
             String[] cargoNumber = req.getParameterValues("cargoNumber");
             String[] cargoName = req.getParameterValues("cargoName");

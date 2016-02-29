@@ -35,6 +35,8 @@ public class DriverInfoController extends BaseController {
     @Override
     public void execute(ServletContext servletContext, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
+            //split uri by "/" and check url on correct and pass it to needed method
+            // by uri and "get" or "post" method
             String[] uri = request.getRequestURI().split("/");
             if ("GET".equals(request.getMethod())) {
                 if (uri.length == 3 && "driver".equals(uri[2]))
@@ -50,6 +52,8 @@ public class DriverInfoController extends BaseController {
 
     public void showDriverInfo(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
+            //get full information about driver and pass it to page
+            //getting driver from session scope
             Driver driver = (Driver) req.getSession().getAttribute("entity");
             Order order = driver.getOrder();
             if (order != null){

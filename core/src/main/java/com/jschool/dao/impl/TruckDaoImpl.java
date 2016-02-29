@@ -37,6 +37,13 @@ public class TruckDaoImpl extends GenericDaoImpl<Truck> implements TruckDao {
         }
     }
 
+    /** Return list of trucks which repair state "ok"(true boolean value) or
+     * "broken"(false value) and capacity greater than param in method
+     * @param isRepair boolean true or false (ok or broken) state
+     * @param capacity truck with which capacity we want to find
+     * @return
+     * @throws DaoException
+     */
     @Override
     public List<Truck> findAllFreeByStateAndGreaterThanCapacity(boolean isRepair, int capacity) throws DaoException {
         try {
@@ -54,7 +61,7 @@ public class TruckDaoImpl extends GenericDaoImpl<Truck> implements TruckDao {
     @Override
     public List<Truck> findAll() throws DaoException {
         try {
-            entityManager.clear(); //may be bug be cerefull
+            entityManager.clear(); //may be bug be carefully
             TypedQuery<Truck> query =
                     entityManager.createNamedQuery("Truck.findAll", Truck.class);
             return query.getResultList();

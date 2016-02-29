@@ -37,6 +37,13 @@ public class DriverDaoImpl extends GenericDaoImpl<Driver> implements DriverDao {
         }
     }
 
+    /**Return all drivers from DB where first name and last name equals the same fields
+     * in table Driver in DB
+     * @param firstName
+     * @param lastName
+     * @return list of drivers which equals params fist and last name
+     * @throws DaoException
+     */
     @Override
     public List<Driver> findAllByFirstNameAndLastName(String firstName, String lastName) throws DaoException {
         try {
@@ -63,6 +70,10 @@ public class DriverDaoImpl extends GenericDaoImpl<Driver> implements DriverDao {
         }
     }
 
+    /** Return all drivers which do not have order at this time
+     * @return list of driver which do not have orders
+     * @throws DaoException
+     */
     @Override
     public List<Driver> findAllFreeDrivers() throws DaoException {
         try {

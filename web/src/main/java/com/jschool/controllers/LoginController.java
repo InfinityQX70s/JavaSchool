@@ -42,6 +42,8 @@ public class LoginController extends BaseController {
     @Override
     public void execute(ServletContext servletContext, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
+            //split uri by "/" and check url on correct and pass it to needed method
+            // by uri and "get" or "post" method
             String[] uri = request.getRequestURI().split("/");
             if ("GET".equals(request.getMethod())) {
                 if (uri.length == 3 && "login".equals(uri[2]))
@@ -71,13 +73,16 @@ public class LoginController extends BaseController {
     // /login POST
     private void loginUser(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         try {
+            // get params from form and check who want to login
             String email = req.getParameter("email");
             String password = req.getParameter("password");
             String number = req.getParameter("number");
+            // employer login, find user by email and equals passwords in md5 hash
             if (!email.isEmpty() && number.isEmpty()) {
                 validator.validateEmail(email);
                 User user = userService.findUserByEmail(email);
                 if (user != null && !user.isRole() && DigestUtils.md5Hex(password).equals(user.getPassword())) {
+                    //set attribute in session scope
                     req.getSession().setAttribute("role", "employee");
                     req.getSession().setAttribute("entity", user);
                     resp.sendRedirect("/employee/orders");
@@ -85,6 +90,7 @@ public class LoginController extends BaseController {
                     throw new ControllerException("Wrong email or pass", ControllerStatusCode.WRONG_EMAIL_OR_PASS);
                 }
             } else if (!number.isEmpty() && email.isEmpty()) {
+                //find driver and set attribute in session scope
                 validator.validateDriverNumber(number);
                 Driver driver = driverService.getDriverByPersonalNumber(Integer.parseInt(number));
                 if (driver != null) {

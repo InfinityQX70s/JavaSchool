@@ -20,6 +20,12 @@ public class CityDaoImpl extends GenericDaoImpl<City> implements CityDao{
         super(entityManager);
     }
 
+
+    /**Return unique city find by name.
+     * @param name
+     * @return
+     * @throws DaoException if something goes wrong with JDBC
+     */
     @Override
     public City findUniqueByName(String name) throws DaoException {
         try {
@@ -37,6 +43,10 @@ public class CityDaoImpl extends GenericDaoImpl<City> implements CityDao{
         }
     }
 
+    /**Return all cities in DB
+     * @return
+     * @throws DaoException
+     */
     @Override
     public List<City> findAll() throws DaoException {
         try {

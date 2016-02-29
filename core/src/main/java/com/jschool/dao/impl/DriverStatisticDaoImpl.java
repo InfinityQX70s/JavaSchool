@@ -24,6 +24,12 @@ public class DriverStatisticDaoImpl extends GenericDaoImpl<DriverStatistic> impl
         super(entityManager);
     }
 
+    /**Return list of statistic by last month with hours worked
+     * for current driver
+     * @param driver driver for which we want to find statistic
+     * @return list of statistic finded by last month
+     * @throws DaoException
+     */
     @Override
     public List<DriverStatistic> findAllByOneMonth(Driver driver) throws DaoException {
         try {

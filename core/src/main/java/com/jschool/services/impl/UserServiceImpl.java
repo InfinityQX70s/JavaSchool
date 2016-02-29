@@ -24,6 +24,12 @@ public class UserServiceImpl implements UserService{
         this.transactionManager = transactionManager;
     }
 
+    /**Return unique user by email address or throw ServiceException with status code
+     * USER_NOT_FOUND
+     * @param email
+     * @return
+     * @throws ServiceException
+     */
     @Override
     public User findUserByEmail(String email) throws ServiceException {
         try {

@@ -36,11 +36,18 @@ public class DriverServiceImpl implements DriverService{
         this.transactionManager = transactionManager;
     }
 
+    /**Create driver and user bended with him in DB and set driver status on
+     * rest in table of DriverStatuses
+     * @param driver entity with correct fields
+     * @throws ServiceException with status code USER_OR_DRIVER_ALREADY_EXIST
+     * if driver or user with such identifier already in DB
+     */
     @Override
     public void addDriver(Driver driver) throws ServiceException {
         CustomTransaction ct = transactionManager.getTransaction();
         ct.begin();
         try {
+            //check that we have no users or drivers with such identifier in DB
             if (userDao.findUniqueByEmail(driver.getUser().getEmail()) == null
                     && driverDao.findUniqueByNumber(driver.getNumber()) == null) {
                 User user = driver.getUser();
@@ -67,11 +74,17 @@ public class DriverServiceImpl implements DriverService{
         }
     }
 
+    /** Update driver which do not have order and exist in db
+     * @param driver entity with filling fields
+     * @throws ServiceException with status code DRIVER_ASSIGNED_ORDER if driver has
+     * an order and we can not change it, DRIVER_NOT_FOUND if driver do not exist in db
+     */
     @Override
     public void updateDrive(Driver driver) throws ServiceException {
         CustomTransaction ct = transactionManager.getTransaction();
         ct.begin();
         try {
+            //check is driver in db
             Driver driverElement = driverDao.findUniqueByNumber(driver.getNumber());
             if (driverElement != null && driverElement.getOrder() == null) {
                 driverElement.setFirstName(driver.getFirstName());
@@ -93,6 +106,11 @@ public class DriverServiceImpl implements DriverService{
         }
     }
 
+    /**Delete driver which do not have order and exist in db
+     * @param number of driver we want to delete
+     * @throws ServiceException with status code DRIVER_ASSIGNED_ORDER if driver has
+     * an order and we can not change it, DRIVER_NOT_FOUND if driver do not exist in db
+     */
     @Override
     public void deleteDriver(int number) throws ServiceException {
         CustomTransaction ct = transactionManager.getTransaction();
@@ -119,6 +137,11 @@ public class DriverServiceImpl implements DriverService{
         }
     }
 
+    /** Return driver from db by personal number
+     * @param number of driver
+     * @return
+     * @throws ServiceException with status code DRIVER_NOT_FOUND if driver do not exist in db
+     */
     @Override
     public Driver getDriverByPersonalNumber(int number) throws ServiceException {
         try {
@@ -143,17 +166,26 @@ public class DriverServiceImpl implements DriverService{
         }
     }
 
+    /** Return map of drivers which do not have order right now and
+     * hours of work in this month with duration of order <= 176 hours per month
+     * @param hoursWorked duration of current order
+     * @return map with driver which do not have order and hours of worked <= 176
+     * @throws ServiceException
+     */
     @Override
     public Map<Driver,Integer> findAllAvailableDrivers(int hoursWorked) throws ServiceException {
         try {
+            //get all free drivers
             List<Driver> drivers = driverDao.findAllFreeDrivers();
             Map<Driver,Integer> driverHoursList = new HashMap<>();
             for (Driver driver : drivers) {
+                //count hours of work per month for every free driver
                 List<DriverStatistic> driverStatistics = driverStatisticDao.findAllByOneMonth(driver);
                 int sum = 0;
                 for (DriverStatistic driverStatistic : driverStatistics)
                     sum += driverStatistic.getHoursWorked();
                 if (sum + hoursWorked <= 176) {
+                    //if hours <= 176 put driver and count hours in map
                     driverHoursList.put(driver,sum);
                 }
             }

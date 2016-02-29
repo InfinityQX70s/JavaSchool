@@ -21,6 +21,11 @@ public class DriverStatusLogDaoImpl extends GenericDaoImpl<DriverStatusLog> impl
         super(entityManager);
     }
 
+    /**Return last status of driver given in param to method
+     * @param driver which last status we want to know
+     * @return last status of driver in DB
+     * @throws DaoException
+     */
     @Override
     public DriverStatusLog findLastStatus(Driver driver) throws DaoException {
         try {
