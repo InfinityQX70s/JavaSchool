@@ -15,6 +15,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -60,6 +61,12 @@ public class DriverInfoController extends BaseController {
                 req.setAttribute("assign", true);
                 List<Cargo> cargos = orderAndCargoService.findAllCargosByOrderNumber(order.getNumber());
                 List<Driver> drivers = order.getDrivers();
+                List<String> cities = new ArrayList<>();
+                for (Cargo cargo : cargos) {
+                    cities.add(cargo.getPickup().getCity().getName());
+                    cities.add(cargo.getUnload().getCity().getName());
+                }
+                req.setAttribute("cities", cities);
                 req.setAttribute("driver", driver);
                 req.setAttribute("cargos", cargos);
                 req.setAttribute("drivers", drivers);
