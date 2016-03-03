@@ -166,6 +166,16 @@ public class DriverServiceImpl implements DriverService{
         }
     }
 
+    @Override
+    public List<Driver> findAllDriversByOffset(int offset, int limit) throws ServiceException {
+        try {
+            return driverDao.findAllByOffset(offset,limit);
+        }catch (DaoException e) {
+            LOG.warn(e.getMessage());
+            throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
+        }
+    }
+
     /** Return map of drivers which do not have order right now and
      * hours of work in this month with duration of order <= 176 hours per month
      * @param hoursWorked duration of current order

@@ -129,6 +129,16 @@ public class TruckServiceImpl implements TruckService{
         }
     }
 
+    @Override
+    public List<Truck> findAllTrucksByOffset(int offset, int limit) throws ServiceException {
+        try {
+            return truckDao.findAllByOffset(offset,limit);
+        }catch (DaoException e) {
+            LOG.warn(e.getMessage());
+            throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
+        }
+    }
+
     /**Return list of trucks with "ok" state and with capacity more or equals then needed
      * @param capacity
      * @return

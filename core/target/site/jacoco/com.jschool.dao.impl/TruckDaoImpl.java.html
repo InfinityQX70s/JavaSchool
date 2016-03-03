@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>TruckDaoImpl.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">core Maven Webapp</a> &gt; <a href="index.source.html" class="el_package">com.jschool.dao.impl</a> &gt; <span class="el_source">TruckDaoImpl.java</span></div><h1>TruckDaoImpl.java</h1><pre class="source lang-java linenums">package com.jschool.dao.impl;
+
+import com.jschool.dao.api.TruckDao;
+import com.jschool.dao.api.exception.DaoException;
+import com.jschool.entities.Truck;
+import org.apache.log4j.Logger;
+
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+import java.util.List;
+
+/**
+ * Created by infinity on 07.02.16.
+ */
+public class TruckDaoImpl extends GenericDaoImpl&lt;Truck&gt; implements TruckDao {
+
+<span class="nc" id="L17">    private static final Logger LOG = Logger.getLogger(TruckDaoImpl.class);</span>
+
+    public TruckDaoImpl(EntityManager entityManager) {
+<span class="nc" id="L20">        super(entityManager);</span>
+<span class="nc" id="L21">    }</span>
+
+    @Override
+    public Truck findUniqueByNumber(String number) throws DaoException {
+        try {
+<span class="nc" id="L26">            TypedQuery&lt;Truck&gt; query =</span>
+<span class="nc" id="L27">                    entityManager.createNamedQuery(&quot;Truck.findByNumber&quot;, Truck.class);</span>
+<span class="nc" id="L28">            query.setParameter(&quot;number&quot;, number);</span>
+<span class="nc" id="L29">            List&lt;Truck&gt; trucks = query.getResultList();</span>
+<span class="nc" id="L30">            Truck truck = null;</span>
+<span class="nc bnc" id="L31" title="All 2 branches missed.">            if (!trucks.isEmpty())</span>
+<span class="nc" id="L32">                truck = trucks.get(0);</span>
+<span class="nc" id="L33">            return truck;</span>
+<span class="nc" id="L34">        }catch (Exception e){</span>
+<span class="nc" id="L35">            LOG.error(&quot;Unexpected DB exception&quot;, e);</span>
+<span class="nc" id="L36">            throw  new DaoException(e);</span>
+        }
+    }
+
+    /** Return list of trucks which repair state &quot;ok&quot;(true boolean value) or
+     * &quot;broken&quot;(false value) and capacity greater than param in method
+     * @param isRepair boolean true or false (ok or broken) state
+     * @param capacity truck with which capacity we want to find
+     * @return
+     * @throws DaoException
+     */
+    @Override
+    public List&lt;Truck&gt; findAllFreeByStateAndGreaterThanCapacity(boolean isRepair, int capacity) throws DaoException {
+        try {
+<span class="nc" id="L50">            TypedQuery&lt;Truck&gt; query =</span>
+<span class="nc" id="L51">                    entityManager.createNamedQuery(&quot;Truck.findAllFreeByStateAndCapacity&quot;, Truck.class);</span>
+<span class="nc" id="L52">            query.setParameter(&quot;repairState&quot;, isRepair);</span>
+<span class="nc" id="L53">            query.setParameter(&quot;capacity&quot;, capacity);</span>
+<span class="nc" id="L54">            return query.getResultList();</span>
+<span class="nc" id="L55">        }catch (Exception e){</span>
+<span class="nc" id="L56">            LOG.error(&quot;Unexpected DB exception&quot;, e);</span>
+<span class="nc" id="L57">            throw  new DaoException(e);</span>
+        }
+    }
+
+    @Override
+    public List&lt;Truck&gt; findAll() throws DaoException {
+        try {
+<span class="nc" id="L64">            entityManager.clear(); //may be bug be carefully</span>
+<span class="nc" id="L65">            TypedQuery&lt;Truck&gt; query =</span>
+<span class="nc" id="L66">                    entityManager.createNamedQuery(&quot;Truck.findAll&quot;, Truck.class);</span>
+<span class="nc" id="L67">            return query.getResultList();</span>
+<span class="nc" id="L68">        }catch (Exception e){</span>
+<span class="nc" id="L69">            LOG.error(&quot;Unexpected DB exception&quot;, e);</span>
+<span class="nc" id="L70">            throw  new DaoException(e);</span>
+        }
+    }
+
+    public List&lt;Truck&gt; findAllByOffset(int offset, int limit) throws DaoException {
+        try {
+<span class="nc" id="L76">            entityManager.clear(); //may be bug be carefully</span>
+<span class="nc" id="L77">            TypedQuery&lt;Truck&gt; query =</span>
+<span class="nc" id="L78">                    entityManager.createNamedQuery(&quot;Truck.findAll&quot;, Truck.class);</span>
+<span class="nc" id="L79">            query.setFirstResult(offset)</span>
+<span class="nc" id="L80">                    .setMaxResults(limit);</span>
+<span class="nc" id="L81">            return query.getResultList();</span>
+<span class="nc" id="L82">        }catch (Exception e){</span>
+<span class="nc" id="L83">            LOG.error(&quot;Unexpected DB exception&quot;, e);</span>
+<span class="nc" id="L84">            throw  new DaoException(e);</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

@@ -10,7 +10,7 @@
     <jsp:param name="trucks" value=""/>
 </jsp:include>
 <p></p>
-<table style="margin-top:50px;" class="bordered centered z-depth-2 col s6 offset-s4 white">
+<table style="margin-top:40px;" class="striped z-depth-2 col s6 offset-s4 white">
     <thead>
     <tr>
         <th data-field="id">Number</th>
@@ -23,43 +23,64 @@
 
     <tbody>
     <c:forEach var="driver" items="${requestScope.drivers}">
-    <tr>
-        <td><c:out value="${driver.number}"/>
-        </td>
-        <td><c:out value="${driver.firstName}"/>
-        </td>
-        <td><c:out value="${driver.lastName}"/>
-        </td>
-        <c:if test="${empty driver.order}">
-        <td>Free</td>
-        <td>
-            <a href="/employee/driver/<c:out value="${driver.number}"/>/edit" class="secondary-content light-blue-text text-accent-888">
-                <i class="material-icons">create</i>
-            </a>
-        </td>
-        </c:if>
-        <c:if test="${not empty driver.order}">
-        <td>Assigned</td>
-        <td>
-        </td>
-        </c:if>
-        <%--<td><%=driver.getStatusLogs().get(driver.getStatusLogs().size() - 1).getStatus().toString()%>--%>
-        <%--</td>--%>
-        <td>
-            <form action="/employee/driver/delete" method="post">
-                <input type="hidden" name="number" value="<c:out value="${driver.number}"/>">
-                <a class="secondary-content light-blue-text text-accent-888" style="margin-right:20px;" onclick="parentNode.submit();">
-                    <i class="material-icons">clear</i>
-                </a>
-            </form>
-        </td>
-    </tr>
+        <tr>
+            <td><c:out value="${driver.number}"/>
+            </td>
+            <td><c:out value="${driver.firstName}"/>
+            </td>
+            <td><c:out value="${driver.lastName}"/>
+            </td>
+            <c:if test="${empty driver.order}">
+                <td>Free</td>
+                <td>
+                    <a href="/employee/driver/<c:out value="${driver.number}"/>/edit"
+                       class="secondary-content light-blue-text text-accent-888">
+                        <i class="material-icons">create</i>
+                    </a>
+                </td>
+                <td>
+                    <form action="/employee/driver/delete" method="post">
+                        <input type="hidden" name="number" value="<c:out value="${driver.number}"/>">
+                        <a class="secondary-content light-blue-text text-accent-888" style="margin-right:20px;"
+                           onclick="parentNode.submit();">
+                            <i class="material-icons">clear</i>
+                        </a>
+                    </form>
+                </td>
+            </c:if>
+            <c:if test="${not empty driver.order}">
+                <td>Assigned</td>
+                <td>
+                </td>
+                <td>
+                </td>
+            </c:if>
+        </tr>
     </c:forEach>
     </tbody>
 
 </table>
-<div class="row col s6 offset-s4 right-align">
-    <a href="/employee/driver/add" style="margin-top:5px;" class="right btn-floating btn-large waves-effect waves-light light-blue accent-999"><i
+<div class="col s6 offset-s4 right-align">
+    <a href="/employee/driver/add" style="margin-top:5px;"
+       class="right btn-floating btn-large waves-effect waves-light light-blue accent-999"><i
             class="material-icons">add</i></a>
 </div>
+<c:if test="${requestScope.pageCount ne 1}">
+    <div class="col s6 offset-s4 center-align">
+        <ul class="pagination text-white">
+            <c:forEach begin="1" end="${requestScope.pageCount}" varStatus="loop">
+                <c:if test="${requestScope.currentPage eq loop.index}">
+                    <li class="active light-blue accent-999 white-text"><a
+                            href="/employee/drivers?page=<c:out value="${loop.index}"/>"><c:out
+                            value="${loop.index}"/></a></li>
+                </c:if>
+                <c:if test="${requestScope.currentPage ne loop.index}">
+                    <li class="waves-effect waves-light light-blue accent-999 light-blue-text text-accent-888"><a
+                            href="/employee/drivers?page=<c:out value="${loop.index}"/>"><c:out
+                            value="${loop.index}"/></a></li>
+                </c:if>
+            </c:forEach>
+        </ul>
+    </div>
+</c:if>
 <jsp:include page="../footer.jsp"/>

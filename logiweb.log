@@ -477,3 +477,312 @@
 01:04:45,862 WARN  http-nio-8080-exec-281 DriverManagerConnectionProviderImpl:configure:76 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
 01:05:18,091 WARN  http-nio-8080-exec-291 DriverManagerConnectionProviderImpl:configure:76 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
 01:07:19,440 WARN  http-nio-8080-exec-296 OrderController:submitOrder:206 - Cargo with such identifier exist
+01:19:55,347 WARN  http-nio-8080-exec-301 LoginController:loginUser:110 - Wrong email or pass
+01:24:38,478 WARN  http-nio-8080-exec-297 LoginController:loginUser:110 - Wrong email or pass
+13:24:28,430 WARN  http-nio-8080-exec-2 DriverManagerConnectionProviderImpl:configure:76 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+13:24:40,364 WARN  http-nio-8080-exec-4 CheckAccessFilter:doFilter:64 - Page not found
+13:24:42,478 WARN  http-nio-8080-exec-8 CheckAccessFilter:doFilter:64 - Page not found
+13:24:51,093 WARN  http-nio-8080-exec-7 CheckAccessFilter:doFilter:64 - Page not found
+13:25:01,015 WARN  http-nio-8080-exec-1 CheckAccessFilter:doFilter:64 - Page not found
+13:25:11,785 WARN  http-nio-8080-exec-4 CheckAccessFilter:doFilter:64 - Page not found
+13:26:12,146 WARN  http-nio-8080-exec-2 DriverManagerConnectionProviderImpl:configure:76 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+13:26:26,298 WARN  http-nio-8080-exec-10 CheckAccessFilter:doFilter:64 - Page not found
+13:26:27,580 WARN  http-nio-8080-exec-2 CheckAccessFilter:doFilter:64 - Page not found
+13:26:40,971 WARN  http-nio-8080-exec-3 CheckAccessFilter:doFilter:64 - Page not found
+13:26:41,836 WARN  http-nio-8080-exec-7 CheckAccessFilter:doFilter:64 - Page not found
+13:27:59,744 WARN  http-nio-8080-exec-2 DriverManagerConnectionProviderImpl:configure:76 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+13:28:12,425 WARN  http-nio-8080-exec-6 CheckAccessFilter:doFilter:64 - Page not found
+13:28:50,035 WARN  http-nio-8080-exec-2 CheckAccessFilter:doFilter:64 - Page not found
+13:28:57,589 WARN  http-nio-8080-exec-4 CheckAccessFilter:doFilter:64 - Page not found
+13:28:58,196 WARN  http-nio-8080-exec-5 CheckAccessFilter:doFilter:64 - Page not found
+13:29:00,139 WARN  http-nio-8080-exec-6 CheckAccessFilter:doFilter:64 - Page not found
+13:29:07,737 WARN  http-nio-8080-exec-10 CheckAccessFilter:doFilter:64 - Page not found
+13:29:20,757 WARN  http-nio-8080-exec-3 CheckAccessFilter:doFilter:64 - Page not found
+13:29:21,362 WARN  http-nio-8080-exec-6 CheckAccessFilter:doFilter:64 - Page not found
+13:29:24,573 WARN  http-nio-8080-exec-7 CheckAccessFilter:doFilter:64 - Page not found
+13:33:38,956 WARN  http-nio-8080-exec-2 DriverManagerConnectionProviderImpl:configure:76 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+14:00:05,505 WARN  http-nio-8080-exec-8 CheckAccessFilter:doFilter:64 - Page not found
+14:01:23,852 WARN  http-nio-8080-exec-10 CheckAccessFilter:doFilter:64 - Page not found
+14:01:27,453 WARN  http-nio-8080-exec-1 CheckAccessFilter:doFilter:64 - Page not found
+14:01:27,857 WARN  http-nio-8080-exec-2 CheckAccessFilter:doFilter:64 - Page not found
+14:01:32,649 WARN  http-nio-8080-exec-5 CheckAccessFilter:doFilter:64 - Page not found
+14:03:04,928 WARN  http-nio-8080-exec-2 DriverManagerConnectionProviderImpl:configure:76 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+14:03:20,941 WARN  http-nio-8080-exec-9 CheckAccessFilter:doFilter:64 - Page not found
+14:03:23,093 WARN  http-nio-8080-exec-1 CheckAccessFilter:doFilter:64 - Page not found
+14:03:25,500 WARN  http-nio-8080-exec-2 CheckAccessFilter:doFilter:64 - Page not found
+14:03:29,709 WARN  http-nio-8080-exec-5 CheckAccessFilter:doFilter:64 - Page not found
+14:03:32,155 WARN  http-nio-8080-exec-6 CheckAccessFilter:doFilter:64 - Page not found
+14:03:34,644 WARN  http-nio-8080-exec-9 CheckAccessFilter:doFilter:64 - Page not found
+14:03:36,681 WARN  http-nio-8080-exec-1 CheckAccessFilter:doFilter:64 - Page not found
+14:03:39,082 WARN  http-nio-8080-exec-2 CheckAccessFilter:doFilter:64 - Page not found
+14:03:42,119 WARN  http-nio-8080-exec-5 CheckAccessFilter:doFilter:64 - Page not found
+14:03:45,336 WARN  http-nio-8080-exec-6 CheckAccessFilter:doFilter:64 - Page not found
+14:04:52,536 WARN  http-nio-8080-exec-2 DriverManagerConnectionProviderImpl:configure:76 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+14:06:53,175 WARN  http-nio-8080-exec-5 LoginController:loginUser:110 - Wrong email or pass
+14:07:00,328 WARN  http-nio-8080-exec-2 CheckAccessFilter:doFilter:64 - Page not found
+14:07:01,742 WARN  http-nio-8080-exec-8 CheckAccessFilter:doFilter:64 - Page not found
+14:07:03,402 WARN  http-nio-8080-exec-9 CheckAccessFilter:doFilter:64 - Page not found
+14:07:06,246 WARN  http-nio-8080-exec-2 CheckAccessFilter:doFilter:64 - Page not found
+14:07:08,581 WARN  http-nio-8080-exec-8 CheckAccessFilter:doFilter:64 - Page not found
+14:07:11,273 WARN  http-nio-8080-exec-9 CheckAccessFilter:doFilter:64 - Page not found
+14:08:01,897 WARN  http-nio-8080-exec-2 DriverManagerConnectionProviderImpl:configure:76 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+14:08:31,726 WARN  http-nio-8080-exec-10 CheckAccessFilter:doFilter:64 - Page not found
+14:08:51,537 WARN  http-nio-8080-exec-7 CheckAccessFilter:doFilter:64 - Page not found
+14:08:53,670 WARN  http-nio-8080-exec-8 CheckAccessFilter:doFilter:64 - Page not found
+14:08:55,969 WARN  http-nio-8080-exec-5 CheckAccessFilter:doFilter:64 - Page not found
+14:08:58,155 WARN  http-nio-8080-exec-1 CheckAccessFilter:doFilter:64 - Page not found
+14:09:01,450 WARN  http-nio-8080-exec-2 CheckAccessFilter:doFilter:64 - Page not found
+14:09:32,063 WARN  http-nio-8080-exec-2 DriverManagerConnectionProviderImpl:configure:76 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+14:09:44,383 WARN  http-nio-8080-exec-7 CheckAccessFilter:doFilter:64 - Page not found
+14:09:46,306 WARN  http-nio-8080-exec-2 CheckAccessFilter:doFilter:64 - Page not found
+14:09:48,728 WARN  http-nio-8080-exec-3 CheckAccessFilter:doFilter:64 - Page not found
+14:09:50,718 WARN  http-nio-8080-exec-6 CheckAccessFilter:doFilter:64 - Page not found
+14:09:52,781 WARN  http-nio-8080-exec-8 CheckAccessFilter:doFilter:64 - Page not found
+14:09:55,165 WARN  http-nio-8080-exec-9 CheckAccessFilter:doFilter:64 - Page not found
+14:09:57,474 WARN  http-nio-8080-exec-2 CheckAccessFilter:doFilter:64 - Page not found
+14:09:59,873 WARN  http-nio-8080-exec-3 CheckAccessFilter:doFilter:64 - Page not found
+14:10:12,325 WARN  http-nio-8080-exec-9 CheckAccessFilter:doFilter:64 - Page not found
+14:10:14,587 WARN  http-nio-8080-exec-2 CheckAccessFilter:doFilter:64 - Page not found
+14:13:04,621 WARN  http-nio-8080-exec-10 CheckAccessFilter:doFilter:64 - Page not found
+14:13:06,274 WARN  http-nio-8080-exec-1 CheckAccessFilter:doFilter:64 - Page not found
+14:14:20,380 WARN  http-nio-8080-exec-2 DriverManagerConnectionProviderImpl:configure:76 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+14:14:34,124 WARN  http-nio-8080-exec-5 CheckAccessFilter:doFilter:64 - Page not found
+14:14:37,838 WARN  http-nio-8080-exec-6 CheckAccessFilter:doFilter:64 - Page not found
+14:16:03,075 WARN  http-nio-8080-exec-2 CheckAccessFilter:doFilter:64 - Page not found
+14:16:05,400 WARN  http-nio-8080-exec-6 CheckAccessFilter:doFilter:64 - Page not found
+14:18:04,967 WARN  http-nio-8080-exec-10 DriverManagerConnectionProviderImpl:configure:76 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+14:18:14,890 WARN  http-nio-8080-exec-3 CheckAccessFilter:doFilter:64 - Page not found
+14:18:17,053 WARN  http-nio-8080-exec-7 CheckAccessFilter:doFilter:64 - Page not found
+14:18:20,472 WARN  http-nio-8080-exec-9 CheckAccessFilter:doFilter:64 - Page not found
+14:19:13,919 WARN  http-nio-8080-exec-11 DriverManagerConnectionProviderImpl:configure:76 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+14:19:23,490 WARN  http-nio-8080-exec-13 CheckAccessFilter:doFilter:64 - Page not found
+14:19:25,862 WARN  http-nio-8080-exec-18 CheckAccessFilter:doFilter:64 - Page not found
+14:19:30,315 WARN  http-nio-8080-exec-19 CheckAccessFilter:doFilter:64 - Page not found
+14:19:44,296 WARN  http-nio-8080-exec-14 CheckAccessFilter:doFilter:64 - Page not found
+14:19:46,477 WARN  http-nio-8080-exec-18 CheckAccessFilter:doFilter:64 - Page not found
+14:19:47,737 WARN  http-nio-8080-exec-19 CheckAccessFilter:doFilter:64 - Page not found
+14:19:50,370 WARN  http-nio-8080-exec-25 CheckAccessFilter:doFilter:64 - Page not found
+14:34:01,292 WARN  http-nio-8080-exec-19 CheckAccessFilter:doFilter:64 - Page not found
+14:34:03,873 WARN  http-nio-8080-exec-25 CheckAccessFilter:doFilter:64 - Page not found
+14:34:05,454 WARN  http-nio-8080-exec-20 CheckAccessFilter:doFilter:64 - Page not found
+14:34:09,388 WARN  http-nio-8080-exec-23 CheckAccessFilter:doFilter:64 - Page not found
+14:34:12,813 WARN  http-nio-8080-exec-18 CheckAccessFilter:doFilter:64 - Page not found
+14:34:18,336 WARN  http-nio-8080-exec-19 CheckAccessFilter:doFilter:64 - Page not found
+14:34:26,113 WARN  http-nio-8080-exec-27 CheckAccessFilter:doFilter:64 - Page not found
+16:29:57,407 WARN  http-nio-8080-exec-19 DriverManagerConnectionProviderImpl:configure:76 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+16:30:07,090 WARN  http-nio-8080-exec-30 CheckAccessFilter:doFilter:64 - Page not found
+16:30:08,882 WARN  http-nio-8080-exec-25 CheckAccessFilter:doFilter:64 - Page not found
+16:33:09,192 WARN  http-nio-8080-exec-36 DriverManagerConnectionProviderImpl:configure:76 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+16:33:19,136 WARN  http-nio-8080-exec-31 CheckAccessFilter:doFilter:64 - Page not found
+16:33:21,592 WARN  http-nio-8080-exec-32 CheckAccessFilter:doFilter:64 - Page not found
+16:34:50,427 WARN  http-nio-8080-exec-38 DriverManagerConnectionProviderImpl:configure:76 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+16:34:59,598 WARN  http-nio-8080-exec-40 CheckAccessFilter:doFilter:64 - Page not found
+16:35:01,155 WARN  http-nio-8080-exec-41 CheckAccessFilter:doFilter:64 - Page not found
+20:16:32,465 WARN  http-nio-8080-exec-2 DriverManagerConnectionProviderImpl:configure:76 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+20:17:08,483 WARN  http-nio-8080-exec-5 CheckAccessFilter:doFilter:64 - Page not found
+20:17:38,965 WARN  http-nio-8080-exec-9 CheckAccessFilter:doFilter:64 - Page not found
+20:17:42,815 WARN  http-nio-8080-exec-8 CheckAccessFilter:doFilter:64 - Page not found
+20:17:57,780 WARN  http-nio-8080-exec-2 CheckAccessFilter:doFilter:64 - Page not found
+20:18:15,885 WARN  http-nio-8080-exec-5 CheckAccessFilter:doFilter:64 - Page not found
+20:18:27,567 WARN  http-nio-8080-exec-7 CheckAccessFilter:doFilter:64 - Page not found
+20:18:33,877 WARN  http-nio-8080-exec-1 CheckAccessFilter:doFilter:64 - Page not found
+20:18:35,803 WARN  http-nio-8080-exec-3 CheckAccessFilter:doFilter:64 - Page not found
+20:20:01,382 WARN  http-nio-8080-exec-9 CheckAccessFilter:doFilter:64 - Page not found
+20:20:16,914 WARN  http-nio-8080-exec-5 CheckAccessFilter:doFilter:64 - Page not found
+20:20:18,568 WARN  http-nio-8080-exec-6 CheckAccessFilter:doFilter:64 - Page not found
+20:20:55,168 WARN  http-nio-8080-exec-2 CheckAccessFilter:doFilter:64 - Page not found
+20:20:56,050 WARN  http-nio-8080-exec-5 CheckAccessFilter:doFilter:64 - Page not found
+20:21:42,228 WARN  http-nio-8080-exec-6 CheckAccessFilter:doFilter:64 - Page not found
+20:21:58,093 WARN  http-nio-8080-exec-9 CheckAccessFilter:doFilter:64 - Page not found
+20:21:59,614 WARN  http-nio-8080-exec-8 CheckAccessFilter:doFilter:64 - Page not found
+20:22:02,254 WARN  http-nio-8080-exec-2 CheckAccessFilter:doFilter:64 - Page not found
+20:22:43,398 WARN  http-nio-8080-exec-5 CheckAccessFilter:doFilter:64 - Page not found
+20:23:36,519 WARN  http-nio-8080-exec-6 CheckAccessFilter:doFilter:64 - Page not found
+20:24:01,892 WARN  http-nio-8080-exec-9 CheckAccessFilter:doFilter:64 - Page not found
+20:26:42,495 WARN  http-nio-8080-exec-8 CheckAccessFilter:doFilter:64 - Page not found
+20:41:06,800 WARN  http-nio-8080-exec-3 CheckAccessFilter:doFilter:64 - Page not found
+20:41:07,904 WARN  http-nio-8080-exec-5 TruckController:addTruck:119 - Truck number format exception
+20:41:08,373 WARN  http-nio-8080-exec-4 CheckAccessFilter:doFilter:64 - Page not found
+20:41:09,932 WARN  http-nio-8080-exec-7 CheckAccessFilter:doFilter:64 - Page not found
+20:41:13,722 WARN  http-nio-8080-exec-9 TruckController:addTruck:119 - Truck number format exception
+20:41:14,072 WARN  http-nio-8080-exec-1 CheckAccessFilter:doFilter:64 - Page not found
+20:41:15,385 WARN  http-nio-8080-exec-10 CheckAccessFilter:doFilter:64 - Page not found
+20:41:16,657 WARN  http-nio-8080-exec-3 CheckAccessFilter:doFilter:64 - Page not found
+20:41:24,466 WARN  http-nio-8080-exec-5 CheckAccessFilter:doFilter:64 - Page not found
+20:41:25,809 WARN  http-nio-8080-exec-6 CheckAccessFilter:doFilter:64 - Page not found
+20:42:31,942 WARN  http-nio-8080-exec-1 CheckAccessFilter:doFilter:64 - Page not found
+20:42:32,922 WARN  http-nio-8080-exec-5 CheckAccessFilter:doFilter:64 - Page not found
+20:42:38,449 WARN  http-nio-8080-exec-7 CheckAccessFilter:doFilter:64 - Page not found
+20:44:00,927 WARN  http-nio-8080-exec-8 CheckAccessFilter:doFilter:64 - Page not found
+20:51:20,999 WARN  http-nio-8080-exec-2 CheckAccessFilter:doFilter:64 - Page not found
+20:51:22,176 WARN  http-nio-8080-exec-3 CheckAccessFilter:doFilter:64 - Page not found
+20:51:23,606 WARN  http-nio-8080-exec-4 CheckAccessFilter:doFilter:64 - Page not found
+20:51:24,649 WARN  http-nio-8080-exec-7 CheckAccessFilter:doFilter:64 - Page not found
+20:56:45,599 WARN  http-nio-8080-exec-7 CheckAccessFilter:doFilter:64 - Page not found
+20:56:47,114 WARN  http-nio-8080-exec-8 CheckAccessFilter:doFilter:64 - Page not found
+20:59:54,203 WARN  http-nio-8080-exec-2 CheckAccessFilter:doFilter:64 - Page not found
+20:59:56,733 WARN  http-nio-8080-exec-5 CheckAccessFilter:doFilter:64 - Page not found
+21:03:18,060 WARN  http-nio-8080-exec-5 DriverManagerConnectionProviderImpl:configure:76 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+21:03:31,437 WARN  http-nio-8080-exec-6 CheckAccessFilter:doFilter:64 - Page not found
+21:03:33,041 WARN  http-nio-8080-exec-1 ErrorController:execute:30 - Page not found
+21:03:33,302 WARN  http-nio-8080-exec-4 ErrorController:execute:30 - Page not found
+21:03:33,570 WARN  http-nio-8080-exec-7 CheckAccessFilter:doFilter:64 - Page not found
+21:10:47,019 WARN  http-nio-8080-exec-13 CheckAccessFilter:doFilter:64 - Page not found
+21:10:57,450 WARN  http-nio-8080-exec-15 CheckAccessFilter:doFilter:64 - Page not found
+21:10:59,869 WARN  http-nio-8080-exec-17 CheckAccessFilter:doFilter:64 - Page not found
+21:11:03,972 WARN  http-nio-8080-exec-19 CheckAccessFilter:doFilter:64 - Page not found
+21:11:08,110 WARN  http-nio-8080-exec-11 CheckAccessFilter:doFilter:64 - Page not found
+21:11:14,053 WARN  http-nio-8080-exec-13 ErrorController:execute:30 - Page not found
+21:11:14,260 WARN  http-nio-8080-exec-14 ErrorController:execute:30 - Page not found
+21:11:14,519 WARN  http-nio-8080-exec-15 CheckAccessFilter:doFilter:64 - Page not found
+21:11:24,727 WARN  http-nio-8080-exec-17 CheckAccessFilter:doFilter:64 - Page not found
+21:11:26,024 WARN  http-nio-8080-exec-19 ErrorController:execute:30 - Page not found
+21:11:26,273 WARN  http-nio-8080-exec-20 ErrorController:execute:30 - Page not found
+21:11:26,716 WARN  http-nio-8080-exec-11 CheckAccessFilter:doFilter:64 - Page not found
+21:18:11,373 WARN  http-nio-8080-exec-18 CheckAccessFilter:doFilter:64 - Page not found
+21:18:13,783 WARN  http-nio-8080-exec-19 CheckAccessFilter:doFilter:64 - Page not found
+21:18:30,261 WARN  http-nio-8080-exec-16 CheckAccessFilter:doFilter:64 - Page not found
+21:18:30,850 WARN  http-nio-8080-exec-18 CheckAccessFilter:doFilter:64 - Page not found
+21:18:32,015 WARN  http-nio-8080-exec-19 CheckAccessFilter:doFilter:64 - Page not found
+21:18:32,451 WARN  http-nio-8080-exec-11 ErrorController:execute:30 - Page not found
+21:18:32,648 WARN  http-nio-8080-exec-12 ErrorController:execute:30 - Page not found
+21:18:32,861 WARN  http-nio-8080-exec-13 CheckAccessFilter:doFilter:64 - Page not found
+21:18:33,592 WARN  http-nio-8080-exec-16 CheckAccessFilter:doFilter:64 - Page not found
+21:18:33,744 WARN  http-nio-8080-exec-18 ErrorController:execute:30 - Page not found
+21:18:33,926 WARN  http-nio-8080-exec-17 ErrorController:execute:30 - Page not found
+21:18:34,183 WARN  http-nio-8080-exec-19 CheckAccessFilter:doFilter:64 - Page not found
+21:18:34,863 WARN  http-nio-8080-exec-11 CheckAccessFilter:doFilter:64 - Page not found
+21:18:35,352 WARN  http-nio-8080-exec-13 CheckAccessFilter:doFilter:64 - Page not found
+21:18:35,654 WARN  http-nio-8080-exec-16 ErrorController:execute:30 - Page not found
+21:18:35,833 WARN  http-nio-8080-exec-15 ErrorController:execute:30 - Page not found
+21:18:35,998 WARN  http-nio-8080-exec-18 CheckAccessFilter:doFilter:64 - Page not found
+21:18:36,724 WARN  http-nio-8080-exec-19 CheckAccessFilter:doFilter:64 - Page not found
+21:18:37,348 WARN  http-nio-8080-exec-11 ErrorController:execute:30 - Page not found
+21:18:37,544 WARN  http-nio-8080-exec-12 ErrorController:execute:30 - Page not found
+21:18:37,762 WARN  http-nio-8080-exec-13 CheckAccessFilter:doFilter:64 - Page not found
+21:18:38,397 WARN  http-nio-8080-exec-16 CheckAccessFilter:doFilter:64 - Page not found
+21:18:40,409 WARN  http-nio-8080-exec-18 ErrorController:execute:30 - Page not found
+21:18:40,573 WARN  http-nio-8080-exec-17 ErrorController:execute:30 - Page not found
+21:18:40,764 WARN  http-nio-8080-exec-19 CheckAccessFilter:doFilter:64 - Page not found
+21:18:56,930 WARN  http-nio-8080-exec-11 CheckAccessFilter:doFilter:64 - Page not found
+21:19:01,291 WARN  http-nio-8080-exec-13 CheckAccessFilter:doFilter:64 - Page not found
+21:19:02,701 WARN  http-nio-8080-exec-16 CheckAccessFilter:doFilter:64 - Page not found
+21:21:11,659 WARN  http-nio-8080-exec-11 DriverManagerConnectionProviderImpl:configure:76 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+21:21:22,305 WARN  http-nio-8080-exec-15 CheckAccessFilter:doFilter:64 - Page not found
+21:21:26,556 WARN  http-nio-8080-exec-23 CheckAccessFilter:doFilter:64 - Page not found
+21:21:28,841 WARN  http-nio-8080-exec-24 CheckAccessFilter:doFilter:64 - Page not found
+21:21:31,032 WARN  http-nio-8080-exec-13 CheckAccessFilter:doFilter:64 - Page not found
+21:21:32,152 WARN  http-nio-8080-exec-14 CheckAccessFilter:doFilter:64 - Page not found
+21:21:33,243 WARN  http-nio-8080-exec-23 CheckAccessFilter:doFilter:64 - Page not found
+21:23:55,183 WARN  http-nio-8080-exec-24 CheckAccessFilter:doFilter:64 - Page not found
+21:25:47,826 WARN  http-nio-8080-exec-26 CheckAccessFilter:doFilter:64 - Page not found
+21:25:55,434 WARN  http-nio-8080-exec-23 CheckAccessFilter:doFilter:64 - Page not found
+21:25:57,160 WARN  http-nio-8080-exec-30 CheckAccessFilter:doFilter:64 - Page not found
+21:25:58,825 WARN  http-nio-8080-exec-22 CheckAccessFilter:doFilter:64 - Page not found
+21:27:28,761 WARN  http-nio-8080-exec-27 DriverManagerConnectionProviderImpl:configure:76 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+21:27:41,077 WARN  http-nio-8080-exec-29 CheckAccessFilter:doFilter:64 - Page not found
+21:27:42,451 WARN  http-nio-8080-exec-30 CheckAccessFilter:doFilter:64 - Page not found
+21:27:43,511 WARN  http-nio-8080-exec-33 CheckAccessFilter:doFilter:64 - Page not found
+21:27:45,300 WARN  http-nio-8080-exec-32 CheckAccessFilter:doFilter:64 - Page not found
+21:27:49,249 WARN  http-nio-8080-exec-21 CheckAccessFilter:doFilter:64 - Page not found
+21:27:55,436 WARN  http-nio-8080-exec-25 CheckAccessFilter:doFilter:64 - Page not found
+21:27:57,357 WARN  http-nio-8080-exec-30 CheckAccessFilter:doFilter:64 - Page not found
+21:28:05,404 WARN  http-nio-8080-exec-33 CheckAccessFilter:doFilter:64 - Page not found
+21:28:15,273 WARN  http-nio-8080-exec-34 CheckAccessFilter:doFilter:64 - Page not found
+21:28:17,602 WARN  http-nio-8080-exec-35 CheckAccessFilter:doFilter:64 - Page not found
+21:28:19,499 WARN  http-nio-8080-exec-36 CheckAccessFilter:doFilter:64 - Page not found
+21:28:20,936 WARN  http-nio-8080-exec-40 CheckAccessFilter:doFilter:64 - Page not found
+21:28:22,425 WARN  http-nio-8080-exec-31 CheckAccessFilter:doFilter:64 - Page not found
+21:28:23,774 WARN  http-nio-8080-exec-34 CheckAccessFilter:doFilter:64 - Page not found
+21:28:25,568 WARN  http-nio-8080-exec-35 CheckAccessFilter:doFilter:64 - Page not found
+21:34:34,125 WARN  http-nio-8080-exec-39 DriverManagerConnectionProviderImpl:configure:76 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+21:34:43,545 WARN  http-nio-8080-exec-31 CheckAccessFilter:doFilter:64 - Page not found
+21:34:44,915 WARN  http-nio-8080-exec-33 CheckAccessFilter:doFilter:64 - Page not found
+21:34:46,636 WARN  http-nio-8080-exec-34 CheckAccessFilter:doFilter:64 - Page not found
+21:34:48,423 WARN  http-nio-8080-exec-42 CheckAccessFilter:doFilter:64 - Page not found
+21:34:51,268 WARN  http-nio-8080-exec-38 CheckAccessFilter:doFilter:64 - Page not found
+21:34:53,495 WARN  http-nio-8080-exec-32 CheckAccessFilter:doFilter:64 - Page not found
+21:34:55,655 WARN  http-nio-8080-exec-33 CheckAccessFilter:doFilter:64 - Page not found
+21:34:58,877 WARN  http-nio-8080-exec-34 CheckAccessFilter:doFilter:64 - Page not found
+21:35:00,595 WARN  http-nio-8080-exec-42 CheckAccessFilter:doFilter:64 - Page not found
+21:35:02,101 WARN  http-nio-8080-exec-47 CheckAccessFilter:doFilter:64 - Page not found
+21:35:14,213 WARN  http-nio-8080-exec-48 CheckAccessFilter:doFilter:64 - Page not found
+21:35:16,012 WARN  http-nio-8080-exec-49 CheckAccessFilter:doFilter:64 - Page not found
+21:35:17,371 WARN  http-nio-8080-exec-50 CheckAccessFilter:doFilter:64 - Page not found
+21:36:44,721 WARN  http-nio-8080-exec-49 DriverManagerConnectionProviderImpl:configure:76 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+21:36:53,764 WARN  http-nio-8080-exec-47 CheckAccessFilter:doFilter:64 - Page not found
+21:36:55,242 WARN  http-nio-8080-exec-48 CheckAccessFilter:doFilter:64 - Page not found
+21:36:57,261 WARN  http-nio-8080-exec-41 CheckAccessFilter:doFilter:64 - Page not found
+21:36:58,953 WARN  http-nio-8080-exec-52 CheckAccessFilter:doFilter:64 - Page not found
+21:37:21,082 WARN  http-nio-8080-exec-57 CheckAccessFilter:doFilter:64 - Page not found
+21:38:02,223 WARN  http-nio-8080-exec-57 DriverManagerConnectionProviderImpl:configure:76 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+21:38:12,770 WARN  http-nio-8080-exec-41 CheckAccessFilter:doFilter:64 - Page not found
+21:38:13,782 WARN  http-nio-8080-exec-50 CheckAccessFilter:doFilter:64 - Page not found
+21:38:15,535 WARN  http-nio-8080-exec-48 CheckAccessFilter:doFilter:64 - Page not found
+21:38:18,233 WARN  http-nio-8080-exec-59 CheckAccessFilter:doFilter:64 - Page not found
+21:38:19,955 WARN  http-nio-8080-exec-56 CheckAccessFilter:doFilter:64 - Page not found
+21:38:51,759 WARN  http-nio-8080-exec-62 DriverManagerConnectionProviderImpl:configure:76 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+21:39:01,158 WARN  http-nio-8080-exec-60 CheckAccessFilter:doFilter:64 - Page not found
+21:39:02,254 WARN  http-nio-8080-exec-64 CheckAccessFilter:doFilter:64 - Page not found
+21:39:03,220 WARN  http-nio-8080-exec-54 CheckAccessFilter:doFilter:64 - Page not found
+21:39:04,425 WARN  http-nio-8080-exec-66 CheckAccessFilter:doFilter:64 - Page not found
+21:39:05,082 WARN  http-nio-8080-exec-59 CheckAccessFilter:doFilter:64 - Page not found
+21:40:31,036 WARN  http-nio-8080-exec-67 CheckAccessFilter:doFilter:64 - Page not found
+21:41:20,490 WARN  http-nio-8080-exec-73 DriverManagerConnectionProviderImpl:configure:76 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+21:41:31,177 WARN  http-nio-8080-exec-68 CheckAccessFilter:doFilter:64 - Page not found
+21:41:32,852 WARN  http-nio-8080-exec-66 CheckAccessFilter:doFilter:64 - Page not found
+21:41:34,109 WARN  http-nio-8080-exec-67 CheckAccessFilter:doFilter:64 - Page not found
+21:41:37,560 WARN  http-nio-8080-exec-75 CheckAccessFilter:doFilter:64 - Page not found
+21:41:58,210 WARN  http-nio-8080-exec-80 DriverManagerConnectionProviderImpl:configure:76 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+21:42:08,955 WARN  http-nio-8080-exec-76 CheckAccessFilter:doFilter:64 - Page not found
+21:42:10,271 WARN  http-nio-8080-exec-77 CheckAccessFilter:doFilter:64 - Page not found
+21:42:21,466 WARN  http-nio-8080-exec-69 CheckAccessFilter:doFilter:64 - Page not found
+21:42:59,264 WARN  http-nio-8080-exec-82 CheckAccessFilter:doFilter:64 - Page not found
+21:43:03,010 WARN  http-nio-8080-exec-79 CheckAccessFilter:doFilter:64 - Page not found
+21:45:25,814 WARN  http-nio-8080-exec-90 CheckAccessFilter:doFilter:64 - Page not found
+21:45:28,141 WARN  http-nio-8080-exec-81 CheckAccessFilter:doFilter:64 - Page not found
+21:45:29,251 WARN  http-nio-8080-exec-82 CheckAccessFilter:doFilter:64 - Page not found
+21:45:33,089 WARN  http-nio-8080-exec-82 CheckAccessFilter:doFilter:64 - Page not found
+21:45:39,469 WARN  http-nio-8080-exec-87 CheckAccessFilter:doFilter:64 - Page not found
+21:46:46,816 WARN  http-nio-8080-exec-89 DriverManagerConnectionProviderImpl:configure:76 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+21:46:49,616 WARN  http-nio-8080-exec-91 CheckAccessFilter:doFilter:64 - Page not found
+21:47:07,014 WARN  http-nio-8080-exec-90 CheckAccessFilter:doFilter:64 - Page not found
+21:47:10,359 WARN  http-nio-8080-exec-82 CheckAccessFilter:doFilter:64 - Page not found
+21:47:12,570 WARN  http-nio-8080-exec-81 CheckAccessFilter:doFilter:64 - Page not found
+21:47:15,737 WARN  http-nio-8080-exec-88 CheckAccessFilter:doFilter:64 - Page not found
+21:48:46,632 WARN  http-nio-8080-exec-100 DriverManagerConnectionProviderImpl:configure:76 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+21:48:55,797 WARN  http-nio-8080-exec-96 CheckAccessFilter:doFilter:64 - Page not found
+21:48:57,379 WARN  http-nio-8080-exec-94 CheckAccessFilter:doFilter:64 - Page not found
+21:49:27,187 WARN  http-nio-8080-exec-104 DriverManagerConnectionProviderImpl:configure:76 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+21:49:36,646 WARN  http-nio-8080-exec-95 CheckAccessFilter:doFilter:64 - Page not found
+21:49:37,960 WARN  http-nio-8080-exec-93 CheckAccessFilter:doFilter:64 - Page not found
+12:11:00,325 WARN  http-nio-8080-exec-9 DriverManagerConnectionProviderImpl:configure:76 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+12:12:43,961 WARN  http-nio-8080-exec-7 LoginController:loginUser:110 - Wrong email or pass
+12:12:51,046 WARN  http-nio-8080-exec-1 CheckAccessFilter:doFilter:64 - Page not found
+12:12:52,857 WARN  http-nio-8080-exec-10 CheckAccessFilter:doFilter:64 - Page not found
+12:20:07,300 WARN  http-nio-8080-exec-8 CheckAccessFilter:doFilter:64 - Page not found
+12:20:08,369 WARN  http-nio-8080-exec-9 CheckAccessFilter:doFilter:64 - Page not found
+12:21:11,769 WARN  http-nio-8080-exec-11 CheckAccessFilter:doFilter:64 - Page not found
+12:21:14,206 WARN  http-nio-8080-exec-6 CheckAccessFilter:doFilter:64 - Page not found
+12:23:48,748 WARN  http-nio-8080-exec-14 CheckAccessFilter:doFilter:64 - Page not found
+12:23:49,813 WARN  http-nio-8080-exec-8 CheckAccessFilter:doFilter:64 - Page not found
+12:23:51,398 WARN  http-nio-8080-exec-9 CheckAccessFilter:doFilter:64 - Page not found
+12:23:56,316 WARN  http-nio-8080-exec-10 CheckAccessFilter:doFilter:64 - Page not found
+12:24:10,324 WARN  http-nio-8080-exec-14 CheckAccessFilter:doFilter:64 - Page not found
+12:24:12,464 WARN  http-nio-8080-exec-15 CheckAccessFilter:doFilter:64 - Page not found
+12:24:26,439 WARN  http-nio-8080-exec-6 CheckAccessFilter:doFilter:64 - Page not found
+12:24:28,528 WARN  http-nio-8080-exec-11 CheckAccessFilter:doFilter:64 - Page not found
+12:24:37,622 WARN  http-nio-8080-exec-8 CheckAccessFilter:doFilter:64 - Page not found
+12:27:24,696 WARN  http-nio-8080-exec-7 CheckAccessFilter:doFilter:64 - Page not found
+12:44:58,108 WARN  http-nio-8080-exec-10 CheckAccessFilter:doFilter:64 - Page not found
+12:45:02,325 WARN  http-nio-8080-exec-6 CheckAccessFilter:doFilter:64 - Page not found
+12:45:03,925 WARN  http-nio-8080-exec-11 CheckAccessFilter:doFilter:64 - Page not found
+12:45:17,732 WARN  http-nio-8080-exec-8 CheckAccessFilter:doFilter:64 - Page not found
+12:57:04,970 WARN  http-nio-8080-exec-2 DriverManagerConnectionProviderImpl:configure:76 - HHH000402: Using Hibernate built-in connection pool (not for production use!)
+12:57:18,754 WARN  http-nio-8080-exec-9 CheckAccessFilter:doFilter:64 - Page not found
+12:57:32,415 WARN  http-nio-8080-exec-2 CheckAccessFilter:doFilter:64 - Page not found
+12:57:35,283 WARN  http-nio-8080-exec-7 CheckAccessFilter:doFilter:64 - Page not found
+12:57:38,856 WARN  http-nio-8080-exec-8 CheckAccessFilter:doFilter:64 - Page not found
+12:57:44,830 WARN  http-nio-8080-exec-9 CheckAccessFilter:doFilter:64 - Page not found
+12:57:47,449 WARN  http-nio-8080-exec-1 CheckAccessFilter:doFilter:64 - Page not found
+12:57:48,186 WARN  http-nio-8080-exec-2 CheckAccessFilter:doFilter:64 - Page not found

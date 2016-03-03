@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>OrderAndCargoServiceImpl.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">core Maven Webapp</a> &gt; <a href="index.source.html" class="el_package">com.jschool.services.impl</a> &gt; <span class="el_source">OrderAndCargoServiceImpl.java</span></div><h1>OrderAndCargoServiceImpl.java</h1><pre class="source lang-java linenums">package com.jschool.services.impl;
+
+import com.jschool.CustomTransaction;
+import com.jschool.TransactionManager;
+import com.jschool.dao.api.*;
+import com.jschool.dao.api.exception.DaoException;
+import com.jschool.entities.*;
+import com.jschool.services.api.OrderAndCargoService;
+import com.jschool.services.api.exception.ServiceException;
+import com.jschool.services.api.exception.ServiceStatusCode;
+import org.apache.log4j.Logger;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+
+/**
+ * Created by infinity on 09.02.16.
+ */
+public class OrderAndCargoServiceImpl implements OrderAndCargoService {
+
+<span class="fc" id="L23">    private static final Logger LOG = Logger.getLogger(OrderAndCargoServiceImpl.class);</span>
+
+    private OrdersDao ordersDao;
+    private DriverDao driverDao;
+    private CargoDao cargoDao;
+    private RoutePointDao routePointDao;
+    private CityDao cityDao;
+    private TruckDao truckDao;
+    private DriverStatisticDao driverStatisticDao;
+    private TransactionManager transactionManager;
+
+    public OrderAndCargoServiceImpl(OrdersDao ordersDao,
+                                    DriverDao driverDao, CargoDao cargoDao,
+                                    RoutePointDao routePointDao, CityDao cityDao,
+                                    TruckDao truckDao,DriverStatisticDao driverStatisticDao,
+<span class="fc" id="L38">                                    TransactionManager transactionManager) {</span>
+<span class="fc" id="L39">        this.ordersDao = ordersDao;</span>
+<span class="fc" id="L40">        this.driverDao = driverDao;</span>
+<span class="fc" id="L41">        this.cargoDao = cargoDao;</span>
+<span class="fc" id="L42">        this.routePointDao = routePointDao;</span>
+<span class="fc" id="L43">        this.cityDao = cityDao;</span>
+<span class="fc" id="L44">        this.truckDao = truckDao;</span>
+<span class="fc" id="L45">        this.driverStatisticDao = driverStatisticDao;</span>
+<span class="fc" id="L46">        this.transactionManager = transactionManager;</span>
+<span class="fc" id="L47">    }</span>
+
+    /**Add full order in db, large transaction with adding cargos, crago status,
+     * route pints, assign driver and truck
+     * @param order entity with filled fields
+     * @param cargos list of cargos for order
+     * @param duration of order
+     * @throws ServiceException with status code TRUCK_ASSIGNED_ORDER - Truck has an order,
+     * ORDER_ALREADY_EXIST - order with such identifier exist in db
+     */
+    @Override
+    public void addOrder(Order order, List&lt;Cargo&gt; cargos, int duration) throws ServiceException {
+<span class="fc" id="L59">        CustomTransaction ct = transactionManager.getTransaction();</span>
+<span class="fc" id="L60">        ct.begin();</span>
+        try {
+<span class="fc" id="L62">            Order element = ordersDao.findUniqueByNumber(order.getNumber());</span>
+<span class="pc bpc" id="L63" title="1 of 2 branches missed.">            if (element == null) {</span>
+                // find truck and check that it did not has order
+<span class="fc" id="L65">                Truck truck = truckDao.findUniqueByNumber(order.getTruck().getNumber());</span>
+<span class="fc bfc" id="L66" title="All 2 branches covered.">                if (truck.getOreder() == null) {</span>
+                    // get list of drivers we want to assign
+<span class="fc" id="L68">                    List&lt;Driver&gt; drivers = order.getDrivers();</span>
+<span class="fc" id="L69">                    order.setRoutePoints(null);</span>
+<span class="fc" id="L70">                    order.setDrivers(null);</span>
+<span class="fc" id="L71">                    order.setTruck(truck);</span>
+<span class="fc" id="L72">                    ordersDao.create(order);</span>
+                    //method assign drivers to order
+<span class="fc" id="L74">                    assignDrivers(order, drivers,duration);</span>
+                    // method add cargos to order and check capacity
+<span class="fc" id="L76">                    assignCargos(order, cargos, truck.getCapacity());</span>
+<span class="fc" id="L77">                    ct.commit();</span>
+<span class="fc" id="L78">                }else</span>
+<span class="fc" id="L79">                    throw new ServiceException(&quot;Truck has an order&quot;, ServiceStatusCode.TRUCK_ASSIGNED_ORDER);</span>
+<span class="fc" id="L80">            }else</span>
+<span class="nc" id="L81">                throw new ServiceException(&quot;Order with such identifier exist&quot;, ServiceStatusCode.ORDER_ALREADY_EXIST);</span>
+<span class="nc" id="L82">        }catch (DaoException e){</span>
+<span class="nc" id="L83">            LOG.warn(e.getMessage());</span>
+<span class="nc" id="L84">            throw new ServiceException(&quot;Unknown exception&quot;, e, ServiceStatusCode.UNKNOWN);</span>
+        } finally {
+<span class="fc" id="L86">            ct.rollbackIfActive();</span>
+<span class="fc" id="L87">        }</span>
+<span class="fc" id="L88">    }</span>
+
+    /**Add cargoes to order and check that all cargoes enter in current truck
+     * @param order
+     * @param cargos list of cargoes and route points for order
+     * @param capacity of truck
+     * @throws DaoException
+     * @throws ServiceException status CITY_NOT_FOUND, CARGO_ALREADY_EXIST, TRUCK_WEIGHT_NOT_ENOUGH
+     */
+    private void assignCargos(Order order, List&lt;Cargo&gt; cargos, int capacity) throws DaoException, ServiceException {
+<span class="fc" id="L98">        int maxWeight = 0;</span>
+<span class="fc bfc" id="L99" title="All 2 branches covered.">        for (Cargo cargo : cargos){</span>
+            //check cargo has unique number
+<span class="fc" id="L101">            Cargo check = cargoDao.findUniqueByNumber(cargo.getNumber());</span>
+<span class="pc bpc" id="L102" title="1 of 2 branches missed.">            if (check == null) {</span>
+                //count max weight of cargoes
+<span class="pc bpc" id="L104" title="1 of 2 branches missed.">                if (cargo.getWeight()&gt;maxWeight)</span>
+<span class="fc" id="L105">                    maxWeight = cargo.getWeight();</span>
+
+                //create  pick up route point for current cargo
+<span class="fc" id="L108">                RoutePoint pickupRoutePoint = cargo.getPickup();</span>
+<span class="fc" id="L109">                City city = cityDao.findUniqueByName(pickupRoutePoint.getCity().getName());</span>
+<span class="pc bpc" id="L110" title="1 of 2 branches missed.">                if (city == null)</span>
+<span class="nc" id="L111">                    throw new ServiceException(&quot;City with such name not found&quot;, ServiceStatusCode.CITY_NOT_FOUND);</span>
+<span class="fc" id="L112">                pickupRoutePoint.setCity(city);</span>
+<span class="fc" id="L113">                pickupRoutePoint.setOrder(order);</span>
+<span class="fc" id="L114">                routePointDao.create(pickupRoutePoint);</span>
+
+                // create unload route point for cargo
+<span class="fc" id="L117">                RoutePoint unloadRoutePoint = cargo.getUnload();</span>
+<span class="fc" id="L118">                city = cityDao.findUniqueByName(unloadRoutePoint.getCity().getName());</span>
+<span class="pc bpc" id="L119" title="1 of 2 branches missed.">                if (city == null)</span>
+<span class="nc" id="L120">                    throw new ServiceException(&quot;City with such name not found&quot;, ServiceStatusCode.CITY_NOT_FOUND);</span>
+<span class="fc" id="L121">                unloadRoutePoint.setCity(city);</span>
+<span class="fc" id="L122">                unloadRoutePoint.setOrder(order);</span>
+<span class="fc" id="L123">                routePointDao.create(unloadRoutePoint);</span>
+
+                //set points to cargo
+<span class="fc" id="L126">                cargo.setPickup(pickupRoutePoint);</span>
+<span class="fc" id="L127">                cargo.setUnload(unloadRoutePoint);</span>
+
+                //set cargo default status &quot;ready&quot;
+<span class="fc" id="L130">                List&lt;CargoStatusLog&gt; cargoStatusLogs = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L131">                CargoStatusLog cargoStatusLogEntity = new CargoStatusLog();</span>
+<span class="fc" id="L132">                cargoStatusLogEntity.setStatus(CargoStatus.ready);</span>
+<span class="fc" id="L133">                cargoStatusLogEntity.setTimestamp(new Date());</span>
+<span class="fc" id="L134">                cargoStatusLogEntity.setCargo(cargo);</span>
+<span class="fc" id="L135">                cargoStatusLogs.add(cargoStatusLogEntity);</span>
+
+<span class="fc" id="L137">                cargo.setStatusLogs(cargoStatusLogs);</span>
+<span class="fc" id="L138">                cargoDao.create(cargo);</span>
+<span class="fc" id="L139">            }else {</span>
+<span class="nc" id="L140">                throw new ServiceException(&quot;Cargo with such identifier exist&quot;, ServiceStatusCode.CARGO_ALREADY_EXIST);</span>
+            }
+<span class="fc" id="L142">        }</span>
+        //check capacity of truck
+<span class="fc bfc" id="L144" title="All 2 branches covered.">        if (capacity &lt; maxWeight)</span>
+<span class="fc" id="L145">            throw new ServiceException(&quot;Truck weight not enough&quot;, ServiceStatusCode.TRUCK_WEIGHT_NOT_ENOUGH);</span>
+
+<span class="fc" id="L147">    }</span>
+
+    /** Assign drivers to order and check hours of work for every driver
+     * @param order
+     * @param drivers list of drivers
+     * @param duration of order
+     * @throws ServiceException status codes DRIVER_ASSIGNED_ORDER, DRIVER_HOURS_LIMIT, DRIVER_AND_SHIFT_SIZE_NOT_EQUAL
+     * @throws DaoException
+     */
+    private void assignDrivers(Order order, List&lt;Driver&gt; drivers, int duration) throws ServiceException, DaoException {
+<span class="fc" id="L157">        Truck truck = order.getTruck();</span>
+        //check that driver's count equals truck shift size
+<span class="fc bfc" id="L159" title="All 2 branches covered.">        if (truck.getShiftSize()==drivers.size()){</span>
+<span class="fc bfc" id="L160" title="All 2 branches covered.">            for (Driver driver : drivers) {</span>
+                //check driver do not has order
+<span class="fc bfc" id="L162" title="All 2 branches covered.">                if (driverDao.findUniqueByNumber(driver.getNumber()).getOrder() == null) {</span>
+                    // count hours of work for current driver per month
+<span class="fc" id="L164">                    List&lt;DriverStatistic&gt; driverStatistics = driverStatisticDao.findAllByOneMonth(driver);</span>
+<span class="fc" id="L165">                    int sum = 0;</span>
+<span class="fc bfc" id="L166" title="All 2 branches covered.">                    for (DriverStatistic driverStatistic : driverStatistics)</span>
+<span class="fc" id="L167">                        sum += driverStatistic.getHoursWorked();</span>
+<span class="fc bfc" id="L168" title="All 2 branches covered.">                    if (sum + duration &lt;= 176) {</span>
+<span class="fc" id="L169">                        driver.setOrder(order);</span>
+                        // assign driver to order
+<span class="fc" id="L171">                        driverDao.update(driver);</span>
+                    }else
+<span class="fc" id="L173">                        throw new ServiceException(&quot;Driver hours limit is exhausted&quot;, ServiceStatusCode.DRIVER_HOURS_LIMIT);</span>
+<span class="fc" id="L174">                }else {</span>
+<span class="fc" id="L175">                    throw new ServiceException(&quot;Driver has an order&quot;, ServiceStatusCode.DRIVER_ASSIGNED_ORDER);</span>
+                }
+<span class="fc" id="L177">            }</span>
+        }else {
+<span class="fc" id="L179">            throw new ServiceException(&quot;Shift size and drivers count do not equals&quot;, ServiceStatusCode.DRIVER_AND_SHIFT_SIZE_NOT_EQUAL);</span>
+        }
+<span class="fc" id="L181">    }</span>
+
+    /** Update order if it is exist and done. Do not use right now
+     * @param order
+     * @throws ServiceException statuses ORDER_NOT_FOUND,ORDER_DID_NOT_DONE
+     */
+    @Override
+    public void updateOrder(Order order) throws ServiceException {
+<span class="nc" id="L189">        CustomTransaction ct = transactionManager.getTransaction();</span>
+<span class="nc" id="L190">        ct.begin();</span>
+        try {
+<span class="nc" id="L192">            Order element = ordersDao.findUniqueByNumber(order.getNumber());</span>
+<span class="nc bnc" id="L193" title="All 4 branches missed.">            if (element != null &amp;&amp; element.isDoneState()) {</span>
+<span class="nc" id="L194">                order.setId(element.getId());</span>
+<span class="nc" id="L195">                ordersDao.update(order);</span>
+<span class="nc" id="L196">                ct.commit();</span>
+            }
+<span class="nc bnc" id="L198" title="All 2 branches missed.">            if (element == null)</span>
+<span class="nc" id="L199">                throw new ServiceException(&quot;Order not found&quot;, ServiceStatusCode.ORDER_NOT_FOUND);</span>
+<span class="nc bnc" id="L200" title="All 2 branches missed.">            if (!element.isDoneState())</span>
+<span class="nc" id="L201">                throw new ServiceException(&quot;Order did not done&quot;, ServiceStatusCode.ORDER_DID_NOT_DONE);</span>
+<span class="nc" id="L202">        }catch (DaoException e){</span>
+<span class="nc" id="L203">            LOG.warn(e.getMessage());</span>
+<span class="nc" id="L204">            throw new ServiceException(&quot;Unknown exception&quot;, e, ServiceStatusCode.UNKNOWN);</span>
+        } finally {
+<span class="nc" id="L206">            ct.rollbackIfActive();</span>
+<span class="nc" id="L207">        }</span>
+<span class="nc" id="L208">    }</span>
+
+    /** Delete order if it is exist and done. Do not use right now
+     * @param number of order
+     * @throws ServiceException statuses ORDER_NOT_FOUND,ORDER_DID_NOT_DONE
+     */
+    @Override
+    public void deleteOrder(int number) throws ServiceException {
+<span class="nc" id="L216">        CustomTransaction ct = transactionManager.getTransaction();</span>
+<span class="nc" id="L217">        ct.begin();</span>
+        try {
+<span class="nc" id="L219">            Order element = ordersDao.findUniqueByNumber(number);</span>
+<span class="nc bnc" id="L220" title="All 4 branches missed.">            if (element != null &amp;&amp; element.isDoneState()) {</span>
+<span class="nc" id="L221">                ordersDao.delete(element);</span>
+<span class="nc" id="L222">                ct.commit();</span>
+            }
+<span class="nc bnc" id="L224" title="All 2 branches missed.">            if (element == null)</span>
+<span class="nc" id="L225">                throw new ServiceException(&quot;Order not found&quot;, ServiceStatusCode.ORDER_NOT_FOUND);</span>
+<span class="nc bnc" id="L226" title="All 2 branches missed.">            if (!element.isDoneState())</span>
+<span class="nc" id="L227">                throw new ServiceException(&quot;Order did not done&quot;, ServiceStatusCode.ORDER_DID_NOT_DONE);</span>
+<span class="nc" id="L228">        }catch (DaoException e){</span>
+<span class="nc" id="L229">            LOG.warn(e.getMessage());</span>
+<span class="nc" id="L230">            throw new ServiceException(&quot;Unknown exception&quot;, e, ServiceStatusCode.UNKNOWN);</span>
+        } finally {
+<span class="nc" id="L232">            ct.rollbackIfActive();</span>
+<span class="nc" id="L233">        }</span>
+<span class="nc" id="L234">    }</span>
+
+    @Override
+    public List&lt;Order&gt; findAllOrders() throws ServiceException {
+        try {
+<span class="nc" id="L239">            return ordersDao.findAll();</span>
+<span class="nc" id="L240">        }catch (DaoException e){</span>
+<span class="nc" id="L241">            LOG.warn(e.getMessage());</span>
+<span class="nc" id="L242">            throw new ServiceException(&quot;Unknown exception&quot;, e, ServiceStatusCode.UNKNOWN);</span>
+        }
+    }
+
+    @Override
+    public Order getOrderByNumber(int number) throws ServiceException {
+        try {
+<span class="nc" id="L249">            Order order = ordersDao.findUniqueByNumber(number);</span>
+<span class="nc bnc" id="L250" title="All 2 branches missed.">            if (order == null)</span>
+<span class="nc" id="L251">                throw new ServiceException(&quot;Order not found&quot;, ServiceStatusCode.ORDER_NOT_FOUND);</span>
+<span class="nc" id="L252">            return order;</span>
+<span class="nc" id="L253">        }catch (DaoException e){</span>
+<span class="nc" id="L254">            LOG.warn(e.getMessage());</span>
+<span class="nc" id="L255">            throw new ServiceException(&quot;Unknown exception&quot;, e, ServiceStatusCode.UNKNOWN);</span>
+        }
+    }
+
+    /**Return list of cargoes assign with order
+     * @param number of order
+     * @return list of cargoes assign with order
+     * @throws ServiceException status ORDER_NOT_FOUND
+     */
+    @Override
+    public List&lt;Cargo&gt; findAllCargosByOrderNumber(int number) throws ServiceException {
+        try {
+<span class="nc" id="L267">            Order order = ordersDao.findUniqueByNumber(number);</span>
+<span class="nc bnc" id="L268" title="All 2 branches missed.">            if (order != null) {</span>
+<span class="nc" id="L269">                List&lt;RoutePoint&gt; routePoints = order.getRoutePoints();</span>
+<span class="nc" id="L270">                List&lt;Cargo&gt; cargos = new ArrayList&lt;Cargo&gt;();</span>
+<span class="nc bnc" id="L271" title="All 2 branches missed.">                for (RoutePoint routePoint : routePoints) {</span>
+<span class="nc bnc" id="L272" title="All 2 branches missed.">                    if (routePoint.getPickup() != null)</span>
+<span class="nc" id="L273">                        cargos.add(routePoint.getPickup());</span>
+<span class="nc" id="L274">                }</span>
+<span class="nc" id="L275">                return cargos;</span>
+            }else
+<span class="nc" id="L277">                throw new ServiceException(&quot;Order not found&quot;, ServiceStatusCode.ORDER_NOT_FOUND);</span>
+<span class="nc" id="L278">        }catch (DaoException e) {</span>
+<span class="nc" id="L279">            LOG.warn(e.getMessage());</span>
+<span class="nc" id="L280">            throw new ServiceException(&quot;Unknown exception&quot;, e, ServiceStatusCode.UNKNOWN);</span>
+        }
+    }
+
+    @Override
+    public Truck getAssignedTruckByOrderNumber(int orderNumber) throws ServiceException {
+        try {
+<span class="nc" id="L287">            Order order = ordersDao.findUniqueByNumber(orderNumber);</span>
+<span class="nc bnc" id="L288" title="All 2 branches missed.">            if (order != null) {</span>
+<span class="nc" id="L289">                Truck truck = order.getTruck();</span>
+<span class="nc bnc" id="L290" title="All 2 branches missed.">                if (truck != null)</span>
+<span class="nc" id="L291">                    return truck;</span>
+                else
+<span class="nc" id="L293">                    throw new ServiceException(&quot;Truck do not assign&quot;, ServiceStatusCode.TRUCK_DID_NOT_ASSIGNED_ORDER);</span>
+            }else
+<span class="nc" id="L295">                throw new ServiceException(&quot;Order not found&quot;, ServiceStatusCode.ORDER_NOT_FOUND);</span>
+<span class="nc" id="L296">        }catch (DaoException e) {</span>
+<span class="nc" id="L297">            LOG.warn(e.getMessage());</span>
+<span class="nc" id="L298">            throw new ServiceException(&quot;Unknown exception&quot;, e, ServiceStatusCode.UNKNOWN);</span>
+        }
+    }
+
+    @Override
+    public List&lt;Driver&gt; getAllAssignedDriversByOrderNumber(int orderNumber) throws ServiceException {
+        try {
+<span class="nc" id="L305">            Order order = ordersDao.findUniqueByNumber(orderNumber);</span>
+<span class="nc bnc" id="L306" title="All 2 branches missed.">            if (order != null)</span>
+<span class="nc" id="L307">                return order.getDrivers();</span>
+            else
+<span class="nc" id="L309">                throw new ServiceException(&quot;Order not found&quot;, ServiceStatusCode.ORDER_NOT_FOUND);</span>
+<span class="nc" id="L310">        }catch (DaoException e) {</span>
+<span class="nc" id="L311">            LOG.warn(e.getMessage());</span>
+<span class="nc" id="L312">            throw new ServiceException(&quot;Unknown exception&quot;, e, ServiceStatusCode.UNKNOWN);</span>
+        }
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

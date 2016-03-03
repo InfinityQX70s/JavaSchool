@@ -15,13 +15,12 @@
         </div>
     </div>
 </div>
-<div class="row z-depth-2 white" id="readroot">
+<div class="row z-depth-2 white root" id="readroot">
     <div class="row">
-        <a class="secondary-content disabled right-align light-blue-text text-accent-888"
-           onclick="this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode);"><i
-                class="material-icons">clear</i></a>
+        <a class="secondary-content disabled right-align light-blue-text text-accent-888 remove">
+            <i class="material-icons">clear</i></a>
         <div class="input-field col s12">
-            <input id="cargoNumber" name="cargoNumber" type="text" class="validate">
+            <input id="cargoNumber" name="cargoNumber" type="text" class="validate number">
             <label for="cargoNumber">Cargo Number</label>
         </div>
     </div>
@@ -48,7 +47,7 @@
 </div>
 <span id="writeroot"></span>
 <div class="row right-align">
-    <a class="btn-floating btn-tiny waves-effect waves-light light-blue accent-999" onclick="moreFields()"><i
+    <a class="btn-floating btn-tiny waves-effect waves-light light-blue accent-999 add"><i
             class="material-icons">add</i></a>
 </div>
 </form>

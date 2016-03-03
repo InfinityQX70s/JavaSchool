@@ -201,7 +201,11 @@ function SmartWizard(target, options) {
                 });
                 break;
         }
-        if (ajaxurl && ajaxurl.length>0) {
+        if (ajaxurl && ajaxurl.length>0) {        function moreFields() {
+            var newFields = document.getElementById('readroot').cloneNode(true);
+            var insertHere = document.getElementById('writeroot');
+            insertHere.parentNode.insertBefore(newFields,insertHere);
+        };
             if ($this.options.contentCache && hasContent) {
                 _showStep($this, stepIdx);
             } else {

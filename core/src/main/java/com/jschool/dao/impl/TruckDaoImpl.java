@@ -70,4 +70,18 @@ public class TruckDaoImpl extends GenericDaoImpl<Truck> implements TruckDao {
             throw  new DaoException(e);
         }
     }
+
+    public List<Truck> findAllByOffset(int offset, int limit) throws DaoException {
+        try {
+            entityManager.clear(); //may be bug be carefully
+            TypedQuery<Truck> query =
+                    entityManager.createNamedQuery("Truck.findAll", Truck.class);
+            query.setFirstResult(offset)
+                    .setMaxResults(limit);
+            return query.getResultList();
+        }catch (Exception e){
+            LOG.error("Unexpected DB exception", e);
+            throw  new DaoException(e);
+        }
+    }
 }

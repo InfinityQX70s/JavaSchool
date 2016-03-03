@@ -18,7 +18,7 @@
     <link type="text/css" rel="stylesheet" href="/css/materialize.css" media="screen,projection"/>
     <link href="/css/smart_wizard.css" rel="stylesheet" type="text/css">
     <script src="https://api-maps.yandex.ru/1.1/index.xml" type="text/javascript"></script>
-    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="/js/jquery-2.1.1.min.js"></script>
     <script type="text/javascript" src="/js/materialize.min.js"></script>
     <script type="text/javascript" src="/js/jquery.smartWizard.js"></script>
     <!--Let browser know website is optimized for mobile-->
@@ -30,11 +30,19 @@
             function onFinishCallback(){
                 $('form#fullForm').submit();
             }
+            $(document).on('click', '.add', function() {
+                var value = $('.number').last().val();
+                var rootView = $( '#readroot' ).clone().appendTo('#writeroot');
+                rootView.find('input').val('');
+                if ($.isNumeric(value)){
+                    lol.find('#number').val(++value);
+                }else{
+                    lol.find('#number').val(0);
+                };
+            });
+            $(document).on('click', '.remove', function() {
+                $(this).closest('.root').remove();
+            });
         });
-        function moreFields() {
-            var newFields = document.getElementById('readroot').cloneNode(true);
-            var insertHere = document.getElementById('writeroot');
-            insertHere.parentNode.insertBefore(newFields,insertHere);
-        };
     </script>
 </head>

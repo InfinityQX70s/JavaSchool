@@ -69,7 +69,19 @@ public class TruckController extends BaseController {
     // /employee/trucks/
     public void showTrucks(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            List<Truck> trucks = truckService.findAllTrucks();
+            int limitElements = 7;
+            List<Truck> utilElem = truckService.findAllTrucks();
+            int pageCount = (int) Math.ceil(utilElem.size()/(float)limitElements);
+            String page = req.getParameter("page");
+            List<Truck> trucks;
+            if (page == null){
+                page = "1";
+                trucks = truckService.findAllTrucksByOffset(0,limitElements);
+            }else{
+                trucks = truckService.findAllTrucksByOffset((Integer.parseInt(page)-1)*limitElements,limitElements);
+            }
+            req.setAttribute("pageCount", pageCount);
+            req.setAttribute("currentPage", page);
             req.setAttribute("trucks", trucks);
             req.getRequestDispatcher("/WEB-INF/pages/truck/truck.jsp").forward(req, resp);
         } catch (ServiceException e) {

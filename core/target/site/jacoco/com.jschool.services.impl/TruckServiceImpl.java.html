@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>TruckServiceImpl.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">core Maven Webapp</a> &gt; <a href="index.source.html" class="el_package">com.jschool.services.impl</a> &gt; <span class="el_source">TruckServiceImpl.java</span></div><h1>TruckServiceImpl.java</h1><pre class="source lang-java linenums">package com.jschool.services.impl;
+
+import com.jschool.CustomTransaction;
+import com.jschool.TransactionManager;
+import com.jschool.dao.api.TruckDao;
+import com.jschool.dao.api.exception.DaoException;
+import com.jschool.entities.Truck;
+import com.jschool.services.api.TruckService;
+import com.jschool.services.api.exception.ServiceException;
+import com.jschool.services.api.exception.ServiceStatusCode;
+import org.apache.log4j.Logger;
+
+import java.util.List;
+
+/**
+ * Created by infinity on 08.02.16.
+ */
+public class TruckServiceImpl implements TruckService{
+
+<span class="fc" id="L20">    private static final Logger LOG = Logger.getLogger(TruckServiceImpl.class);</span>
+
+    private TruckDao truckDao;
+    private TransactionManager transactionManager;
+
+<span class="fc" id="L25">    public TruckServiceImpl(TruckDao truckDao, TransactionManager transactionManager) {</span>
+<span class="fc" id="L26">        this.truckDao = truckDao;</span>
+<span class="fc" id="L27">        this.transactionManager = transactionManager;</span>
+<span class="fc" id="L28">    }</span>
+
+    /**Add truck if it is not exist in db
+     * @param truck entity with filling fields
+     * @throws ServiceException status code TRUCK_ALREADY_EXIST
+     */
+    @Override
+    public void addTruck(Truck truck) throws ServiceException {
+<span class="fc" id="L36">        CustomTransaction ct = transactionManager.getTransaction();</span>
+<span class="fc" id="L37">        ct.begin();</span>
+        try {
+<span class="fc" id="L39">            Truck element = truckDao.findUniqueByNumber(truck.getNumber());</span>
+<span class="fc bfc" id="L40" title="All 2 branches covered.">            if (element == null)</span>
+<span class="fc" id="L41">                truckDao.create(truck);</span>
+            else
+<span class="fc" id="L43">                throw new ServiceException(&quot;Truck with such identifier exist&quot;, ServiceStatusCode.TRUCK_ALREADY_EXIST);</span>
+<span class="fc" id="L44">            ct.commit();</span>
+<span class="nc" id="L45">        }catch (DaoException e) {</span>
+<span class="nc" id="L46">            LOG.warn(e.getMessage());</span>
+<span class="nc" id="L47">            throw new ServiceException(&quot;Unknown exception&quot;, e, ServiceStatusCode.UNKNOWN);</span>
+        }finally {
+<span class="fc" id="L49">            ct.rollbackIfActive();</span>
+<span class="fc" id="L50">        }</span>
+<span class="fc" id="L51">    }</span>
+
+    /**Update truck if it exist and do not have order
+     * @param truck entity
+     * @throws ServiceException status codes TRUCK_NOT_FOUND, TRUCK_ASSIGNED_ORDER
+     */
+    @Override
+    public void updateTruck(Truck truck) throws ServiceException {
+<span class="fc" id="L59">        CustomTransaction ct = transactionManager.getTransaction();</span>
+<span class="fc" id="L60">        ct.begin();</span>
+        try {
+<span class="fc" id="L62">            Truck element = truckDao.findUniqueByNumber(truck.getNumber());</span>
+<span class="fc bfc" id="L63" title="All 4 branches covered.">            if (element != null &amp;&amp; element.getOreder() == null) {</span>
+<span class="fc" id="L64">                element.setNumber(truck.getNumber());</span>
+<span class="fc" id="L65">                element.setCapacity(truck.getCapacity());</span>
+<span class="fc" id="L66">                element.setShiftSize(truck.getShiftSize());</span>
+<span class="fc" id="L67">                element.setRepairState(truck.isRepairState());</span>
+<span class="fc" id="L68">                truckDao.update(element);</span>
+<span class="fc" id="L69">                ct.commit();</span>
+            }
+<span class="fc bfc" id="L71" title="All 2 branches covered.">            if (element == null)</span>
+<span class="fc" id="L72">                throw new ServiceException(&quot;Truck not found&quot;, ServiceStatusCode.TRUCK_NOT_FOUND);</span>
+<span class="fc bfc" id="L73" title="All 2 branches covered.">            if (element.getOreder() != null)</span>
+<span class="fc" id="L74">                throw new ServiceException(&quot;Truck has an order&quot;, ServiceStatusCode.TRUCK_ASSIGNED_ORDER);</span>
+<span class="nc" id="L75">        }catch (DaoException e) {</span>
+<span class="nc" id="L76">            LOG.warn(e.getMessage());</span>
+<span class="nc" id="L77">            throw new ServiceException(&quot;Unknown exception&quot;, e, ServiceStatusCode.UNKNOWN);</span>
+        }finally {
+<span class="fc" id="L79">            ct.rollbackIfActive();</span>
+<span class="fc" id="L80">        }</span>
+<span class="fc" id="L81">    }</span>
+
+    /**Delete truck with curent number and if it did not has order
+     * @param truckNumber
+     * @throws ServiceException
+     */
+    @Override
+    public void deleteTruck(String truckNumber) throws ServiceException {
+<span class="fc" id="L89">        CustomTransaction ct = transactionManager.getTransaction();</span>
+<span class="fc" id="L90">        ct.begin();</span>
+        try {
+<span class="fc" id="L92">            Truck truck = truckDao.findUniqueByNumber(truckNumber);</span>
+<span class="fc bfc" id="L93" title="All 4 branches covered.">            if (truck != null &amp;&amp; truck.getOreder() == null){</span>
+<span class="fc" id="L94">                truckDao.delete(truck);</span>
+<span class="fc" id="L95">                ct.commit();</span>
+            }
+<span class="fc bfc" id="L97" title="All 2 branches covered.">            if (truck == null)</span>
+<span class="fc" id="L98">                throw new ServiceException(&quot;Truck not found&quot;, ServiceStatusCode.TRUCK_NOT_FOUND);</span>
+<span class="fc bfc" id="L99" title="All 2 branches covered.">            if (truck.getOreder() != null)</span>
+<span class="fc" id="L100">                throw new ServiceException(&quot;Truck has an order&quot;, ServiceStatusCode.TRUCK_ASSIGNED_ORDER);</span>
+<span class="nc" id="L101">        }catch (DaoException e) {</span>
+<span class="nc" id="L102">            LOG.warn(e.getMessage());</span>
+<span class="nc" id="L103">            throw new ServiceException(&quot;Unknown exception&quot;, e, ServiceStatusCode.UNKNOWN);</span>
+        }finally {
+<span class="fc" id="L105">            ct.rollbackIfActive();</span>
+<span class="fc" id="L106">        }</span>
+<span class="fc" id="L107">    }</span>
+
+    @Override
+    public Truck getTruckByNumber(String number) throws ServiceException {
+        try {
+<span class="nc" id="L112">            Truck truck = truckDao.findUniqueByNumber(number);</span>
+<span class="nc bnc" id="L113" title="All 2 branches missed.">            if (truck == null)</span>
+<span class="nc" id="L114">                throw new ServiceException(&quot;Truck not found&quot;, ServiceStatusCode.TRUCK_NOT_FOUND);</span>
+<span class="nc" id="L115">            return truck;</span>
+<span class="nc" id="L116">        }catch (DaoException e) {</span>
+<span class="nc" id="L117">            LOG.warn(e.getMessage());</span>
+<span class="nc" id="L118">            throw new ServiceException(&quot;Unknown exception&quot;, e, ServiceStatusCode.UNKNOWN);</span>
+        }
+    }
+
+    @Override
+    public List&lt;Truck&gt; findAllTrucks() throws ServiceException {
+        try {
+<span class="fc" id="L125">            return truckDao.findAll();</span>
+<span class="nc" id="L126">        }catch (DaoException e) {</span>
+<span class="nc" id="L127">            LOG.warn(e.getMessage());</span>
+<span class="nc" id="L128">            throw new ServiceException(&quot;Unknown exception&quot;, e, ServiceStatusCode.UNKNOWN);</span>
+        }
+    }
+
+    @Override
+    public List&lt;Truck&gt; findAllTrucksByOffset(int offset, int limit) throws ServiceException {
+        try {
+<span class="nc" id="L135">            return truckDao.findAllByOffset(offset,limit);</span>
+<span class="nc" id="L136">        }catch (DaoException e) {</span>
+<span class="nc" id="L137">            LOG.warn(e.getMessage());</span>
+<span class="nc" id="L138">            throw new ServiceException(&quot;Unknown exception&quot;, e, ServiceStatusCode.UNKNOWN);</span>
+        }
+    }
+
+    /**Return list of trucks with &quot;ok&quot; state and with capacity more or equals then needed
+     * @param capacity
+     * @return
+     * @throws ServiceException
+     */
+    @Override
+    public List&lt;Truck&gt; findAllAvailableTrucksByMinCapacity(int capacity) throws ServiceException {
+        try {
+<span class="fc" id="L150">            return truckDao.findAllFreeByStateAndGreaterThanCapacity(true,capacity);</span>
+<span class="nc" id="L151">        }catch (DaoException e) {</span>
+<span class="nc" id="L152">            LOG.warn(e.getMessage());</span>
+<span class="nc" id="L153">            throw new ServiceException(&quot;Unknown exception&quot;, e, ServiceStatusCode.UNKNOWN);</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

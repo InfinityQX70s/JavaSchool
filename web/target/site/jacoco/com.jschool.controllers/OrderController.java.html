@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>OrderController.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">web Maven Webapp</a> &gt; <a href="index.source.html" class="el_package">com.jschool.controllers</a> &gt; <span class="el_source">OrderController.java</span></div><h1>OrderController.java</h1><pre class="source lang-java linenums">package com.jschool.controllers;
+
+import com.jschool.AppContext;
+import com.jschool.Validator;
+import com.jschool.controllers.exception.ControllerException;
+import com.jschool.controllers.exception.ControllerStatusCode;
+import com.jschool.entities.*;
+import com.jschool.services.api.DriverService;
+import com.jschool.services.api.OrderAndCargoService;
+import com.jschool.services.api.TruckService;
+import com.jschool.services.api.exception.ServiceException;
+import org.apache.log4j.Logger;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.*;
+
+/**
+ * Created by infinity on 12.02.16.
+ */
+public class OrderController extends BaseController {
+
+<span class="nc" id="L26">    private static final Logger LOG = Logger.getLogger(OrderController.class);</span>
+
+    private OrderAndCargoService orderAndCargoService;
+    private TruckService truckService;
+    private DriverService driverService;
+    private Validator validator;
+
+    public OrderController(Properties errorProperties, OrderAndCargoService orderAndCargoService, TruckService truckService, DriverService driverService, Validator validator) {
+<span class="nc" id="L34">        super(errorProperties);</span>
+<span class="nc" id="L35">        this.orderAndCargoService = orderAndCargoService;</span>
+<span class="nc" id="L36">        this.truckService = truckService;</span>
+<span class="nc" id="L37">        this.driverService = driverService;</span>
+<span class="nc" id="L38">        this.validator = validator;</span>
+<span class="nc" id="L39">    }</span>
+
+    @Override
+    public void execute(ServletContext servletContext, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        try {
+            //split uri by &quot;/&quot; and check url on correct and pass it to needed method
+            // by uri and &quot;get&quot; or &quot;post&quot; method
+<span class="nc" id="L46">            String[] uri = request.getRequestURI().split(&quot;/&quot;);</span>
+<span class="nc bnc" id="L47" title="All 2 branches missed.">            if (&quot;GET&quot;.equals(request.getMethod())) {</span>
+<span class="nc bnc" id="L48" title="All 4 branches missed.">                if (uri.length == 4 &amp;&amp; &quot;orders&quot;.equals(uri[3]))</span>
+<span class="nc" id="L49">                    showOrders(request, response);</span>
+<span class="nc bnc" id="L50" title="All 4 branches missed.">                else if (uri.length == 5 &amp;&amp; &quot;add&quot;.equals(uri[4]))</span>
+<span class="nc" id="L51">                    showFormForOrderAdd(request, response);</span>
+                else
+<span class="nc" id="L53">                    throw new ControllerException(&quot;Page not found&quot;, ControllerStatusCode.PAGE_NOT_FOUND);</span>
+            }
+<span class="nc bnc" id="L55" title="All 2 branches missed.">            if (&quot;POST&quot;.equals(request.getMethod())) {</span>
+<span class="nc bnc" id="L56" title="All 4 branches missed.">                if (uri.length == 5 &amp;&amp; &quot;add&quot;.equals(uri[4]))</span>
+<span class="nc" id="L57">                    addOrder(request, response);</span>
+<span class="nc bnc" id="L58" title="All 4 branches missed.">                else if (uri.length == 5 &amp;&amp; &quot;submit&quot;.equals(uri[4]))</span>
+<span class="nc" id="L59">                    submitOrder(request, response);</span>
+                else
+<span class="nc" id="L61">                    throw new ControllerException(&quot;Page not found&quot;, ControllerStatusCode.PAGE_NOT_FOUND);</span>
+            }
+<span class="nc" id="L63">        } catch (ControllerException e) {</span>
+<span class="nc" id="L64">            LOG.warn(e.getMessage());</span>
+<span class="nc" id="L65">            showError(e,request,response);</span>
+<span class="nc" id="L66">        }</span>
+<span class="nc" id="L67">    }</span>
+
+    // /employee/orders/
+    public void showOrders(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+<span class="nc" id="L72">            List&lt;Order&gt; orders = orderAndCargoService.findAllOrders();</span>
+<span class="nc" id="L73">            Map&lt;Order, List&lt;Cargo&gt;&gt; orderListMap = new HashMap&lt;&gt;();</span>
+<span class="nc bnc" id="L74" title="All 2 branches missed.">            for (Order order : orders) {</span>
+<span class="nc" id="L75">                List&lt;Cargo&gt; cargos = orderAndCargoService.findAllCargosByOrderNumber(order.getNumber());</span>
+<span class="nc" id="L76">                orderListMap.put(order, cargos);</span>
+<span class="nc" id="L77">            }</span>
+<span class="nc" id="L78">            req.setAttribute(&quot;orderListMap&quot;, orderListMap);</span>
+<span class="nc" id="L79">            req.getRequestDispatcher(&quot;/WEB-INF/pages/order/order.jsp&quot;).forward(req, resp);</span>
+<span class="nc" id="L80">        } catch (ServiceException e) {</span>
+<span class="nc" id="L81">            LOG.warn(e.getMessage());</span>
+<span class="nc" id="L82">            showError(e,req,resp);</span>
+<span class="nc" id="L83">        }</span>
+<span class="nc" id="L84">    }</span>
+
+    // /employee/order/add GET
+    public void showFormForOrderAdd(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+<span class="nc" id="L88">        req.getRequestDispatcher(&quot;/WEB-INF/pages/order/orderAllAdd.jsp&quot;).forward(req, resp);</span>
+<span class="nc" id="L89">    }</span>
+
+    //   /employee/order/add POST
+    public void addOrder(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+            //return needed page equals step on wizard and passed params from wizard form
+<span class="nc" id="L95">            String stepNumber = req.getParameter(&quot;step_number&quot;);</span>
+<span class="nc bnc" id="L96" title="All 18 branches missed.">            switch (stepNumber) {</span>
+                case &quot;1&quot;:
+<span class="nc" id="L98">                    req.getRequestDispatcher(&quot;/WEB-INF/pages/order/orderCargo.jsp&quot;).forward(req, resp);</span>
+<span class="nc" id="L99">                    break;</span>
+                case &quot;2&quot;:
+<span class="nc" id="L101">                    String orderNumber = req.getParameter(&quot;orderNumber&quot;);</span>
+<span class="nc" id="L102">                    String[] cargoNumber = req.getParameterValues(&quot;cargoNumber&quot;);</span>
+<span class="nc" id="L103">                    String[] cargoName = req.getParameterValues(&quot;cargoName&quot;);</span>
+<span class="nc" id="L104">                    String[] cargoWeight = req.getParameterValues(&quot;cargoWeight&quot;);</span>
+<span class="nc" id="L105">                    String[] pickup = req.getParameterValues(&quot;pickup&quot;);</span>
+<span class="nc" id="L106">                    String[] unload = req.getParameterValues(&quot;unload&quot;);</span>
+<span class="nc" id="L107">                    validator.validateOrderAndCargo(orderNumber, cargoNumber, cargoName, cargoWeight, pickup, unload);</span>
+<span class="nc" id="L108">                    int max = 0;</span>
+<span class="nc bnc" id="L109" title="All 2 branches missed.">                    for (String weight : cargoWeight) {</span>
+<span class="nc bnc" id="L110" title="All 2 branches missed.">                        if (Integer.parseInt(weight) &gt; max)</span>
+<span class="nc" id="L111">                            max = Integer.parseInt(weight);</span>
+                    }
+<span class="nc" id="L113">                    List&lt;Truck&gt; trucks = truckService.findAllAvailableTrucksByMinCapacity(max);</span>
+<span class="nc" id="L114">                    req.setAttribute(&quot;trucks&quot;, trucks);</span>
+<span class="nc" id="L115">                    req.setAttribute(&quot;max&quot;, max);</span>
+<span class="nc" id="L116">                    req.getRequestDispatcher(&quot;/WEB-INF/pages/order/orderTruck.jsp&quot;).forward(req, resp);</span>
+<span class="nc" id="L117">                    break;</span>
+                case &quot;3&quot;:
+<span class="nc" id="L119">                    String pickupCity[] = req.getParameterValues(&quot;pickup&quot;);</span>
+<span class="nc" id="L120">                    String unloadCity[] = req.getParameterValues(&quot;unload&quot;);</span>
+<span class="nc" id="L121">                    validator.validateCargoCities(pickupCity, unloadCity);</span>
+<span class="nc" id="L122">                    List&lt;String&gt; cities = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L123" title="All 2 branches missed.">                    for (int i = 0; i &lt; pickupCity.length; i++) {</span>
+<span class="nc" id="L124">                        cities.add(pickupCity[i]);</span>
+<span class="nc" id="L125">                        cities.add(unloadCity[i]);</span>
+                    }
+<span class="nc" id="L127">                    req.setAttribute(&quot;cities&quot;, cities);</span>
+<span class="nc" id="L128">                    req.getRequestDispatcher(&quot;/WEB-INF/pages/order/orderMap.jsp&quot;).forward(req, resp);</span>
+<span class="nc" id="L129">                    break;</span>
+                case &quot;4&quot;:
+<span class="nc" id="L131">                    String duration = req.getParameter(&quot;duration&quot;).split(&quot; &quot;)[0];</span>
+<span class="nc" id="L132">                    String truckNumber = req.getParameter(&quot;truckNumber&quot;);</span>
+<span class="nc" id="L133">                    validator.validateTruckNumber(truckNumber);</span>
+<span class="nc" id="L134">                    Truck truck = truckService.getTruckByNumber(truckNumber);</span>
+<span class="nc" id="L135">                    Map&lt;Driver, Integer&gt; driverHoursList = driverService.findAllAvailableDrivers(Integer.parseInt(duration));</span>
+<span class="nc" id="L136">                    req.setAttribute(&quot;drivers&quot;, driverHoursList);</span>
+<span class="nc" id="L137">                    req.setAttribute(&quot;duration&quot;, duration);</span>
+<span class="nc" id="L138">                    req.setAttribute(&quot;shiftSize&quot;, truck.getShiftSize());</span>
+<span class="nc" id="L139">                    req.getRequestDispatcher(&quot;/WEB-INF/pages/order/orderDrivers.jsp&quot;).forward(req, resp);</span>
+                    break;
+            }
+<span class="nc" id="L142">        } catch (ServiceException e) {</span>
+<span class="nc" id="L143">            LOG.warn(e.getMessage());</span>
+<span class="nc" id="L144">            showError(e,req,resp);</span>
+<span class="nc" id="L145">        }catch (ControllerException e){</span>
+<span class="nc" id="L146">            LOG.warn(e.getMessage());</span>
+<span class="nc" id="L147">            showError(e,req,resp);</span>
+<span class="nc" id="L148">        }</span>
+<span class="nc" id="L149">    }</span>
+
+    // /employee/order/submit POST
+    public void submitOrder(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+        try {
+            //get params from form, validate them, fill entities and pass them to
+            //service for full order add
+<span class="nc" id="L156">            String orderNumber = req.getParameter(&quot;orderNumber&quot;);</span>
+<span class="nc" id="L157">            String[] cargoNumber = req.getParameterValues(&quot;cargoNumber&quot;);</span>
+<span class="nc" id="L158">            String[] cargoName = req.getParameterValues(&quot;cargoName&quot;);</span>
+<span class="nc" id="L159">            String[] cargoWeight = req.getParameterValues(&quot;cargoWeight&quot;);</span>
+<span class="nc" id="L160">            String[] pickup = req.getParameterValues(&quot;pickup&quot;);</span>
+<span class="nc" id="L161">            String[] unload = req.getParameterValues(&quot;unload&quot;);</span>
+<span class="nc" id="L162">            String truckNumber = req.getParameter(&quot;truckNumber&quot;);</span>
+<span class="nc" id="L163">            String[] driverNumbers = req.getParameterValues(&quot;driverNumber&quot;);</span>
+<span class="nc" id="L164">            String duration = req.getParameter(&quot;duration&quot;).split(&quot; &quot;)[0];</span>
+<span class="nc" id="L165">            validator.validateOrderAndCargo(orderNumber,cargoNumber,cargoName,cargoWeight,pickup,unload);</span>
+<span class="nc" id="L166">            validator.validateTruckDriversAndDuration(truckNumber,driverNumbers,duration);</span>
+
+<span class="nc" id="L168">            Order order = new Order();</span>
+<span class="nc" id="L169">            order.setNumber(Integer.parseInt(orderNumber));</span>
+<span class="nc" id="L170">            order.setDoneState(false);</span>
+<span class="nc" id="L171">            List&lt;Cargo&gt; cargos = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L172" title="All 2 branches missed.">            for (int i = 0; i &lt; cargoNumber.length; i++) {</span>
+<span class="nc" id="L173">                Cargo cargo = new Cargo();</span>
+<span class="nc" id="L174">                cargo.setNumber(Integer.parseInt(cargoNumber[i]));</span>
+<span class="nc" id="L175">                cargo.setName(cargoName[i]);</span>
+<span class="nc" id="L176">                cargo.setWeight(Integer.parseInt(cargoWeight[i]));</span>
+
+<span class="nc" id="L178">                City pickCity = new City();</span>
+<span class="nc" id="L179">                pickCity.setName(pickup[i]);</span>
+
+<span class="nc" id="L181">                City unloadCity = new City();</span>
+<span class="nc" id="L182">                unloadCity.setName(unload[i]);</span>
+
+<span class="nc" id="L184">                RoutePoint pickRoute = new RoutePoint();</span>
+<span class="nc" id="L185">                pickRoute.setPoint(i);</span>
+<span class="nc" id="L186">                pickRoute.setCity(pickCity);</span>
+
+<span class="nc" id="L188">                RoutePoint unloadRoute = new RoutePoint();</span>
+<span class="nc" id="L189">                unloadRoute.setPoint(i);</span>
+<span class="nc" id="L190">                unloadRoute.setCity(unloadCity);</span>
+
+<span class="nc" id="L192">                cargo.setPickup(pickRoute);</span>
+<span class="nc" id="L193">                cargo.setUnload(unloadRoute);</span>
+<span class="nc" id="L194">                cargos.add(cargo);</span>
+            }
+<span class="nc" id="L196">            Truck truck = truckService.getTruckByNumber(truckNumber);</span>
+<span class="nc" id="L197">            List&lt;Driver&gt; drivers = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L198" title="All 2 branches missed.">            for (String driver : driverNumbers)</span>
+<span class="nc" id="L199">                drivers.add(driverService.getDriverByPersonalNumber(Integer.parseInt(driver)));</span>
+<span class="nc" id="L200">            order.setTruck(truck);</span>
+<span class="nc" id="L201">            order.setDrivers(drivers);</span>
+
+<span class="nc" id="L203">            orderAndCargoService.addOrder(order, cargos, Integer.parseInt(duration));</span>
+<span class="nc" id="L204">            resp.sendRedirect(&quot;/employee/orders&quot;);</span>
+<span class="nc" id="L205">        } catch (ServiceException e) {</span>
+<span class="nc" id="L206">            LOG.warn(e.getMessage());</span>
+<span class="nc" id="L207">            showError(e,req,resp);</span>
+<span class="nc" id="L208">        }catch (ControllerException e){</span>
+<span class="nc" id="L209">            LOG.warn(e.getMessage());</span>
+<span class="nc" id="L210">            showError(e,req,resp);</span>
+<span class="nc" id="L211">        }</span>
+<span class="nc" id="L212">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

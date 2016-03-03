@@ -16,4 +16,5 @@ public interface TruckService {
      Truck getTruckByNumber(String number) throws ServiceException;
      List<Truck> findAllTrucks() throws ServiceException;
      List<Truck> findAllAvailableTrucksByMinCapacity(int capacity) throws ServiceException;
+     List<Truck> findAllTrucksByOffset(int offset, int limit) throws ServiceException;
 }

@@ -70,7 +70,19 @@ public class DriverController extends BaseController {
     //    /employee/drivers/ GET
     public void showDrivers(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            List<Driver> drivers = driverService.findAllDrivers();
+            int limitElements = 7;
+            List<Driver> utilElem = driverService.findAllDrivers();
+            int pageCount = (int) Math.ceil(utilElem.size()/(float)limitElements);
+            String page = req.getParameter("page");
+            List<Driver> drivers;
+            if (page == null){
+                page = "1";
+                drivers = driverService.findAllDriversByOffset(0,limitElements);
+            }else{
+                drivers = driverService.findAllDriversByOffset((Integer.parseInt(page)-1)*limitElements,limitElements);
+            }
+            req.setAttribute("pageCount", pageCount);
+            req.setAttribute("currentPage", page);
             req.setAttribute("drivers", drivers);
             req.getRequestDispatcher("/WEB-INF/pages/driver/driver.jsp").forward(req, resp);
         } catch (ServiceException e) {

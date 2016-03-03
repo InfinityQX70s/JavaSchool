@@ -85,4 +85,18 @@ public class DriverDaoImpl extends GenericDaoImpl<Driver> implements DriverDao {
             throw  new DaoException(e);
         }
     }
+
+    @Override
+    public List<Driver> findAllByOffset(int offset, int limit) throws DaoException {
+        try {
+            TypedQuery<Driver> query =
+                    entityManager.createNamedQuery("Driver.findAll", Driver.class);
+            query.setFirstResult(offset)
+                    .setMaxResults(limit);
+            return query.getResultList();
+        }catch (Exception e){
+            LOG.error("Unexpected DB exception", e);
+            throw  new DaoException(e);
+        }
+    }
 }

@@ -14,4 +14,5 @@ public interface DriverDao extends GenericDao<Driver> {
     List<Driver> findAllByFirstNameAndLastName(String firstName, String lastName) throws DaoException;
     List<Driver> findAll() throws DaoException;
     List<Driver> findAllFreeDrivers() throws DaoException;
+    List<Driver> findAllByOffset(int offset, int limit) throws DaoException;
 }

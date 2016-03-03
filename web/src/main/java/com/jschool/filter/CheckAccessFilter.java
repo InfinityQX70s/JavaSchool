@@ -42,7 +42,6 @@ public class CheckAccessFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse resp = (HttpServletResponse) response;
         String path = req.getRequestURI().substring(req.getContextPath().length());
-        req.setCharacterEncoding("UTF-8");
         String role = (String) req.getSession().getAttribute("role");
         //check if login user and try to access root path redirect on work exist path
         if (role!= null && role.equals(employeeRole) && path.equals(rootPath))

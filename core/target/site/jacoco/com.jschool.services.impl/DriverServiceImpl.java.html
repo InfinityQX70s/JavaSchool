@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>DriverServiceImpl.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">core Maven Webapp</a> &gt; <a href="index.source.html" class="el_package">com.jschool.services.impl</a> &gt; <span class="el_source">DriverServiceImpl.java</span></div><h1>DriverServiceImpl.java</h1><pre class="source lang-java linenums">package com.jschool.services.impl;
+
+import com.jschool.CustomTransaction;
+import com.jschool.TransactionManager;
+import com.jschool.dao.api.DriverDao;
+import com.jschool.dao.api.DriverStatisticDao;
+import com.jschool.dao.api.UserDao;
+import com.jschool.dao.api.exception.DaoException;
+import com.jschool.entities.*;
+import com.jschool.services.api.DriverService;
+import com.jschool.services.api.exception.ServiceException;
+import com.jschool.services.api.exception.ServiceStatusCode;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.log4j.Logger;
+
+import java.util.*;
+
+/**
+ * Created by infinity on 09.02.16.
+ */
+public class DriverServiceImpl implements DriverService{
+
+<span class="fc" id="L23">    private static final Logger LOG = Logger.getLogger(DriverServiceImpl.class);</span>
+
+    private UserDao userDao;
+    private DriverDao driverDao;
+    private DriverStatisticDao driverStatisticDao;
+    private TransactionManager transactionManager;
+
+    public DriverServiceImpl(UserDao userDao, DriverDao driverDao,
+                             DriverStatisticDao driverStatisticDao,
+<span class="fc" id="L32">                             TransactionManager transactionManager) {</span>
+<span class="fc" id="L33">        this.userDao = userDao;</span>
+<span class="fc" id="L34">        this.driverDao = driverDao;</span>
+<span class="fc" id="L35">        this.driverStatisticDao = driverStatisticDao;</span>
+<span class="fc" id="L36">        this.transactionManager = transactionManager;</span>
+<span class="fc" id="L37">    }</span>
+
+    /**Create driver and user bended with him in DB and set driver status on
+     * rest in table of DriverStatuses
+     * @param driver entity with correct fields
+     * @throws ServiceException with status code USER_OR_DRIVER_ALREADY_EXIST
+     * if driver or user with such identifier already in DB
+     */
+    @Override
+    public void addDriver(Driver driver) throws ServiceException {
+<span class="fc" id="L47">        CustomTransaction ct = transactionManager.getTransaction();</span>
+<span class="fc" id="L48">        ct.begin();</span>
+        try {
+            //check that we have no users or drivers with such identifier in DB
+<span class="fc bfc" id="L51" title="All 2 branches covered.">            if (userDao.findUniqueByEmail(driver.getUser().getEmail()) == null</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">                    &amp;&amp; driverDao.findUniqueByNumber(driver.getNumber()) == null) {</span>
+<span class="fc" id="L53">                User user = driver.getUser();</span>
+<span class="fc" id="L54">                user.setPassword(DigestUtils.md5Hex(user.getPassword()));</span>
+<span class="fc" id="L55">                userDao.create(user);</span>
+<span class="fc" id="L56">                List&lt;DriverStatusLog&gt; driverStatusLogs = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L57">                DriverStatusLog driverStatusLog = new DriverStatusLog();</span>
+<span class="fc" id="L58">                driverStatusLog.setStatus(DriverStatus.rest);</span>
+<span class="fc" id="L59">                driverStatusLog.setTimestamp(new Date());</span>
+<span class="fc" id="L60">                driverStatusLog.setDriver(driver);</span>
+<span class="fc" id="L61">                driverStatusLogs.add(driverStatusLog);</span>
+<span class="fc" id="L62">                driver.setStatusLogs(driverStatusLogs);</span>
+<span class="fc" id="L63">                driverDao.create(driver);</span>
+                //driverStatusLogDao.create(driverStatusLog);
+<span class="fc" id="L65">                ct.commit();</span>
+<span class="fc" id="L66">            }else {</span>
+<span class="fc" id="L67">                throw new ServiceException(&quot;User or Driver with such identifier exist&quot;, ServiceStatusCode.USER_OR_DRIVER_ALREADY_EXIST);</span>
+            }
+<span class="nc" id="L69">        }catch (DaoException e){</span>
+<span class="nc" id="L70">            LOG.warn(e.getMessage());</span>
+<span class="nc" id="L71">            throw new ServiceException(&quot;Unknown exception&quot;, e, ServiceStatusCode.UNKNOWN);</span>
+        }finally {
+<span class="fc" id="L73">            ct.rollbackIfActive();</span>
+<span class="fc" id="L74">        }</span>
+<span class="fc" id="L75">    }</span>
+
+    /** Update driver which do not have order and exist in db
+     * @param driver entity with filling fields
+     * @throws ServiceException with status code DRIVER_ASSIGNED_ORDER if driver has
+     * an order and we can not change it, DRIVER_NOT_FOUND if driver do not exist in db
+     */
+    @Override
+    public void updateDrive(Driver driver) throws ServiceException {
+<span class="fc" id="L84">        CustomTransaction ct = transactionManager.getTransaction();</span>
+<span class="fc" id="L85">        ct.begin();</span>
+        try {
+            //check is driver in db
+<span class="fc" id="L88">            Driver driverElement = driverDao.findUniqueByNumber(driver.getNumber());</span>
+<span class="fc bfc" id="L89" title="All 4 branches covered.">            if (driverElement != null &amp;&amp; driverElement.getOrder() == null) {</span>
+<span class="fc" id="L90">                driverElement.setFirstName(driver.getFirstName());</span>
+<span class="fc" id="L91">                driverElement.setLastName(driver.getLastName());</span>
+<span class="fc" id="L92">                driverDao.update(driverElement);</span>
+<span class="fc" id="L93">                ct.commit();</span>
+            }
+<span class="fc bfc" id="L95" title="All 2 branches covered.">            if (driverElement == null) {</span>
+<span class="fc" id="L96">                throw new ServiceException(&quot;Driver not found&quot;, ServiceStatusCode.DRIVER_NOT_FOUND);</span>
+            }
+<span class="fc bfc" id="L98" title="All 2 branches covered.">            if (driverElement.getOrder() != null) {</span>
+<span class="fc" id="L99">                throw new ServiceException(&quot;Driver has an order&quot;, ServiceStatusCode.DRIVER_ASSIGNED_ORDER);</span>
+            }
+<span class="nc" id="L101">        }catch (DaoException e){</span>
+<span class="nc" id="L102">            LOG.warn(e.getMessage());</span>
+<span class="nc" id="L103">            throw new ServiceException(&quot;Unknown exception&quot;, e, ServiceStatusCode.UNKNOWN);</span>
+        }finally {
+<span class="fc" id="L105">            ct.rollbackIfActive();</span>
+<span class="fc" id="L106">        }</span>
+<span class="fc" id="L107">    }</span>
+
+    /**Delete driver which do not have order and exist in db
+     * @param number of driver we want to delete
+     * @throws ServiceException with status code DRIVER_ASSIGNED_ORDER if driver has
+     * an order and we can not change it, DRIVER_NOT_FOUND if driver do not exist in db
+     */
+    @Override
+    public void deleteDriver(int number) throws ServiceException {
+<span class="fc" id="L116">        CustomTransaction ct = transactionManager.getTransaction();</span>
+<span class="fc" id="L117">        ct.begin();</span>
+        try {
+<span class="fc" id="L119">            Driver driver = driverDao.findUniqueByNumber(number);</span>
+<span class="fc bfc" id="L120" title="All 4 branches covered.">            if (driver != null &amp;&amp; driver.getOrder() == null) {</span>
+<span class="fc" id="L121">                User user = driver.getUser();</span>
+<span class="fc" id="L122">                driverDao.delete(driver);</span>
+<span class="fc" id="L123">                userDao.delete(user);</span>
+<span class="fc" id="L124">                ct.commit();</span>
+            }
+<span class="fc bfc" id="L126" title="All 2 branches covered.">            if (driver == null){</span>
+<span class="fc" id="L127">                throw new ServiceException(&quot;Driver not found&quot;, ServiceStatusCode.DRIVER_NOT_FOUND);</span>
+            }
+<span class="fc bfc" id="L129" title="All 2 branches covered.">            if (driver.getOrder() != null){</span>
+<span class="fc" id="L130">                throw new ServiceException(&quot;Driver has an order&quot;, ServiceStatusCode.DRIVER_ASSIGNED_ORDER);</span>
+            }
+<span class="nc" id="L132">        }catch (DaoException e){</span>
+<span class="nc" id="L133">            LOG.warn(e.getMessage());</span>
+<span class="nc" id="L134">            throw new ServiceException(&quot;Unknown exception&quot;, e, ServiceStatusCode.UNKNOWN);</span>
+        }finally {
+<span class="fc" id="L136">            ct.rollbackIfActive();</span>
+<span class="fc" id="L137">        }</span>
+<span class="fc" id="L138">    }</span>
+
+    /** Return driver from db by personal number
+     * @param number of driver
+     * @return
+     * @throws ServiceException with status code DRIVER_NOT_FOUND if driver do not exist in db
+     */
+    @Override
+    public Driver getDriverByPersonalNumber(int number) throws ServiceException {
+        try {
+<span class="nc" id="L148">            Driver driver = driverDao.findUniqueByNumber(number);</span>
+<span class="nc bnc" id="L149" title="All 2 branches missed.">            if (driver == null){</span>
+<span class="nc" id="L150">                throw new ServiceException(&quot;Driver not found&quot;, ServiceStatusCode.DRIVER_NOT_FOUND);</span>
+            }
+<span class="nc" id="L152">            return driver;</span>
+<span class="nc" id="L153">        }catch (DaoException e) {</span>
+<span class="nc" id="L154">            LOG.warn(e.getMessage());</span>
+<span class="nc" id="L155">            throw new ServiceException(&quot;Unknown exception&quot;, e, ServiceStatusCode.UNKNOWN);</span>
+        }
+    }
+
+    @Override
+    public List&lt;Driver&gt; findAllDrivers() throws ServiceException {
+        try {
+<span class="nc" id="L162">            return driverDao.findAll();</span>
+<span class="nc" id="L163">        }catch (DaoException e) {</span>
+<span class="nc" id="L164">            LOG.warn(e.getMessage());</span>
+<span class="nc" id="L165">            throw new ServiceException(&quot;Unknown exception&quot;, e, ServiceStatusCode.UNKNOWN);</span>
+        }
+    }
+
+    @Override
+    public List&lt;Driver&gt; findAllDriversByOffset(int offset, int limit) throws ServiceException {
+        try {
+<span class="nc" id="L172">            return driverDao.findAllByOffset(offset,limit);</span>
+<span class="nc" id="L173">        }catch (DaoException e) {</span>
+<span class="nc" id="L174">            LOG.warn(e.getMessage());</span>
+<span class="nc" id="L175">            throw new ServiceException(&quot;Unknown exception&quot;, e, ServiceStatusCode.UNKNOWN);</span>
+        }
+    }
+
+    /** Return map of drivers which do not have order right now and
+     * hours of work in this month with duration of order &lt;= 176 hours per month
+     * @param hoursWorked duration of current order
+     * @return map with driver which do not have order and hours of worked &lt;= 176
+     * @throws ServiceException
+     */
+    @Override
+    public Map&lt;Driver,Integer&gt; findAllAvailableDrivers(int hoursWorked) throws ServiceException {
+        try {
+            //get all free drivers
+<span class="fc" id="L189">            List&lt;Driver&gt; drivers = driverDao.findAllFreeDrivers();</span>
+<span class="fc" id="L190">            Map&lt;Driver,Integer&gt; driverHoursList = new HashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L191" title="All 2 branches covered.">            for (Driver driver : drivers) {</span>
+                //count hours of work per month for every free driver
+<span class="fc" id="L193">                List&lt;DriverStatistic&gt; driverStatistics = driverStatisticDao.findAllByOneMonth(driver);</span>
+<span class="fc" id="L194">                int sum = 0;</span>
+<span class="fc bfc" id="L195" title="All 2 branches covered.">                for (DriverStatistic driverStatistic : driverStatistics)</span>
+<span class="fc" id="L196">                    sum += driverStatistic.getHoursWorked();</span>
+<span class="fc bfc" id="L197" title="All 2 branches covered.">                if (sum + hoursWorked &lt;= 176) {</span>
+                    //if hours &lt;= 176 put driver and count hours in map
+<span class="fc" id="L199">                    driverHoursList.put(driver,sum);</span>
+                }
+<span class="fc" id="L201">            }</span>
+<span class="fc" id="L202">            return driverHoursList;</span>
+<span class="nc" id="L203">        }catch (DaoException e) {</span>
+<span class="nc" id="L204">            LOG.warn(e.getMessage());</span>
+<span class="nc" id="L205">            throw new ServiceException(&quot;Unknown exception&quot;, e, ServiceStatusCode.UNKNOWN);</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
