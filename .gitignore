@@ -1,3 +1,4 @@
+*~
 /.idea
 /target
 sonar-project.properties~
@@ -11,3 +12,4 @@ logiweb.iml
 /web/target
 /core/core.iml
 /web/web.iml
+Text.*
