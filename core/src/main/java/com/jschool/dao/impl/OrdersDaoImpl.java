@@ -4,6 +4,7 @@ import com.jschool.dao.api.OrdersDao;
 import com.jschool.dao.api.exception.DaoException;
 import com.jschool.entities.Order;
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -12,13 +13,10 @@ import java.util.List;
 /**
  * Created by infinity on 07.02.16.
  */
+@Repository
 public class OrdersDaoImpl extends GenericDaoImpl<Order> implements OrdersDao{
 
     private static final Logger LOG = Logger.getLogger(OrdersDaoImpl.class);
-
-    public OrdersDaoImpl(EntityManager entityManager) {
-        super(entityManager);
-    }
 
     @Override
     public Order findUniqueByNumber(int number) throws DaoException {

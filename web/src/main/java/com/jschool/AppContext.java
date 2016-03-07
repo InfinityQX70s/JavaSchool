@@ -1,7 +1,6 @@
 package com.jschool;
 
 import com.jschool.controllers.*;
-import com.jschool.controllers.exception.ControllerStatusCode;
 import com.jschool.dao.api.*;
 import com.jschool.dao.impl.*;
 import com.jschool.services.api.*;
@@ -11,11 +10,8 @@ import com.jschool.services.impl.*;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
-import java.net.URL;
 import java.util.Properties;
 
 /**
@@ -95,77 +91,77 @@ public class AppContext {
 
     public synchronized CargoDao getCargoDao(){
         if (cargoDao == null){
-            cargoDao = new CargoDaoImpl(getEntityManager());
+            cargoDao = new CargoDaoImpl();
         }
         return cargoDao;
     }
 
     public synchronized CargoStatusLogDao getCargoStatusLogDao() {
         if (cargoStatusLogDao == null){
-            cargoStatusLogDao = new CargoStatusLogDaoImpl(getEntityManager());
+            cargoStatusLogDao = new CargoStatusLogDaoImpl();
         }
         return cargoStatusLogDao;
     }
 
     public synchronized CityDao getCityDao() {
         if (cityDao == null){
-            cityDao = new CityDaoImpl(getEntityManager());
+            cityDao = new CityDaoImpl();
         }
         return cityDao;
     }
 
     public synchronized DriverDao getDriverDao() {
         if (driverDao == null){
-            driverDao = new DriverDaoImpl(getEntityManager());
+            driverDao = new DriverDaoImpl();
         }
         return driverDao;
     }
 
     public synchronized DriverStatisticDao getDriverStatisticDao() {
         if (driverStatisticDao == null){
-            driverStatisticDao = new DriverStatisticDaoImpl(getEntityManager());
+            driverStatisticDao = new DriverStatisticDaoImpl();
         }
         return driverStatisticDao;
     }
 
     public synchronized DriverStatusLogDao getDriverStatusLogDao() {
         if (driverStatusLogDao == null){
-            driverStatusLogDao = new DriverStatusLogDaoImpl(getEntityManager());
+            driverStatusLogDao = new DriverStatusLogDaoImpl();
         }
         return driverStatusLogDao;
     }
 
     public synchronized OrdersDao getOrdersDao() {
         if (ordersDao == null){
-            ordersDao = new OrdersDaoImpl(getEntityManager());
+            ordersDao = new OrdersDaoImpl();
         }
         return ordersDao;
     }
 
     public synchronized RoutePointDao getRoutePointDao() {
         if (routePointDao == null){
-            routePointDao = new RoutePointDaoImpl(getEntityManager());
+            routePointDao = new RoutePointDaoImpl();
         }
         return routePointDao;
     }
 
     public synchronized TruckDao getTruckDao() {
         if (truckDao == null){
-            truckDao = new TruckDaoImpl(getEntityManager());
+            truckDao = new TruckDaoImpl();
         }
         return truckDao;
     }
 
     public synchronized UserDao getUserDao() {
         if (userDao == null){
-            userDao = new UserDaoImpl(getEntityManager());
+            userDao = new UserDaoImpl();
         }
         return userDao;
     }
 
     public synchronized UserService getUserService() {
         if (userService == null){
-            userService = new UserServiceImpl(getUserDao(), getTransactionManager());
+            userService = new UserServiceImpl(getUserDao());
         }
         return userService;
     }
@@ -173,7 +169,7 @@ public class AppContext {
     public synchronized DriverService getDriverService() {
         if (driverService == null){
             driverService = new DriverServiceImpl(getUserDao(),getDriverDao(),
-                    getDriverStatisticDao(), getTransactionManager());
+                    getDriverStatisticDao());
         }
         return driverService;
     }
@@ -181,7 +177,7 @@ public class AppContext {
     public synchronized DutyService getDutyService() {
         if (dutyService == null){
             dutyService = new DutyServiceImpl(getDriverDao(), getDriverStatusLogDao(),
-                    getDriverStatisticDao(), getTransactionManager());
+                    getDriverStatisticDao());
         }
         return dutyService;
     }
@@ -190,7 +186,7 @@ public class AppContext {
         if (orderAndCargoService == null){
             orderAndCargoService = new OrderAndCargoServiceImpl(getOrdersDao(),
                     getDriverDao(),getCargoDao(),
-                    getRoutePointDao(),getCityDao(),getTruckDao(),getDriverStatisticDao(),getTransactionManager());
+                    getRoutePointDao(),getCityDao(),getTruckDao(),getDriverStatisticDao());
         }
         return orderAndCargoService;
     }
@@ -198,21 +194,21 @@ public class AppContext {
     public synchronized OrderManagementService getOrderManagementService() {
         if (orderManagementService == null){
             orderManagementService = new OrderManagementServiceImpl(getOrdersDao(),getDriverDao(),
-            getCargoDao(),getCargoStatusLogDao(),getTransactionManager());
+            getCargoDao(),getCargoStatusLogDao());
         }
         return orderManagementService;
     }
 
     public synchronized TruckService getTruckService() {
         if (truckService == null){
-            truckService = new TruckServiceImpl(getTruckDao(),getTransactionManager());
+            truckService = new TruckServiceImpl(getTruckDao());
         }
         return truckService;
     }
 
     public synchronized DriverController getDriverController() {
         if (driverController == null){
-            driverController = new DriverController(getDriverService(),getErrorProperties(),getValidator());
+            driverController = new DriverController(getDriverService(),getValidator());
         }
         return driverController;
     }

@@ -9,6 +9,9 @@ import com.jschool.services.api.OrderManagementService;
 import com.jschool.services.api.exception.ServiceException;
 import com.jschool.services.api.exception.ServiceStatusCode;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -16,6 +19,7 @@ import java.util.List;
 /**
  * Created by infinity on 13.02.16.
  */
+@Service
 public class OrderManagementServiceImpl implements OrderManagementService {
 
     private static final Logger LOG = Logger.getLogger(OrderManagementServiceImpl.class);
@@ -24,16 +28,14 @@ public class OrderManagementServiceImpl implements OrderManagementService {
     private DriverDao driverDao;
     private CargoDao cargoDao;
     private CargoStatusLogDao cargoStatusLogDao;
-    private TransactionManager transactionManager;
 
+    @Autowired
     public OrderManagementServiceImpl(OrdersDao ordersDao, DriverDao driverDao,
-                                      CargoDao cargoDao, CargoStatusLogDao cargoStatusLogDao,
-                                      TransactionManager transactionManager) {
+                                      CargoDao cargoDao, CargoStatusLogDao cargoStatusLogDao) {
         this.ordersDao = ordersDao;
         this.driverDao = driverDao;
         this.cargoDao = cargoDao;
         this.cargoStatusLogDao = cargoStatusLogDao;
-        this.transactionManager = transactionManager;
     }
 
     /**Set status for cargo
@@ -42,9 +44,8 @@ public class OrderManagementServiceImpl implements OrderManagementService {
      * @throws ServiceException statuse code CARGO_NOT_FOUND
      */
     @Override
+    @Transactional
     public void changeCargoStatusByNumber(int cargoNumber, CargoStatus cargoStatus) throws ServiceException {
-        CustomTransaction ct = transactionManager.getTransaction();
-        ct.begin();
         try {
             //check that cargo is exist
             Cargo cargo = cargoDao.findUniqueByNumber(cargoNumber);
@@ -83,14 +84,11 @@ public class OrderManagementServiceImpl implements OrderManagementService {
                         }
                     }
                 }
-                ct.commit();
             }else
                 throw new ServiceException("Cargo not found", ServiceStatusCode.CARGO_NOT_FOUND);
         }catch (DaoException e) {
             LOG.warn(e.getMessage());
             throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
-        } finally {
-            ct.rollbackIfActive();
         }
     }
 }

@@ -89,7 +89,7 @@ public class OrderManagementServiceImplTest {
         customTransactionMoc = Mockito.mock(CustomTransaction.class);
         Mockito.when(transactionManagerMoc.getTransaction()).thenReturn(customTransactionMoc);
         orderManagementService = new OrderManagementServiceImpl(ordersDaoMoc,driverDaoMoc,cargoDaoMoc,
-                cargoStatusLogDao,transactionManagerMoc);
+                cargoStatusLogDao);
 
     }
 

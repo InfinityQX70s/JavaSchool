@@ -24,9 +24,10 @@ public class ControllerFactory {
 
 
     public BaseController getControllerByUri(String uri){
-        if (uri.startsWith(EMP_DRIVER))
-            return driverController;
-        else if (uri.startsWith(EMP_ORDER))
+//        if (uri.startsWith(EMP_DRIVER))
+//            return driverController;
+//        else
+        if (uri.startsWith(EMP_ORDER))
             return orderController;
         else if (uri.startsWith(EMP_TRUCK))
             return truckController;

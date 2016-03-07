@@ -1,7 +1,5 @@
 package com.jschool.controllers;
 
-import com.jschool.AppContext;
-import com.jschool.Validator;
 import com.jschool.controllers.exception.ControllerException;
 import com.jschool.controllers.exception.ControllerStatusCode;
 import com.jschool.entities.Driver;
@@ -9,7 +7,6 @@ import com.jschool.entities.User;
 import com.jschool.services.api.DriverService;
 import com.jschool.services.api.UserService;
 import com.jschool.services.api.exception.ServiceException;
-import com.mysql.jdbc.jdbc2.optional.SuspendableXAConnection;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.log4j.Logger;
 
@@ -18,7 +15,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.net.URL;
 import java.util.Properties;
 
 /**

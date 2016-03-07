@@ -5,6 +5,7 @@ import com.jschool.dao.api.exception.DaoException;
 import com.jschool.entities.Driver;
 import com.jschool.entities.DriverStatistic;
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TemporalType;
@@ -16,13 +17,10 @@ import java.util.List;
 /**
  * Created by infinity on 07.02.16.
  */
+@Repository
 public class DriverStatisticDaoImpl extends GenericDaoImpl<DriverStatistic> implements DriverStatisticDao{
 
     private static final Logger LOG = Logger.getLogger(DriverStatisticDaoImpl.class);
-
-    public DriverStatisticDaoImpl(EntityManager entityManager) {
-        super(entityManager);
-    }
 
     /**Return list of statistic by last month with hours worked
      * for current driver

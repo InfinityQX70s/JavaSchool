@@ -5,6 +5,7 @@ import com.jschool.dao.api.exception.DaoException;
 import org.apache.log4j.Logger;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 
 /**
@@ -14,11 +15,9 @@ public abstract class GenericDaoImpl<T> implements GenericDao<T> {
 
     private static final Logger LOG = Logger.getLogger(GenericDaoImpl.class);
 
+    @PersistenceContext
     protected EntityManager entityManager;
 
-    public GenericDaoImpl(EntityManager entityManager) {
-        this.entityManager = entityManager;
-    }
 
     /**Do basic operation for all entities such as create
      * @param entity

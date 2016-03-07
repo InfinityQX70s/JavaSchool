@@ -35,9 +35,9 @@
                 var rootView = $( '#readroot' ).clone().appendTo('#writeroot');
                 rootView.find('input').val('');
                 if ($.isNumeric(value)){
-                    lol.find('#number').val(++value);
+                    rootView.find('.number').val(++value);
                 }else{
-                    lol.find('#number').val(0);
+                    rootView.find('.number').val(0);
                 };
             });
             $(document).on('click', '.remove', function() {

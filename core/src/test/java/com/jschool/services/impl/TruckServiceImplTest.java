@@ -32,7 +32,7 @@ public class TruckServiceImplTest {
         truckDaoMoc = Mockito.mock(TruckDao.class);
         transactionManagerMoc = Mockito.mock(TransactionManager.class);
         customTransactionMoc = Mockito.mock(CustomTransaction.class);
-        truckService = new TruckServiceImpl(truckDaoMoc,transactionManagerMoc);
+        truckService = new TruckServiceImpl(truckDaoMoc);
         Mockito.when(transactionManagerMoc.getTransaction()).thenReturn(customTransactionMoc);
     }
 

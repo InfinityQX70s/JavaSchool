@@ -4,6 +4,7 @@ import com.jschool.dao.api.UserDao;
 import com.jschool.dao.api.exception.DaoException;
 import com.jschool.entities.User;
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -12,13 +13,10 @@ import java.util.List;
 /**
  * Created by infinity on 07.02.16.
  */
+@Repository
 public class UserDaoImpl extends GenericDaoImpl<User> implements UserDao{
 
     private static final Logger LOG = Logger.getLogger(UserDaoImpl.class);
-
-    public UserDaoImpl(EntityManager entityManager) {
-        super(entityManager);
-    }
 
     /**Return user find by unique email address in DB
      * @param email

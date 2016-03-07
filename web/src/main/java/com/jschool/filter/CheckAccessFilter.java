@@ -56,7 +56,7 @@ public class CheckAccessFilter implements Filter {
                 || (path.matches(regExpDriver) && role.equals(driverRole))
                 || path.matches(regExpLog))
             chain.doFilter(request, response);
-        else
+        else {
             try {
                 throw new ControllerException("Page not found", ControllerStatusCode.PAGE_NOT_FOUND);
             } catch (ControllerException e) {
@@ -64,6 +64,7 @@ public class CheckAccessFilter implements Filter {
                 req.setAttribute("errorMessage", errorProperties.getProperty(e.getStatusCode().name()));
                 req.getRequestDispatcher("/WEB-INF/pages/error.jsp").forward(req, resp);
             }
+        }
     }
 
     @Override

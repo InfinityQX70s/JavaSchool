@@ -39,7 +39,7 @@ public class DutyServiceImplTest {
         transactionManagerMoc = Mockito.mock(TransactionManager.class);
         customTransactionMoc = Mockito.mock(CustomTransaction.class);
         Mockito.when(transactionManagerMoc.getTransaction()).thenReturn(customTransactionMoc);
-        dutyService = new DutyServiceImpl(driverDaoMoc,driverStatusLogDaoMoc,driverStatisticDaoMoc,transactionManagerMoc);
+        dutyService = new DutyServiceImpl(driverDaoMoc,driverStatusLogDaoMoc,driverStatisticDaoMoc);
     }
 
     private Driver getDriverForTest(){

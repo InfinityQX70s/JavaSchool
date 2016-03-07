@@ -4,6 +4,7 @@ import com.jschool.dao.api.TruckDao;
 import com.jschool.dao.api.exception.DaoException;
 import com.jschool.entities.Truck;
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -12,13 +13,10 @@ import java.util.List;
 /**
  * Created by infinity on 07.02.16.
  */
+@Repository
 public class TruckDaoImpl extends GenericDaoImpl<Truck> implements TruckDao {
 
     private static final Logger LOG = Logger.getLogger(TruckDaoImpl.class);
-
-    public TruckDaoImpl(EntityManager entityManager) {
-        super(entityManager);
-    }
 
     @Override
     public Truck findUniqueByNumber(String number) throws DaoException {

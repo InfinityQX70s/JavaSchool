@@ -9,6 +9,9 @@ import com.jschool.services.api.OrderAndCargoService;
 import com.jschool.services.api.exception.ServiceException;
 import com.jschool.services.api.exception.ServiceStatusCode;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,6 +21,7 @@ import java.util.List;
 /**
  * Created by infinity on 09.02.16.
  */
+@Service
 public class OrderAndCargoServiceImpl implements OrderAndCargoService {
 
     private static final Logger LOG = Logger.getLogger(OrderAndCargoServiceImpl.class);
@@ -29,13 +33,12 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
     private CityDao cityDao;
     private TruckDao truckDao;
     private DriverStatisticDao driverStatisticDao;
-    private TransactionManager transactionManager;
 
+    @Autowired
     public OrderAndCargoServiceImpl(OrdersDao ordersDao,
                                     DriverDao driverDao, CargoDao cargoDao,
                                     RoutePointDao routePointDao, CityDao cityDao,
-                                    TruckDao truckDao,DriverStatisticDao driverStatisticDao,
-                                    TransactionManager transactionManager) {
+                                    TruckDao truckDao,DriverStatisticDao driverStatisticDao) {
         this.ordersDao = ordersDao;
         this.driverDao = driverDao;
         this.cargoDao = cargoDao;
@@ -43,7 +46,6 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
         this.cityDao = cityDao;
         this.truckDao = truckDao;
         this.driverStatisticDao = driverStatisticDao;
-        this.transactionManager = transactionManager;
     }
 
     /**Add full order in db, large transaction with adding cargos, crago status,
@@ -55,9 +57,8 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
      * ORDER_ALREADY_EXIST - order with such identifier exist in db
      */
     @Override
+    @Transactional
     public void addOrder(Order order, List<Cargo> cargos, int duration) throws ServiceException {
-        CustomTransaction ct = transactionManager.getTransaction();
-        ct.begin();
         try {
             Order element = ordersDao.findUniqueByNumber(order.getNumber());
             if (element == null) {
@@ -74,7 +75,6 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
                     assignDrivers(order, drivers,duration);
                     // method add cargos to order and check capacity
                     assignCargos(order, cargos, truck.getCapacity());
-                    ct.commit();
                 }else
                     throw new ServiceException("Truck has an order", ServiceStatusCode.TRUCK_ASSIGNED_ORDER);
             }else
@@ -82,8 +82,6 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
         }catch (DaoException e){
             LOG.warn(e.getMessage());
             throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
-        } finally {
-            ct.rollbackIfActive();
         }
     }
 
@@ -185,15 +183,13 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
      * @throws ServiceException statuses ORDER_NOT_FOUND,ORDER_DID_NOT_DONE
      */
     @Override
+    @Transactional
     public void updateOrder(Order order) throws ServiceException {
-        CustomTransaction ct = transactionManager.getTransaction();
-        ct.begin();
         try {
             Order element = ordersDao.findUniqueByNumber(order.getNumber());
             if (element != null && element.isDoneState()) {
                 order.setId(element.getId());
                 ordersDao.update(order);
-                ct.commit();
             }
             if (element == null)
                 throw new ServiceException("Order not found", ServiceStatusCode.ORDER_NOT_FOUND);
@@ -202,8 +198,6 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
         }catch (DaoException e){
             LOG.warn(e.getMessage());
             throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
-        } finally {
-            ct.rollbackIfActive();
         }
     }
 
@@ -212,14 +206,12 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
      * @throws ServiceException statuses ORDER_NOT_FOUND,ORDER_DID_NOT_DONE
      */
     @Override
+    @Transactional
     public void deleteOrder(int number) throws ServiceException {
-        CustomTransaction ct = transactionManager.getTransaction();
-        ct.begin();
         try {
             Order element = ordersDao.findUniqueByNumber(number);
             if (element != null && element.isDoneState()) {
                 ordersDao.delete(element);
-                ct.commit();
             }
             if (element == null)
                 throw new ServiceException("Order not found", ServiceStatusCode.ORDER_NOT_FOUND);
@@ -228,8 +220,6 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
         }catch (DaoException e){
             LOG.warn(e.getMessage());
             throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
-        } finally {
-            ct.rollbackIfActive();
         }
     }
 

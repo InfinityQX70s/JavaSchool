@@ -49,7 +49,7 @@ public class OrderAndCargoServiceImplTest {
         customTransactionMoc = Mockito.mock(CustomTransaction.class);
         Mockito.when(transactionManagerMoc.getTransaction()).thenReturn(customTransactionMoc);
         orderAndCargoService = new OrderAndCargoServiceImpl(ordersDaoMoc,driverDaoMoc,cargoDaoMoc,
-                routePointDaoMoc,cityDaoMoc,truckDao,driverStatisticDao,transactionManagerMoc);
+                routePointDaoMoc,cityDaoMoc,truckDao,driverStatisticDao);
 
     }
 

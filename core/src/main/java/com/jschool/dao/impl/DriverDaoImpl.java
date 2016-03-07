@@ -4,6 +4,7 @@ import com.jschool.dao.api.DriverDao;
 import com.jschool.dao.api.exception.DaoException;
 import com.jschool.entities.Driver;
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -12,13 +13,10 @@ import java.util.List;
 /**
  * Created by infinity on 07.02.16.
  */
+@Repository
 public class DriverDaoImpl extends GenericDaoImpl<Driver> implements DriverDao {
 
     private static final Logger LOG = Logger.getLogger(DriverDaoImpl.class);
-
-    public DriverDaoImpl(EntityManager entityManager) {
-        super(entityManager);
-    }
 
     @Override
     public Driver findUniqueByNumber(int number) throws DaoException {

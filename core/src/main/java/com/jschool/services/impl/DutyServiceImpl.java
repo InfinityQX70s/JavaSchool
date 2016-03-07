@@ -14,12 +14,16 @@ import com.jschool.services.api.DutyService;
 import com.jschool.services.api.exception.ServiceException;
 import com.jschool.services.api.exception.ServiceStatusCode;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
 /**
  * Created by infinity on 13.02.16.
  */
+@Service
 public class DutyServiceImpl implements DutyService {
 
     private static final Logger LOG = Logger.getLogger(DutyServiceImpl.class);
@@ -27,14 +31,13 @@ public class DutyServiceImpl implements DutyService {
     private DriverDao driverDao;
     private DriverStatusLogDao driverStatusLogDao;
     private DriverStatisticDao driverStatisticDao;
-    private TransactionManager transactionManager;
 
+    @Autowired
     public DutyServiceImpl(DriverDao driverDao, DriverStatusLogDao driverStatusLogDao,
-                           DriverStatisticDao driverStatisticDao, TransactionManager transactionManager) {
+                           DriverStatisticDao driverStatisticDao) {
         this.driverDao = driverDao;
         this.driverStatusLogDao = driverStatusLogDao;
         this.driverStatisticDao = driverStatisticDao;
-        this.transactionManager = transactionManager;
     }
 
     /** Login driver and change his status
@@ -71,9 +74,8 @@ public class DutyServiceImpl implements DutyService {
      * @param dutyStatus driver's current status
      * @throws ServiceException with status code DRIVER_NOT_FOUND if driver not exist in db
      */
+    @Transactional
     private void setDriverStatus(int number, DriverStatus dutyStatus) throws ServiceException {
-        CustomTransaction ct = transactionManager.getTransaction();
-        ct.begin();
         try {
             Driver driver = driverDao.findUniqueByNumber(number);
             if (driver != null){
@@ -98,15 +100,12 @@ public class DutyServiceImpl implements DutyService {
                         driverStatusLogDao.create(driverStatusLog);
                     }
                 }
-                ct.commit();
             }else {
                 throw new ServiceException("Driver not found", ServiceStatusCode.DRIVER_NOT_FOUND);
             }
         }catch (DaoException e) {
             LOG.warn(e.getMessage());
             throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
-        }finally {
-            ct.rollbackIfActive();
         }
     }
 }

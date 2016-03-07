@@ -4,6 +4,7 @@ import com.jschool.dao.api.CargoDao;
 import com.jschool.dao.api.exception.DaoException;
 import com.jschool.entities.Cargo;
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -12,13 +13,10 @@ import java.util.List;
 /**
  * Created by infinity on 07.02.16.
  */
+@Repository
 public class CargoDaoImpl extends GenericDaoImpl<Cargo> implements CargoDao {
 
     private static final Logger LOG = Logger.getLogger(CargoDaoImpl.class);
-
-    public CargoDaoImpl(EntityManager entityManager) {
-        super(entityManager);
-    }
 
     /**Return Cargo finded by unique in DB
      * @param number

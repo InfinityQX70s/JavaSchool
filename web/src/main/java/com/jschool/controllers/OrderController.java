@@ -1,7 +1,5 @@
 package com.jschool.controllers;
 
-import com.jschool.AppContext;
-import com.jschool.Validator;
 import com.jschool.controllers.exception.ControllerException;
 import com.jschool.controllers.exception.ControllerStatusCode;
 import com.jschool.entities.*;

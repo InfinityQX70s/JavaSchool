@@ -4,6 +4,7 @@ import com.jschool.dao.api.CityDao;
 import com.jschool.dao.api.exception.DaoException;
 import com.jschool.entities.City;
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -12,14 +13,10 @@ import java.util.List;
 /**
  * Created by infinity on 07.02.16.
  */
+@Repository
 public class CityDaoImpl extends GenericDaoImpl<City> implements CityDao{
 
     private static final Logger LOG = Logger.getLogger(CityDaoImpl.class);
-
-    public CityDaoImpl(EntityManager entityManager) {
-        super(entityManager);
-    }
-
 
     /**Return unique city find by name.
      * @param name

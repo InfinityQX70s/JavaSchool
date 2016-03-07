@@ -8,20 +8,22 @@ import com.jschool.services.api.UserService;
 import com.jschool.services.api.exception.ServiceException;
 import com.jschool.services.api.exception.ServiceStatusCode;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * Created by infinity on 17.02.16.
  */
+@Service
 public class UserServiceImpl implements UserService{
 
     private static final Logger LOG = Logger.getLogger(UserServiceImpl.class);
 
     private UserDao userDao;
-    private TransactionManager transactionManager;
 
-    public UserServiceImpl(UserDao userDao, TransactionManager transactionManager) {
+    @Autowired
+    public UserServiceImpl(UserDao userDao) {
         this.userDao = userDao;
-        this.transactionManager = transactionManager;
     }
 
     /**Return unique user by email address or throw ServiceException with status code

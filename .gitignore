@@ -2,3 +2,12 @@
 /target
 sonar-project.properties~
 /.sonar
+*~
+.Trash-*
+logiweb.log
+logiweb.log~
+logiweb.iml
+/core/target
+/web/target
+/core/core.iml
+/web/web.iml

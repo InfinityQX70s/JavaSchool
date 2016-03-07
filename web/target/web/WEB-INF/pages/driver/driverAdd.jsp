@@ -1,4 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <jsp:include page="../header.jsp">
     <jsp:param name="title" value="Drivers"/>
 </jsp:include>
@@ -11,24 +13,32 @@
     <form class="col s12" action="/employee/driver/add" method="post">
         <div class="row" style="margin-top:20px;">
             <div class="input-field col s12">
-                <input id="number" name="number" type="text" class="validate">
-                <label for="number">Personal Number</label>
+                <spring:bind path="driver.number">
+                    <input id="number" name="${status.expression}" type="text" class="validate">
+                    <label for="number">Personal Number</label>
+                </spring:bind>
             </div>
         </div>
         <div class="row">
             <div class="input-field col s6">
-                <input id="first_name" name="firstName" type="text" class="validate">
-                <label for="first_name">First Name</label>
+                <spring:bind path="driver.firstName">
+                    <input id="firstName" name="${status.expression}" type="text" class="validate">
+                    <label for="firstName">First Name</label>
+                </spring:bind>
             </div>
             <div class="input-field col s6">
-                <input id="last_name" name="lastName" type="text" class="validate">
-                <label for="last_name">Last Name</label>
+                <spring:bind path="driver.lastName">
+                    <input id="lastName" name="${status.expression}" type="text" class="validate">
+                    <label for="lastName">Last Name</label>
+                </spring:bind>
             </div>
         </div>
         <div class="row">
             <div class="input-field col s12">
-                <input id="email" name="email" type="email" class="validate">
-                <label for="email">Email</label>
+                <spring:bind path="user.email">
+                    <input id="email" name="${status.expression}" type="text" class="validate">
+                    <label for="email">Email</label>
+                </spring:bind>
             </div>
         </div>
         <div class="row right-align">

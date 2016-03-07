@@ -12,12 +12,16 @@ import com.jschool.services.api.exception.ServiceException;
 import com.jschool.services.api.exception.ServiceStatusCode;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
 /**
  * Created by infinity on 09.02.16.
  */
+@Service
 public class DriverServiceImpl implements DriverService{
 
     private static final Logger LOG = Logger.getLogger(DriverServiceImpl.class);
@@ -25,15 +29,13 @@ public class DriverServiceImpl implements DriverService{
     private UserDao userDao;
     private DriverDao driverDao;
     private DriverStatisticDao driverStatisticDao;
-    private TransactionManager transactionManager;
 
+    @Autowired
     public DriverServiceImpl(UserDao userDao, DriverDao driverDao,
-                             DriverStatisticDao driverStatisticDao,
-                             TransactionManager transactionManager) {
+                             DriverStatisticDao driverStatisticDao) {
         this.userDao = userDao;
         this.driverDao = driverDao;
         this.driverStatisticDao = driverStatisticDao;
-        this.transactionManager = transactionManager;
     }
 
     /**Create driver and user bended with him in DB and set driver status on
@@ -43,9 +45,8 @@ public class DriverServiceImpl implements DriverService{
      * if driver or user with such identifier already in DB
      */
     @Override
+    @Transactional
     public void addDriver(Driver driver) throws ServiceException {
-        CustomTransaction ct = transactionManager.getTransaction();
-        ct.begin();
         try {
             //check that we have no users or drivers with such identifier in DB
             if (userDao.findUniqueByEmail(driver.getUser().getEmail()) == null
@@ -62,15 +63,12 @@ public class DriverServiceImpl implements DriverService{
                 driver.setStatusLogs(driverStatusLogs);
                 driverDao.create(driver);
                 //driverStatusLogDao.create(driverStatusLog);
-                ct.commit();
             }else {
                 throw new ServiceException("User or Driver with such identifier exist", ServiceStatusCode.USER_OR_DRIVER_ALREADY_EXIST);
             }
         }catch (DaoException e){
             LOG.warn(e.getMessage());
             throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
-        }finally {
-            ct.rollbackIfActive();
         }
     }
 
@@ -80,9 +78,8 @@ public class DriverServiceImpl implements DriverService{
      * an order and we can not change it, DRIVER_NOT_FOUND if driver do not exist in db
      */
     @Override
+    @Transactional
     public void updateDrive(Driver driver) throws ServiceException {
-        CustomTransaction ct = transactionManager.getTransaction();
-        ct.begin();
         try {
             //check is driver in db
             Driver driverElement = driverDao.findUniqueByNumber(driver.getNumber());
@@ -90,7 +87,6 @@ public class DriverServiceImpl implements DriverService{
                 driverElement.setFirstName(driver.getFirstName());
                 driverElement.setLastName(driver.getLastName());
                 driverDao.update(driverElement);
-                ct.commit();
             }
             if (driverElement == null) {
                 throw new ServiceException("Driver not found", ServiceStatusCode.DRIVER_NOT_FOUND);
@@ -101,8 +97,6 @@ public class DriverServiceImpl implements DriverService{
         }catch (DaoException e){
             LOG.warn(e.getMessage());
             throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
-        }finally {
-            ct.rollbackIfActive();
         }
     }
 
@@ -112,16 +106,14 @@ public class DriverServiceImpl implements DriverService{
      * an order and we can not change it, DRIVER_NOT_FOUND if driver do not exist in db
      */
     @Override
+    @Transactional
     public void deleteDriver(int number) throws ServiceException {
-        CustomTransaction ct = transactionManager.getTransaction();
-        ct.begin();
         try {
             Driver driver = driverDao.findUniqueByNumber(number);
             if (driver != null && driver.getOrder() == null) {
                 User user = driver.getUser();
                 driverDao.delete(driver);
                 userDao.delete(user);
-                ct.commit();
             }
             if (driver == null){
                 throw new ServiceException("Driver not found", ServiceStatusCode.DRIVER_NOT_FOUND);
@@ -132,8 +124,6 @@ public class DriverServiceImpl implements DriverService{
         }catch (DaoException e){
             LOG.warn(e.getMessage());
             throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
-        }finally {
-            ct.rollbackIfActive();
         }
     }
 

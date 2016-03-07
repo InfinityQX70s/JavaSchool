@@ -5,6 +5,7 @@ import com.jschool.dao.api.exception.DaoException;
 import com.jschool.entities.Driver;
 import com.jschool.entities.DriverStatusLog;
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -13,13 +14,10 @@ import java.util.List;
 /**
  * Created by infinity on 07.02.16.
  */
+@Repository
 public class DriverStatusLogDaoImpl extends GenericDaoImpl<DriverStatusLog> implements DriverStatusLogDao{
 
     private static final Logger LOG = Logger.getLogger(DriverStatusLogDaoImpl.class);
-
-    public DriverStatusLogDaoImpl(EntityManager entityManager) {
-        super(entityManager);
-    }
 
     /**Return last status of driver given in param to method
      * @param driver which last status we want to know

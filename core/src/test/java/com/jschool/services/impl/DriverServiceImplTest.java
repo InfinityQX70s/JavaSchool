@@ -40,7 +40,7 @@ public class DriverServiceImplTest {
         transactionManagerMoc = Mockito.mock(TransactionManager.class);
         customTransactionMoc = Mockito.mock(CustomTransaction.class);
         Mockito.when(transactionManagerMoc.getTransaction()).thenReturn(customTransactionMoc);
-        driverService = new DriverServiceImpl(userDaoMoc,driverDaoMoc,driverStatisticDaoMoc,transactionManagerMoc);
+        driverService = new DriverServiceImpl(userDaoMoc,driverDaoMoc,driverStatisticDaoMoc);
     }
 
     private Driver getDriverForTest(){
