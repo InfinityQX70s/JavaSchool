@@ -2,7 +2,7 @@
 /target
 sonar-project.properties~
 /.sonar
-*~
+.gitignore~
 .Trash-*
 logiweb.log
 logiweb.log~
