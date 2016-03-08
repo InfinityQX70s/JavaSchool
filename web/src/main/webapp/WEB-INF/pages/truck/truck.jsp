@@ -8,6 +8,13 @@
     <jsp:param name="orders" value=""/>
     <jsp:param name="trucks" value="active z-depth-2"/>
 </jsp:include>
+<c:if test="${not empty message}">
+    <script type="text/javascript" >
+        $(document).ready(function(){
+            Materialize.toast("${message}", 4000);
+        });
+    </script>
+</c:if>
 <p></p>
 <table style="margin-top:40px;" class="striped z-depth-2 col s6 offset-s4 white">
     <thead>

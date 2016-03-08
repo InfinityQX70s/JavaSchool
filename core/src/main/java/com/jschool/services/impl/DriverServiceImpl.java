@@ -83,16 +83,22 @@ public class DriverServiceImpl implements DriverService{
         try {
             //check is driver in db
             Driver driverElement = driverDao.findUniqueByNumber(driver.getNumber());
-            if (driverElement != null && driverElement.getOrder() == null) {
+            User user = userDao.findUniqueByEmail(driver.getUser().getEmail());
+            if (driverElement != null && driverElement.getOrder() == null && (user == null || driverElement.getUser().getEmail().equals(driver.getUser().getEmail()) )) {
                 driverElement.setFirstName(driver.getFirstName());
                 driverElement.setLastName(driver.getLastName());
+                driverElement.getUser().setEmail(driver.getUser().getEmail());
+                driverElement.getUser().setPassword(DigestUtils.md5Hex(driver.getUser().getEmail()));
                 driverDao.update(driverElement);
             }
-            if (driverElement == null) {
+            else if (driverElement == null) {
                 throw new ServiceException("Driver not found", ServiceStatusCode.DRIVER_NOT_FOUND);
             }
-            if (driverElement.getOrder() != null) {
+            else if (driverElement.getOrder() != null) {
                 throw new ServiceException("Driver has an order", ServiceStatusCode.DRIVER_ASSIGNED_ORDER);
+            }
+            else if (user != null){
+                throw new ServiceException("User already exist", ServiceStatusCode.USER_ALREADY_EXIST);
             }
         }catch (DaoException e){
             LOG.warn(e.getMessage());
@@ -115,10 +121,10 @@ public class DriverServiceImpl implements DriverService{
                 driverDao.delete(driver);
                 userDao.delete(user);
             }
-            if (driver == null){
+            else if (driver == null){
                 throw new ServiceException("Driver not found", ServiceStatusCode.DRIVER_NOT_FOUND);
             }
-            if (driver.getOrder() != null){
+            else if (driver.getOrder() != null){
                 throw new ServiceException("Driver has an order", ServiceStatusCode.DRIVER_ASSIGNED_ORDER);
             }
         }catch (DaoException e){

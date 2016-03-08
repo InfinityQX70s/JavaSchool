@@ -7,6 +7,7 @@ import com.jschool.services.api.DriverService;
 import com.jschool.services.api.OrderAndCargoService;
 import com.jschool.services.api.TruckService;
 import com.jschool.services.api.exception.ServiceException;
+import com.jschool.validator.Validator;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletContext;

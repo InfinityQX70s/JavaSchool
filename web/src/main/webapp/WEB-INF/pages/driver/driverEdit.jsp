@@ -1,4 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <jsp:include page="../header.jsp">
     <jsp:param name="title" value="Drivers"/>
@@ -9,28 +11,42 @@
     <jsp:param name="trucks" value=""/>
 </jsp:include>
 <div class="row col s6 z-depth-2  offset-s4 white" style="margin-top:50px;">
+    <c:if test="${not empty error}">
+        <h5><blockquote>${error}</blockquote></h5>
+    </c:if>
     <form class="col s12" action="/employee/driver/change" method="post">
         <div class="row" style="margin-top:20px;">
             <div class="input-field col s12">
-                <input type="hidden" name="number" value="<c:out value="${driver.number}"/>">
+                <spring:bind path="driver.number">
+                    <form:hidden path="driver.number" class="validate" id="number" value="${driver.number}"/>
+                </spring:bind>
                 <input disabled id="number" type="text" class="validate" value="<c:out value="${driver.number}"/>">
                 <label for="number">Personal Number</label>
             </div>
         </div>
         <div class="row">
             <div class="input-field col s6">
-                <input id="first_name" name="firstName" type="text" class="validate" value="<c:out value="${driver.firstName}"/>">
-                <label for="first_name">First Name</label>
+                <spring:bind path="driver.firstName">
+                    <form:input path="driver.firstName" class="validate" id="firstName" value="${driver.firstName}"/>
+                    <label for="firstName">First Name</label>
+                    <form:errors path="driver.firstName" cssClass="blockquote"/>
+                </spring:bind>
             </div>
             <div class="input-field col s6">
-                <input id="last_name" name="lastName" type="text" class="validate" value="<c:out value="${driver.lastName}"/>">
-                <label for="last_name">Last Name</label>
+                <spring:bind path="driver.lastName">
+                    <form:input path="driver.lastName" class="validate" id="lastName" value="${driver.lastName}"/>
+                    <label for="lastName">Last Name</label>
+                    <form:errors path="driver.lastName" cssClass="blockquote"/>
+                </spring:bind>
             </div>
         </div>
         <div class="row">
             <div class="input-field col s12">
-                <input disabled id="email" name="email" type="email" class="validate" value="<c:out value="${driver.user.email}"/>">
-                <label for="email">Email</label>
+                <spring:bind path="driver.user.email">
+                    <form:input path="driver.user.email" class="validate" id="email"  value="${driver.user.email}" />
+                    <label for="email">Email</label>
+                    <form:errors path="driver.user.email" cssClass="blockquote"/>
+                </spring:bind>
             </div>
         </div>
         <div class="row right-align">

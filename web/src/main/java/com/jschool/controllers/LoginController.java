@@ -7,6 +7,7 @@ import com.jschool.entities.User;
 import com.jschool.services.api.DriverService;
 import com.jschool.services.api.UserService;
 import com.jschool.services.api.exception.ServiceException;
+import com.jschool.validator.Validator;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.log4j.Logger;
 

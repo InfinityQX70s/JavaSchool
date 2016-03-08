@@ -5,6 +5,7 @@ import com.jschool.dao.api.*;
 import com.jschool.dao.impl.*;
 import com.jschool.services.api.*;
 import com.jschool.services.impl.*;
+import com.jschool.validator.Validator;
 
 
 import javax.persistence.EntityManager;
@@ -53,8 +54,6 @@ public class AppContext {
     private DriverInfoController driverInfoController;
     private ErrorController errorController;
     private Properties errorProperties;
-
-    private ControllerFactory controllerFactory;
 
     private Validator validator;
 
@@ -206,25 +205,18 @@ public class AppContext {
         return truckService;
     }
 
-    public synchronized DriverController getDriverController() {
-        if (driverController == null){
-            driverController = new DriverController(getDriverService(),getValidator());
-        }
-        return driverController;
-    }
+//    public synchronized DriverController getDriverController() {
+//        if (driverController == null){
+//            driverController = new DriverController(getDriverService());
+//        }
+//        return driverController;
+//    }
 
     public synchronized OrderController getOrderController() {
         if (orderController == null){
             orderController = new OrderController(getErrorProperties(),getOrderAndCargoService(),getTruckService(),getDriverService(),getValidator());
         }
         return orderController;
-    }
-
-    public synchronized TruckController getTruckController() {
-        if (truckController == null){
-            truckController = new TruckController(getErrorProperties(),getTruckService(),getValidator());
-        }
-        return truckController;
     }
 
     public synchronized LoginController getLoginController() {
@@ -246,13 +238,6 @@ public class AppContext {
             errorController = new ErrorController(getErrorProperties());
         }
         return errorController;
-    }
-
-    public synchronized ControllerFactory getControllerFactory() {
-        if (controllerFactory == null){
-            controllerFactory = new ControllerFactory();
-        }
-        return controllerFactory;
     }
 
     public synchronized Validator getValidator() {

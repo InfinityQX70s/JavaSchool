@@ -1,183 +1,129 @@
 package com.jschool.controllers;
 
-import com.jschool.controllers.exception.ControllerException;
-import com.jschool.controllers.exception.ControllerStatusCode;
 import com.jschool.entities.Truck;
 import com.jschool.services.api.TruckService;
 import com.jschool.services.api.exception.ServiceException;
+import com.jschool.validator.TruckFormValidator;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Properties;
 
 /**
  * Created by infinity on 12.02.16.
  */
-public class TruckController extends BaseController {
+@Controller
+public class TruckController{
 
     private static final Logger LOG = Logger.getLogger(TruckController.class);
 
-    private TruckService truckService;
-    private Validator validator;
+    @Resource(name="errorProperties")
+    private Properties errorProperties;
+    private final TruckService truckService;
+    private final TruckFormValidator truckFormValidator;
 
-    public TruckController(Properties errorProperties, TruckService truckService, Validator validator) {
-        super(errorProperties);
+    @Autowired
+    public TruckController(TruckService truckService, TruckFormValidator truckFormValidator) {
         this.truckService = truckService;
-        this.validator = validator;
+        this.truckFormValidator = truckFormValidator;
     }
 
-    @Override
-    public void execute(ServletContext servletContext, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try {
-            //split uri by "/" and check url on correct and pass it to needed method
-            // by uri and "get" or "post" method
-            String[] uri = request.getRequestURI().split("/");
-            if ("GET".equals(request.getMethod())) {
-                if (uri.length == 4 && "trucks".equals(uri[3]))
-                    showTrucks(request, response);
-                else if (uri.length == 5 && "add".equals(uri[4]))
-                    showFormForTruckAdd(request, response);
-                else if (uri.length == 6 && "edit".equals(uri[5]))
-                    showFormForChangeTruck(request, response, uri[4]);
-                else
-                    throw new ControllerException("Page not found", ControllerStatusCode.PAGE_NOT_FOUND);
-            }
-            if ("POST".equals(request.getMethod())) {
-                if (uri.length == 5 && "add".equals(uri[4]))
-                    addTruck(request, response);
-                else if (uri.length == 5 && "delete".equals(uri[4]))
-                    deleteTruck(request, response);
-                else if (uri.length == 5 && "change".equals(uri[4]))
-                    changeTruck(request, response);
-                else
-                    throw new ControllerException("Page not found", ControllerStatusCode.PAGE_NOT_FOUND);
-            }
-        } catch (ControllerException e) {
-            LOG.warn(e.getMessage());
-            showError(e,request,response);
-        }
-    }
-
-
-    // /employee/trucks/
-    public void showTrucks(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    @RequestMapping(value = "/employee/trucks", method = RequestMethod.GET)
+    public String showTrucks(@RequestParam(value = "page", defaultValue = "1") int page, Model model, RedirectAttributes redirectAttributes) {
         try {
             int limitElements = 7;
             List<Truck> utilElem = truckService.findAllTrucks();
             int pageCount = (int) Math.ceil(utilElem.size()/(float)limitElements);
-            String page = req.getParameter("page");
             List<Truck> trucks;
-            if (page == null){
-                page = "1";
-                trucks = truckService.findAllTrucksByOffset(0,limitElements);
-            }else{
-                trucks = truckService.findAllTrucksByOffset((Integer.parseInt(page)-1)*limitElements,limitElements);
-            }
-            req.setAttribute("pageCount", pageCount);
-            req.setAttribute("currentPage", page);
-            req.setAttribute("trucks", trucks);
-            req.getRequestDispatcher("/WEB-INF/pages/truck/truck.jsp").forward(req, resp);
+            trucks = truckService.findAllTrucksByOffset((page-1)*limitElements,limitElements);
+            model.addAttribute("pageCount", pageCount);
+            model.addAttribute("currentPage", page);
+            model.addAttribute("trucks", trucks);
+            return "truck/truck";
         } catch (ServiceException e) {
             LOG.warn(e.getMessage());
-            showError(e,req,resp);
+            redirectAttributes.addFlashAttribute("message", errorProperties.getProperty(e.getStatusCode().name()));
+            return "redirect:/employee/trucks";
         }
     }
 
-    // /employee/truck/add GET
-    public void showFormForTruckAdd(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("/WEB-INF/pages/truck/truckAdd.jsp").forward(req, resp);
+    @RequestMapping(value = "/employee/truck/add", method = RequestMethod.GET)
+    public String showFormForTruckAdd(Model model){
+        model.addAttribute("truck", new Truck());
+        return "truck/truckAdd";
     }
 
     //  /employee/truck/add POST
-    public void addTruck(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-        try {
-            String number = req.getParameter("number");
-            String capacity = req.getParameter("capacity");
-            String shiftSize = req.getParameter("shiftSize");
-            String status = req.getParameter("status");
-            validator.validateTruck(number, capacity, shiftSize, status);
-            Truck truck = new Truck();
-            truck.setNumber(number);
-            truck.setCapacity(Integer.parseInt(capacity));
-            truck.setShiftSize(Integer.parseInt(shiftSize));
-            if (status.equals("ok")) {
-                truck.setRepairState(true);
-            } else {
-                truck.setRepairState(false);
+    @RequestMapping(value = "/employee/truck/add", method = RequestMethod.POST)
+    public String addTruck(@ModelAttribute("truck") Truck truck,
+                         BindingResult truckResult, Model model, RedirectAttributes redirectAttributes){
+        truckFormValidator.validate(truck,truckResult);
+        if (truckResult.hasErrors())
+            return "truck/truckAdd";
+        else{
+            try {
+                truckService.addTruck(truck);
+            } catch (ServiceException e) {
+                LOG.warn(e.getMessage());
+                model.addAttribute("error", errorProperties.getProperty(e.getStatusCode().name()));
+                return "truck/truckAdd";
             }
-            truckService.addTruck(truck);
-            resp.sendRedirect("/employee/trucks");
-        } catch (ServiceException e) {
-            LOG.warn(e.getMessage());
-            showError(e,req,resp);
-        }catch (ControllerException e){
-            LOG.warn(e.getMessage());
-            showError(e,req,resp);
+            redirectAttributes.addFlashAttribute("message", "Truck added successfully!");
+            return "redirect:/employee/trucks";
         }
     }
 
-    //   /employee/truck/delete POST
-    public void deleteTruck(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+    @RequestMapping(value = "/employee/truck/delete", method = RequestMethod.POST)
+    public String deleteTruck(@RequestParam(value = "number", required = false) String number, Model model, RedirectAttributes redirectAttributes){
         try {
-            String number = req.getParameter("number");
-            validator.validateTruckNumber(number);
             truckService.deleteTruck(number);
-            resp.sendRedirect("/employee/trucks");
+            redirectAttributes.addFlashAttribute("message", "Truck deleted successfully!");
+            return "redirect:/employee/trucks";
         } catch (ServiceException e) {
             LOG.warn(e.getMessage());
-            showError(e,req,resp);
-        }catch (ControllerException e){
-            LOG.warn(e.getMessage());
-            showError(e,req,resp);
+            redirectAttributes.addFlashAttribute("message", errorProperties.getProperty(e.getStatusCode().name()));
+            return "redirect:/employee/trucks";
         }
     }
 
-    //   /employee/truck/{number}/edit GET
-    public void showFormForChangeTruck(HttpServletRequest req, HttpServletResponse resp, String number) throws ServletException, IOException {
+    @RequestMapping(value = "/employee/truck/{number}/edit", method = RequestMethod.GET)
+    public String showFormForChangeTruck(@PathVariable("number") String number, Model model, RedirectAttributes redirectAttributes){
         try {
-            validator.validateTruckNumber(number);
             Truck truck = truckService.getTruckByNumber(number);
-            req.setAttribute("truck", truck);
-            req.getRequestDispatcher("/WEB-INF/pages/truck/truckEdit.jsp").forward(req, resp);
+            model.addAttribute("truck", truck);
+            return "truck/truckEdit";
         } catch (ServiceException e) {
             LOG.warn(e.getMessage());
-            showError(e,req,resp);
-        }catch (ControllerException e){
-            LOG.warn(e.getMessage());
-            showError(e,req,resp);
+            redirectAttributes.addFlashAttribute("message", errorProperties.getProperty(e.getStatusCode().name()));
+            return "redirect:/employee/trucks";
         }
     }
 
     //   /employee/truck/change POST
-    public void changeTruck(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-        try {
-            String number = req.getParameter("number");
-            String capacity = req.getParameter("capacity");
-            String shiftSize = req.getParameter("shiftSize");
-            String status = req.getParameter("status");
-            validator.validateTruck(number, capacity, shiftSize, status);
-            Truck truck = new Truck();
-            truck.setNumber(number);
-            truck.setCapacity(Integer.parseInt(capacity));
-            truck.setShiftSize(Integer.parseInt(shiftSize));
-            if (status.equals("ok")) {
-                truck.setRepairState(true);
-            } else {
-                truck.setRepairState(false);
+    @RequestMapping(value = "/employee/truck/change", method = RequestMethod.POST)
+    public String changeTruck(@ModelAttribute("truck") Truck truck,
+                            BindingResult truckResult,
+                            Model model, RedirectAttributes redirectAttributes){
+        truckFormValidator.validate(truck,truckResult);
+        if (truckResult.hasErrors()) {
+            return "truck/truckEdit";
+        }else {
+            try {
+                truckService.updateTruck(truck);
+                redirectAttributes.addFlashAttribute("message", "Truck edited successfully!");
+                return "redirect:/employee/trucks";
+            } catch (ServiceException e) {
+                LOG.warn(e.getMessage());
+                model.addAttribute("error", errorProperties.getProperty(e.getStatusCode().name()));
+                return "truck/truckEdit";
             }
-            truckService.updateTruck(truck);
-            resp.sendRedirect("/employee/trucks");
-        } catch (ServiceException e) {
-            LOG.warn(e.getMessage());
-            showError(e,req,resp);
-        }catch (ControllerException e){
-            LOG.warn(e.getMessage());
-            showError(e,req,resp);
         }
     }
 

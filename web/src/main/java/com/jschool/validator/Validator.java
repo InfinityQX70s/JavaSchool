@@ -1,4 +1,4 @@
-package com.jschool.controllers;
+package com.jschool.validator;
 
 import com.jschool.controllers.exception.ControllerException;
 import com.jschool.controllers.exception.ControllerStatusCode;
