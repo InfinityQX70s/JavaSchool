@@ -224,6 +224,7 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
     }
 
     @Override
+    @Transactional
     public List<Order> findAllOrders() throws ServiceException {
         try {
             return ordersDao.findAll();
@@ -234,6 +235,7 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
     }
 
     @Override
+    @Transactional
     public Order getOrderByNumber(int number) throws ServiceException {
         try {
             Order order = ordersDao.findUniqueByNumber(number);
@@ -252,6 +254,7 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
      * @throws ServiceException status ORDER_NOT_FOUND
      */
     @Override
+    @Transactional
     public List<Cargo> findAllCargosByOrderNumber(int number) throws ServiceException {
         try {
             Order order = ordersDao.findUniqueByNumber(number);
@@ -272,6 +275,7 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
     }
 
     @Override
+    @Transactional
     public Truck getAssignedTruckByOrderNumber(int orderNumber) throws ServiceException {
         try {
             Order order = ordersDao.findUniqueByNumber(orderNumber);
@@ -290,6 +294,7 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
     }
 
     @Override
+    @Transactional
     public List<Driver> getAllAssignedDriversByOrderNumber(int orderNumber) throws ServiceException {
         try {
             Order order = ordersDao.findUniqueByNumber(orderNumber);

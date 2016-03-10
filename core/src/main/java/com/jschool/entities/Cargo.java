@@ -27,10 +27,10 @@ public class Cargo {
     private String name;
     @Column(name = "weight", nullable = false)
     private int weight;
-    @OneToOne(fetch=FetchType.LAZY)
+    @OneToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="pickup")
     private RoutePoint pickup;
-    @OneToOne(fetch=FetchType.LAZY)
+    @OneToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="unload")
     private RoutePoint unload;
     @OneToMany(fetch=FetchType.EAGER, mappedBy = "cargo", cascade = CascadeType.ALL)

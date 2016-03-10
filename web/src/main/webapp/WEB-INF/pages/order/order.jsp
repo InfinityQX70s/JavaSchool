@@ -10,6 +10,13 @@
     <jsp:param name="orders" value="active z-depth-2"/>
     <jsp:param name="trucks" value=""/>
 </jsp:include>
+<c:if test="${not empty message}">
+    <script type="text/javascript" >
+        $(document).ready(function(){
+            Materialize.toast("${message}", 4000);
+        });
+    </script>
+</c:if>
 <div class="col s7 offset-s4" style="margin-top:50px;">
     <ul class="collapsible" data-collapsible="accordion">
         <c:forEach var="orderList" items="${requestScope.orderListMap}">

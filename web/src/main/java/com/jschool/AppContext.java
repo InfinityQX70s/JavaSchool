@@ -50,9 +50,7 @@ public class AppContext {
     private DriverController driverController;
     private OrderController orderController;
     private TruckController truckController;
-    private LoginController loginController;
     private DriverInfoController driverInfoController;
-    private ErrorController errorController;
     private Properties errorProperties;
 
     private Validator validator;
@@ -158,12 +156,6 @@ public class AppContext {
         return userDao;
     }
 
-    public synchronized UserService getUserService() {
-        if (userService == null){
-            userService = new UserServiceImpl(getUserDao());
-        }
-        return userService;
-    }
 
     public synchronized DriverService getDriverService() {
         if (driverService == null){
@@ -212,33 +204,20 @@ public class AppContext {
 //        return driverController;
 //    }
 
-    public synchronized OrderController getOrderController() {
-        if (orderController == null){
-            orderController = new OrderController(getErrorProperties(),getOrderAndCargoService(),getTruckService(),getDriverService(),getValidator());
-        }
-        return orderController;
-    }
+//    public synchronized LoginController getLoginController() {
+//        if (loginController == null){
+//            loginController = new LoginController(getErrorProperties(),getDriverService(),getUserService(),getValidator());
+//        }
+//        return loginController;
+//    }
 
-    public synchronized LoginController getLoginController() {
-        if (loginController == null){
-            loginController = new LoginController(getErrorProperties(),getDriverService(),getUserService(),getValidator());
-        }
-        return loginController;
-    }
+//    public synchronized DriverInfoController getDriverInfoController() {
+//        if (driverInfoController == null){
+//            driverInfoController = new DriverInfoController(getErrorProperties(),getOrderAndCargoService());
+//        }
+//        return driverInfoController;
+//    }
 
-    public synchronized DriverInfoController getDriverInfoController() {
-        if (driverInfoController == null){
-            driverInfoController = new DriverInfoController(getErrorProperties(),getOrderAndCargoService());
-        }
-        return driverInfoController;
-    }
-
-    public synchronized ErrorController getErrorController() {
-        if (errorController == null){
-            errorController = new ErrorController(getErrorProperties());
-        }
-        return errorController;
-    }
 
     public synchronized Validator getValidator() {
         if (validator == null){

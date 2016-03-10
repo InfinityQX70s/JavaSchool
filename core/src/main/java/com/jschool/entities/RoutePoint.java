@@ -17,7 +17,7 @@ public class RoutePoint {
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="orders_id", nullable = false)
     private Order order;
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="city_id", nullable = false)
     private City city;
     @OneToOne(mappedBy="pickup")

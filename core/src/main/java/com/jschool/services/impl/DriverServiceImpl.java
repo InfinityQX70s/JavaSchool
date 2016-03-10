@@ -139,6 +139,7 @@ public class DriverServiceImpl implements DriverService{
      * @throws ServiceException with status code DRIVER_NOT_FOUND if driver do not exist in db
      */
     @Override
+    @Transactional
     public Driver getDriverByPersonalNumber(int number) throws ServiceException {
         try {
             Driver driver = driverDao.findUniqueByNumber(number);
@@ -153,6 +154,7 @@ public class DriverServiceImpl implements DriverService{
     }
 
     @Override
+    @Transactional
     public List<Driver> findAllDrivers() throws ServiceException {
         try {
             return driverDao.findAll();
@@ -163,6 +165,7 @@ public class DriverServiceImpl implements DriverService{
     }
 
     @Override
+    @Transactional
     public List<Driver> findAllDriversByOffset(int offset, int limit) throws ServiceException {
         try {
             return driverDao.findAllByOffset(offset,limit);
@@ -179,6 +182,7 @@ public class DriverServiceImpl implements DriverService{
      * @throws ServiceException
      */
     @Override
+    @Transactional
     public Map<Driver,Integer> findAllAvailableDrivers(int hoursWorked) throws ServiceException {
         try {
             //get all free drivers

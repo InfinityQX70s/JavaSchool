@@ -27,7 +27,7 @@ public class Order {
     private boolean doneState;
     @OneToMany(fetch=FetchType.LAZY, mappedBy = "order")
     private List<RoutePoint> routePoints;
-    @OneToMany(fetch=FetchType.LAZY, mappedBy = "order")
+    @OneToMany(fetch=FetchType.EAGER, mappedBy = "order")
     private List<Driver> drivers;
     @OneToOne()
     @JoinColumn(name="truck_id")

@@ -13,7 +13,7 @@
         <ul id="nav-mobile" class="side-nav fixed z-depth-2" style="width: 240px;">
             <div style="background-image: url(/image/background.png); height: 250px; width: 400px;">
                 <img src="/image/user.png" style="margin-top:20px; margin-left: 60px;">
-                <p style="margin-left: 40px; margin-top:30px;color:#FFFFFF"><c:out value="${sessionScope.entity.email}" /></p>
+                <p style="margin-left: 40px; margin-top:30px;color:#FFFFFF">${pageContext.request.userPrincipal.name} </p>
                 <br>
                 <br>
             </div>
@@ -22,7 +22,7 @@
                     <li class="<c:out value="${param.orders}"/>"><a href="/employee/orders">Orders</a></li>
                     <li class="<c:out value="${param.drivers}"/>"><a href="/employee/drivers">Drivers</a></li>
                     <li class="<c:out value="${param.trucks}"/>"><a href="/employee/trucks">Trucks</a></li>
-                    <li><a href="/logout">Log out</a></li>
+                    <li><a href="/logout">Sign out</a></li>
                 </ul>
             </div>
         </ul>

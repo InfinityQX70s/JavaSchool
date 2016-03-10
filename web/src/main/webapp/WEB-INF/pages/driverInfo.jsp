@@ -33,6 +33,9 @@
     <div class="col s6 offset-s3">
         <div class="card-panel">
           <span>
+              <c:if test="${not empty error}">
+                  <h5><blockquote>${error}</blockquote></h5>
+              </c:if>
                <blockquote>
                    <h5><c:out value="${driver.number}"/>  <c:out value="${driver.firstName}"/>  <c:out value="${driver.lastName}"/>
                </blockquote>

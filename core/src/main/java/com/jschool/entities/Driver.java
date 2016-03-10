@@ -36,7 +36,7 @@ public class Driver {
     private List<DriverStatusLog> statusLogs;
     @OneToMany(fetch=FetchType.LAZY, mappedBy = "driver", cascade = CascadeType.ALL)//cascade=CascadeType.ALL
     private List<DriverStatistic> statistics;
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="order_id")
     private Order order;
 

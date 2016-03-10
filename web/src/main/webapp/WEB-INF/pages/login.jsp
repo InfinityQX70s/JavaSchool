@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,6 +9,20 @@
     <link type="text/css" rel="stylesheet" href="/css/materialize.css" media="screen,projection"/>
     <script type="text/javascript" src="/js/jquery-2.1.1.min.js"></script>
     <script type="text/javascript" src="/js/materialize.min.js"></script>
+    <c:if test="${not empty param.error}">
+        <script type="text/javascript" >
+            $(document).ready(function(){
+                Materialize.toast("Invalid username or password", 4000);
+            });
+        </script>
+    </c:if>
+    <c:if test="${not empty param.sign_out}">
+        <script type="text/javascript" >
+            $(document).ready(function(){
+                Materialize.toast("You have been logged out successfully", 4000);
+            });
+        </script>
+    </c:if>
 </head>
 
 <body background="/image/background.png">
@@ -51,11 +66,11 @@
                     </div>
                 </div>
                 <div class="card-action center">
-                    <a href="#" onclick="document.forms[0].submit();">log in</a>
+                    <a href="#" onclick="document.forms[0].submit();">Sign in</a>
                 </div>
             </div>
         </div>
-            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            <%--<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>--%>
         </form>
     </div>
 </div>

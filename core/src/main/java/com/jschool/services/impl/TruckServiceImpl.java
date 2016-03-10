@@ -98,6 +98,7 @@ public class TruckServiceImpl implements TruckService{
     }
 
     @Override
+    @Transactional
     public Truck getTruckByNumber(String number) throws ServiceException {
         try {
             Truck truck = truckDao.findUniqueByNumber(number);
@@ -111,6 +112,7 @@ public class TruckServiceImpl implements TruckService{
     }
 
     @Override
+    @Transactional
     public List<Truck> findAllTrucks() throws ServiceException {
         try {
             return truckDao.findAll();
@@ -121,6 +123,7 @@ public class TruckServiceImpl implements TruckService{
     }
 
     @Override
+    @Transactional
     public List<Truck> findAllTrucksByOffset(int offset, int limit) throws ServiceException {
         try {
             return truckDao.findAllByOffset(offset,limit);
@@ -136,6 +139,7 @@ public class TruckServiceImpl implements TruckService{
      * @throws ServiceException
      */
     @Override
+    @Transactional
     public List<Truck> findAllAvailableTrucksByMinCapacity(int capacity) throws ServiceException {
         try {
             return truckDao.findAllFreeByStateAndGreaterThanCapacity(true,capacity);
