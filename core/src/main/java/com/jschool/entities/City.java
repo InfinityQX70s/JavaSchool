@@ -10,6 +10,8 @@ import java.util.List;
 @NamedQueries({
         @NamedQuery(name="City.findByName",
                 query="SELECT c FROM City c WHERE c.name = :name"),
+        @NamedQuery(name="City.findByNameLike",
+                query="SELECT c FROM City c WHERE c.name like :name"),
         @NamedQuery(name="City.findAll",
                 query="SELECT c FROM City c")
 })

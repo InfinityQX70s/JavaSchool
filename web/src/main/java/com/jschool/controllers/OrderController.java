@@ -71,14 +71,14 @@ public class OrderController{
     }
 
     //   /employee/order/add POST
-    public void addOrder(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    @RequestMapping(value = "/employee/order/add", method = RequestMethod.POST)
+    public String addOrder(HttpServletRequest req, Model model){
         try {
             //return needed page equals step on wizard and passed params from wizard form
             String stepNumber = req.getParameter("step_number");
             switch (stepNumber) {
                 case "1":
-                    req.getRequestDispatcher("/WEB-INF/pages/order/orderCargo.jsp").forward(req, resp);
-                    break;
+                    return "order/orderCargo";
                 case "2":
                     String orderNumber = req.getParameter("orderNumber");
                     String[] cargoNumber = req.getParameterValues("cargoNumber");
@@ -93,10 +93,9 @@ public class OrderController{
                             max = Integer.parseInt(weight);
                     }
                     List<Truck> trucks = truckService.findAllAvailableTrucksByMinCapacity(max);
-                    req.setAttribute("trucks", trucks);
-                    req.setAttribute("max", max);
-                    req.getRequestDispatcher("/WEB-INF/pages/order/orderTruck.jsp").forward(req, resp);
-                    break;
+                    model.addAttribute("trucks", trucks);
+                    model.addAttribute("max", max);
+                    return "order/orderTruck";
                 case "3":
                     String pickupCity[] = req.getParameterValues("pickup");
                     String unloadCity[] = req.getParameterValues("unload");
@@ -106,30 +105,30 @@ public class OrderController{
                         cities.add(pickupCity[i]);
                         cities.add(unloadCity[i]);
                     }
-                    req.setAttribute("cities", cities);
-                    req.getRequestDispatcher("/WEB-INF/pages/order/orderMap.jsp").forward(req, resp);
-                    break;
+                    model.addAttribute("cities", cities);
+                    return "order/orderMap";
                 case "4":
                     String duration = req.getParameter("duration").split(" ")[0];
                     String truckNumber = req.getParameter("truckNumber");
                     validator.validateTruckNumber(truckNumber);
                     Truck truck = truckService.getTruckByNumber(truckNumber);
                     Map<Driver, Integer> driverHoursList = driverService.findAllAvailableDrivers(Integer.parseInt(duration));
-                    req.setAttribute("drivers", driverHoursList);
-                    req.setAttribute("duration", duration);
-                    req.setAttribute("shiftSize", truck.getShiftSize());
-                    req.getRequestDispatcher("/WEB-INF/pages/order/orderDrivers.jsp").forward(req, resp);
-                    break;
+                    model.addAttribute("drivers", driverHoursList);
+                    model.addAttribute("duration", duration);
+                    model.addAttribute("shiftSize", truck.getShiftSize());
+                    return "order/orderDrivers";
             }
         } catch (ServiceException e) {
             LOG.warn(e.getMessage());
         }catch (ControllerException e){
             LOG.warn(e.getMessage());
         }
+        return "redirect:/employee/orders";
     }
 
     // /employee/order/submit POST
-    public void submitOrder(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+    //@RequestMapping(value = "/employee/order/submit", method = RequestMethod.POST)
+    public void submitOrder(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
             //get params from form, validate them, fill entities and pass them to
             //service for full order add

@@ -8,6 +8,7 @@
 
     <http auto-config="true" use-expressions="true">
         <intercept-url pattern="/" access="permitAll" />
+        <intercept-url pattern="/api/**" access="permitAll" />
         <intercept-url pattern="/employee/**" access="hasRole('ROLE_EMPLOYEE')" />
         <intercept-url pattern="/driver" access="hasRole('ROLE_DRIVER')" />
         <form-login login-page="/sign" authentication-failure-url="/sign?error=true" username-parameter="email"/>

@@ -40,6 +40,18 @@ public class CityDaoImpl extends GenericDaoImpl<City> implements CityDao{
         }
     }
 
+    public List<City> findAllByName(String name) throws DaoException {
+        try {
+            TypedQuery<City> query =
+                    entityManager.createNamedQuery("City.findByNameLike", City.class);
+            query.setParameter("name", "%" + name + "%");
+            return query.getResultList();
+        }catch (Exception e){
+            LOG.error("Unexpected DB exception", e);
+            throw  new DaoException(e);
+        }
+    }
+
     /**Return all cities in DB
      * @return
      * @throws DaoException

@@ -6,11 +6,18 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('.pickup,.unload').autocomplete({
+            serviceUrl: '/api/cities'
+        });
+    });
+</script>
 <form id="orderAndCargoForm" method="post">
 <div class="row z-depth-2 warning white">
     <div class="row">
         <div class="input-field col s12">
-            <input id="orderNumber" name="orderNumber" type="text" class="validate">
+            <input id="orderNumber" name="orderNumber" type="number" class="validate">
             <label for="orderNumber">Order Number</label>
         </div>
     </div>
@@ -20,7 +27,7 @@
         <a class="secondary-content disabled right-align light-blue-text text-accent-888 remove">
             <i class="material-icons">clear</i></a>
         <div class="input-field col s12">
-            <input id="cargoNumber" name="cargoNumber" type="text" class="validate number">
+            <input id="cargoNumber" name="cargoNumber" type="number" class="validate number">
             <label for="cargoNumber">Cargo Number</label>
         </div>
     </div>
@@ -30,17 +37,17 @@
             <label for="cargoName">Cargo Name</label>
         </div>
         <div class="input-field col s6">
-            <input id="cargoWeight" name="cargoWeight" type="text" class="validate">
+            <input id="cargoWeight" name="cargoWeight" type="number" class="validate">
             <label for="cargoWeight">Cargo Weight</label>
         </div>
     </div>
     <div class="row">
         <div class="input-field col s6">
-            <input id="pickup" name="pickup" type="text" class="validate">
+            <input id="pickup" name="pickup" type="text" class="validate pickup">
             <label for="pickup">PickUp</label>
         </div>
         <div class="input-field col s6">
-            <input id="unload" name="unload" type="text" class="validate">
+            <input id="unload" name="unload" type="text" class="validate pickup">
             <label for="unload">UnLoad</label>
         </div>
     </div>

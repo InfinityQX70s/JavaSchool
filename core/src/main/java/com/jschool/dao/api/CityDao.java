@@ -11,5 +11,6 @@ import java.util.List;
 public interface CityDao extends GenericDao<City>{
 
     City findUniqueByName(String name) throws DaoException;
+    List<City> findAllByName(String name) throws DaoException;
     List<City> findAll() throws DaoException;
 }
