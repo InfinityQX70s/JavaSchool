@@ -1,6 +1,5 @@
 package com.jschool.services.impl;
 
-import com.jschool.TransactionManager;
 import com.jschool.dao.api.DriverDao;
 import com.jschool.dao.api.UserDao;
 import com.jschool.dao.api.exception.DaoException;

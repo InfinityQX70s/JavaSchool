@@ -1,7 +1,5 @@
 package com.jschool.services.impl;
 
-import com.jschool.CustomTransaction;
-import com.jschool.TransactionManager;
 import com.jschool.dao.api.DriverDao;
 import com.jschool.dao.api.DriverStatisticDao;
 import com.jschool.dao.api.DriverStatusLogDao;
@@ -74,7 +72,7 @@ public class DutyServiceImpl implements DutyService {
      * @param dutyStatus driver's current status
      * @throws ServiceException with status code DRIVER_NOT_FOUND if driver not exist in db
      */
-    @Transactional
+    @Transactional(rollbackFor=ServiceException.class)
     private void setDriverStatus(int number, DriverStatus dutyStatus) throws ServiceException {
         try {
             Driver driver = driverDao.findUniqueByNumber(number);

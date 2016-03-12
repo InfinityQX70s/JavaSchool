@@ -4,10 +4,11 @@
     <div id="YMapsID" style="width:740px;height:370px"></div>
     <div class="row">
         <div class="input-field col s6">
-            <input id="duration" name="duration" type="text" class="validate">
+            <input disabled id="info" type="text" class="validate">
+            <input hidden id="duration" name="duration" type="text" class="validate">
         </div>
         <div class="input-field col s6">
-            <input id="distance" name="distance" type="text" class="validate">
+            <input disabled id="distance" name="distance" type="text" class="validate">
         </div>
     </div>
 </div>
@@ -26,6 +27,8 @@
             );
             map.addOverlay(router);
             YMaps.Events.observe(router, router.Events.Success, function () {
+                var info = document.getElementById('info');
+                info.value = Math.ceil(router.getDuration() / 3600) + ' hours';
                 var duration = document.getElementById('duration');
                 duration.value = Math.ceil(router.getDuration() / 3600) + ' hours';
                 var distance = document.getElementById('distance');

@@ -1,7 +1,5 @@
 package com.jschool.services.impl;
 
-import com.jschool.CustomTransaction;
-import com.jschool.TransactionManager;
 import com.jschool.dao.api.DriverDao;
 import com.jschool.dao.api.DriverStatisticDao;
 import com.jschool.dao.api.UserDao;
@@ -45,7 +43,7 @@ public class DriverServiceImpl implements DriverService{
      * if driver or user with such identifier already in DB
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor=ServiceException.class)
     public void addDriver(Driver driver) throws ServiceException {
         try {
             //check that we have no users or drivers with such identifier in DB
@@ -78,7 +76,7 @@ public class DriverServiceImpl implements DriverService{
      * an order and we can not change it, DRIVER_NOT_FOUND if driver do not exist in db
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor=ServiceException.class)
     public void updateDrive(Driver driver) throws ServiceException {
         try {
             //check is driver in db
@@ -112,7 +110,7 @@ public class DriverServiceImpl implements DriverService{
      * an order and we can not change it, DRIVER_NOT_FOUND if driver do not exist in db
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor=ServiceException.class)
     public void deleteDriver(int number) throws ServiceException {
         try {
             Driver driver = driverDao.findUniqueByNumber(number);
@@ -139,7 +137,7 @@ public class DriverServiceImpl implements DriverService{
      * @throws ServiceException with status code DRIVER_NOT_FOUND if driver do not exist in db
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor=ServiceException.class)
     public Driver getDriverByPersonalNumber(int number) throws ServiceException {
         try {
             Driver driver = driverDao.findUniqueByNumber(number);
@@ -154,7 +152,7 @@ public class DriverServiceImpl implements DriverService{
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor=ServiceException.class)
     public List<Driver> findAllDrivers() throws ServiceException {
         try {
             return driverDao.findAll();
@@ -165,7 +163,7 @@ public class DriverServiceImpl implements DriverService{
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor=ServiceException.class)
     public List<Driver> findAllDriversByOffset(int offset, int limit) throws ServiceException {
         try {
             return driverDao.findAllByOffset(offset,limit);
@@ -182,7 +180,7 @@ public class DriverServiceImpl implements DriverService{
      * @throws ServiceException
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor=ServiceException.class)
     public Map<Driver,Integer> findAllAvailableDrivers(int hoursWorked) throws ServiceException {
         try {
             //get all free drivers

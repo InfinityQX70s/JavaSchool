@@ -383,6 +383,25 @@ function SmartWizard(target, options) {
         return true;
     }
 
+    function checkThreeStep(element) {
+        if ($(element).val() === '') {
+            if (!$(element).next().hasClass('error')){
+                $('<span class="blockquote error">Field is required</span>').insertAfter(element);
+            }
+            return false;
+        }else{
+            if ($(element).next().hasClass('error')){
+                $(element).next().remove();
+            }
+            var arr = $(element).val().split(' ');
+            if (!$.isNumeric(arr[0]) || arr[0] <= 0){
+                $('<span class="blockquote error">Number format exception</span>').insertAfter(element);
+                return false;
+            }
+        }
+        return true;
+    }
+
     function checkString(element) {
         if ($(element).val() === '') {
             if (!$(element).next().hasClass('error')){
@@ -421,8 +440,8 @@ function SmartWizard(target, options) {
             }
         }
         if(stepnumber == 3){
-        }
-        if(stepnumber == 4){
+            if (!checkThreeStep($('#duration')))
+                isStepValid=false;
         }
         return isStepValid;
     }

@@ -1,7 +1,5 @@
 package com.jschool.services.impl;
 
-import com.jschool.CustomTransaction;
-import com.jschool.TransactionManager;
 import com.jschool.dao.api.DriverDao;
 import com.jschool.dao.api.DriverStatisticDao;
 import com.jschool.dao.api.DriverStatusLogDao;
@@ -27,18 +25,13 @@ public class DutyServiceImplTest {
     private DriverDao driverDaoMoc;
     private DriverStatusLogDao driverStatusLogDaoMoc;
     private DriverStatisticDao driverStatisticDaoMoc;
-    private TransactionManager transactionManagerMoc;
     private DutyService dutyService;
-    private CustomTransaction customTransactionMoc;
 
     @Before
     public void setUp() throws Exception {
         driverDaoMoc = Mockito.mock(DriverDao.class);
         driverStatisticDaoMoc = Mockito.mock(DriverStatisticDao.class);
         driverStatusLogDaoMoc = Mockito.mock(DriverStatusLogDao.class);
-        transactionManagerMoc = Mockito.mock(TransactionManager.class);
-        customTransactionMoc = Mockito.mock(CustomTransaction.class);
-        Mockito.when(transactionManagerMoc.getTransaction()).thenReturn(customTransactionMoc);
         dutyService = new DutyServiceImpl(driverDaoMoc,driverStatusLogDaoMoc,driverStatisticDaoMoc);
     }
 

@@ -29,7 +29,7 @@ public class ApiServiceImpl implements ApiService{
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor=ServiceException.class)
     public List<City> findAllCitiesByName(String query) throws ServiceException {
         try {
             return cityDao.findAllByName(query);

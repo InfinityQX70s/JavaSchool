@@ -1,7 +1,5 @@
 package com.jschool.services.impl;
 
-import com.jschool.CustomTransaction;
-import com.jschool.TransactionManager;
 import com.jschool.dao.api.TruckDao;
 import com.jschool.dao.api.exception.DaoException;
 import com.jschool.entities.Truck;
@@ -35,7 +33,7 @@ public class TruckServiceImpl implements TruckService{
      * @throws ServiceException status code TRUCK_ALREADY_EXIST
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor=ServiceException.class)
     public void addTruck(Truck truck) throws ServiceException {
         try {
             Truck element = truckDao.findUniqueByNumber(truck.getNumber());
@@ -54,7 +52,7 @@ public class TruckServiceImpl implements TruckService{
      * @throws ServiceException status codes TRUCK_NOT_FOUND, TRUCK_ASSIGNED_ORDER
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor=ServiceException.class)
     public void updateTruck(Truck truck) throws ServiceException {
         try {
             Truck element = truckDao.findUniqueByNumber(truck.getNumber());
@@ -80,7 +78,7 @@ public class TruckServiceImpl implements TruckService{
      * @throws ServiceException
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor=ServiceException.class)
     public void deleteTruck(String truckNumber) throws ServiceException {
         try {
             Truck truck = truckDao.findUniqueByNumber(truckNumber);
@@ -98,7 +96,7 @@ public class TruckServiceImpl implements TruckService{
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor=ServiceException.class)
     public Truck getTruckByNumber(String number) throws ServiceException {
         try {
             Truck truck = truckDao.findUniqueByNumber(number);
@@ -112,7 +110,7 @@ public class TruckServiceImpl implements TruckService{
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor=ServiceException.class)
     public List<Truck> findAllTrucks() throws ServiceException {
         try {
             return truckDao.findAll();
@@ -123,7 +121,7 @@ public class TruckServiceImpl implements TruckService{
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor=ServiceException.class)
     public List<Truck> findAllTrucksByOffset(int offset, int limit) throws ServiceException {
         try {
             return truckDao.findAllByOffset(offset,limit);
@@ -139,7 +137,7 @@ public class TruckServiceImpl implements TruckService{
      * @throws ServiceException
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor=ServiceException.class)
     public List<Truck> findAllAvailableTrucksByMinCapacity(int capacity) throws ServiceException {
         try {
             return truckDao.findAllFreeByStateAndGreaterThanCapacity(true,capacity);

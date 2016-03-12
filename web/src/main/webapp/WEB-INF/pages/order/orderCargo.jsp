@@ -13,7 +13,6 @@
         });
     });
 </script>
-<form id="orderAndCargoForm" method="post">
 <div class="row z-depth-2 warning white">
     <div class="row">
         <div class="input-field col s12">
@@ -57,4 +56,3 @@
     <a class="btn-floating btn-tiny waves-effect waves-light light-blue accent-999 add"><i
             class="material-icons">add</i></a>
 </div>
-</form>

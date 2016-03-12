@@ -3,6 +3,7 @@ package com.jschool.controllers;
 import com.jschool.controllers.exception.ControllerException;
 import com.jschool.controllers.exception.ControllerStatusCode;
 import com.jschool.entities.*;
+import com.jschool.model.JsonResponse;
 import com.jschool.services.api.DriverService;
 import com.jschool.services.api.OrderAndCargoService;
 import com.jschool.services.api.TruckService;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.Resource;
@@ -93,6 +95,8 @@ public class OrderController{
                             max = Integer.parseInt(weight);
                     }
                     List<Truck> trucks = truckService.findAllAvailableTrucksByMinCapacity(max);
+                    if (trucks.size() == 0)
+                        model.addAttribute("message", "Count of trucks not enough, try to change order");
                     model.addAttribute("trucks", trucks);
                     model.addAttribute("max", max);
                     return "order/orderTruck";
@@ -113,6 +117,8 @@ public class OrderController{
                     validator.validateTruckNumber(truckNumber);
                     Truck truck = truckService.getTruckByNumber(truckNumber);
                     Map<Driver, Integer> driverHoursList = driverService.findAllAvailableDrivers(Integer.parseInt(duration));
+                    if (truck.getShiftSize() > driverHoursList.size())
+                        model.addAttribute("message", "Count of drivers not enough, try to change order");
                     model.addAttribute("drivers", driverHoursList);
                     model.addAttribute("duration", duration);
                     model.addAttribute("shiftSize", truck.getShiftSize());
@@ -127,8 +133,8 @@ public class OrderController{
     }
 
     // /employee/order/submit POST
-    //@RequestMapping(value = "/employee/order/submit", method = RequestMethod.POST)
-    public void submitOrder(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    @RequestMapping(value = "/employee/order/submit", method = RequestMethod.POST)
+    public @ResponseBody JsonResponse submitOrder(HttpServletRequest req, Model model) throws IOException {
         try {
             //get params from form, validate them, fill entities and pass them to
             //service for full order add
@@ -180,12 +186,21 @@ public class OrderController{
             order.setDrivers(drivers);
 
             orderAndCargoService.addOrder(order, cargos, Integer.parseInt(duration));
-            resp.sendRedirect("/employee/orders");
+            JsonResponse jsonResponse = new JsonResponse();
+            jsonResponse.setStatus("success");
+            return jsonResponse;
         } catch (ServiceException e) {
             LOG.warn(e.getMessage());
+            JsonResponse jsonResponse = new JsonResponse();
+            jsonResponse.setStatus("error");
+            jsonResponse.setResult(errorProperties.getProperty(e.getStatusCode().name()));
+            return jsonResponse;
         }catch (ControllerException e){
             LOG.warn(e.getMessage());
+            JsonResponse jsonResponse = new JsonResponse();
+            jsonResponse.setStatus("error");
+            jsonResponse.setResult(errorProperties.getProperty(e.getStatusCode().name()));
+            return jsonResponse;
         }
     }
-
 }

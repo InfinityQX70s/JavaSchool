@@ -1,7 +1,5 @@
 package com.jschool.services.impl;
 
-import com.jschool.CustomTransaction;
-import com.jschool.TransactionManager;
 import com.jschool.dao.api.*;
 import com.jschool.entities.*;
 import com.jschool.services.api.OrderAndCargoService;
@@ -26,8 +24,6 @@ public class OrderManagementServiceImplTest {
     private DriverDao driverDaoMoc;
     private CargoDao cargoDaoMoc;
     private CargoStatusLogDao cargoStatusLogDao;
-    private TransactionManager transactionManagerMoc;
-    private CustomTransaction customTransactionMoc;
     private OrderManagementService orderManagementService;
 
     private Cargo getCargoFroTest(){
@@ -85,9 +81,6 @@ public class OrderManagementServiceImplTest {
         driverDaoMoc = Mockito.mock(DriverDao.class);
         cargoDaoMoc = Mockito.mock(CargoDao.class);
         cargoStatusLogDao = Mockito.mock(CargoStatusLogDao.class);
-        transactionManagerMoc = Mockito.mock(TransactionManager.class);
-        customTransactionMoc = Mockito.mock(CustomTransaction.class);
-        Mockito.when(transactionManagerMoc.getTransaction()).thenReturn(customTransactionMoc);
         orderManagementService = new OrderManagementServiceImpl(ordersDaoMoc,driverDaoMoc,cargoDaoMoc,
                 cargoStatusLogDao);
 

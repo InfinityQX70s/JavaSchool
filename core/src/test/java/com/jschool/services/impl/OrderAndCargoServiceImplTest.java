@@ -1,7 +1,5 @@
 package com.jschool.services.impl;
 
-import com.jschool.CustomTransaction;
-import com.jschool.TransactionManager;
 import com.jschool.dao.api.*;
 import com.jschool.dao.api.exception.DaoException;
 import com.jschool.entities.*;
@@ -30,9 +28,7 @@ public class OrderAndCargoServiceImplTest {
     private RoutePointDao routePointDaoMoc;
     private CityDao cityDaoMoc;
     private TruckDao truckDao;
-    private TransactionManager transactionManagerMoc;
     private DriverStatisticDao driverStatisticDao;
-    private CustomTransaction customTransactionMoc;
     private OrderAndCargoService orderAndCargoService;
 
 
@@ -45,9 +41,6 @@ public class OrderAndCargoServiceImplTest {
         cityDaoMoc = Mockito.mock(CityDao.class);
         truckDao = Mockito.mock(TruckDao.class);
         driverStatisticDao = Mockito.mock(DriverStatisticDao.class);
-        transactionManagerMoc = Mockito.mock(TransactionManager.class);
-        customTransactionMoc = Mockito.mock(CustomTransaction.class);
-        Mockito.when(transactionManagerMoc.getTransaction()).thenReturn(customTransactionMoc);
         orderAndCargoService = new OrderAndCargoServiceImpl(ordersDaoMoc,driverDaoMoc,cargoDaoMoc,
                 routePointDaoMoc,cityDaoMoc,truckDao,driverStatisticDao);
 

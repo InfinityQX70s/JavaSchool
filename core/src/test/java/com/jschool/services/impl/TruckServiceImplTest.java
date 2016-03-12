@@ -1,7 +1,5 @@
 package com.jschool.services.impl;
 
-import com.jschool.CustomTransaction;
-import com.jschool.TransactionManager;
 import com.jschool.dao.api.TruckDao;
 import com.jschool.entities.Order;
 import com.jschool.entities.Truck;
@@ -23,17 +21,12 @@ import static org.junit.Assert.*;
 public class TruckServiceImplTest {
 
     private TruckDao truckDaoMoc;
-    private TransactionManager transactionManagerMoc;
-    private CustomTransaction customTransactionMoc;
     private TruckService truckService;
 
     @Before
     public void setUp() throws Exception {
         truckDaoMoc = Mockito.mock(TruckDao.class);
-        transactionManagerMoc = Mockito.mock(TransactionManager.class);
-        customTransactionMoc = Mockito.mock(CustomTransaction.class);
         truckService = new TruckServiceImpl(truckDaoMoc);
-        Mockito.when(transactionManagerMoc.getTransaction()).thenReturn(customTransactionMoc);
     }
 
     private Truck getTruckForTest(){

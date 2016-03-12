@@ -1,7 +1,5 @@
 package com.jschool.services.impl;
 
-import com.jschool.CustomTransaction;
-import com.jschool.TransactionManager;
 import com.jschool.dao.api.*;
 import com.jschool.dao.api.exception.DaoException;
 import com.jschool.entities.*;
@@ -57,7 +55,7 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
      * ORDER_ALREADY_EXIST - order with such identifier exist in db
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor=ServiceException.class)
     public void addOrder(Order order, List<Cargo> cargos, int duration) throws ServiceException {
         try {
             Order element = ordersDao.findUniqueByNumber(order.getNumber());
@@ -183,7 +181,7 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
      * @throws ServiceException statuses ORDER_NOT_FOUND,ORDER_DID_NOT_DONE
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor=ServiceException.class)
     public void updateOrder(Order order) throws ServiceException {
         try {
             Order element = ordersDao.findUniqueByNumber(order.getNumber());
@@ -206,7 +204,7 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
      * @throws ServiceException statuses ORDER_NOT_FOUND,ORDER_DID_NOT_DONE
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor=ServiceException.class)
     public void deleteOrder(int number) throws ServiceException {
         try {
             Order element = ordersDao.findUniqueByNumber(number);
@@ -224,7 +222,7 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor=ServiceException.class)
     public List<Order> findAllOrders() throws ServiceException {
         try {
             return ordersDao.findAll();
@@ -235,7 +233,7 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor=ServiceException.class)
     public Order getOrderByNumber(int number) throws ServiceException {
         try {
             Order order = ordersDao.findUniqueByNumber(number);
@@ -254,7 +252,7 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
      * @throws ServiceException status ORDER_NOT_FOUND
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor=ServiceException.class)
     public List<Cargo> findAllCargosByOrderNumber(int number) throws ServiceException {
         try {
             Order order = ordersDao.findUniqueByNumber(number);
@@ -275,7 +273,7 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor=ServiceException.class)
     public Truck getAssignedTruckByOrderNumber(int orderNumber) throws ServiceException {
         try {
             Order order = ordersDao.findUniqueByNumber(orderNumber);
@@ -294,7 +292,7 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor=ServiceException.class)
     public List<Driver> getAllAssignedDriversByOrderNumber(int orderNumber) throws ServiceException {
         try {
             Order order = ordersDao.findUniqueByNumber(orderNumber);

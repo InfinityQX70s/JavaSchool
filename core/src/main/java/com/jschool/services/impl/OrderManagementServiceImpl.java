@@ -1,7 +1,5 @@
 package com.jschool.services.impl;
 
-import com.jschool.CustomTransaction;
-import com.jschool.TransactionManager;
 import com.jschool.dao.api.*;
 import com.jschool.dao.api.exception.DaoException;
 import com.jschool.entities.*;
@@ -44,7 +42,7 @@ public class OrderManagementServiceImpl implements OrderManagementService {
      * @throws ServiceException statuse code CARGO_NOT_FOUND
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor=ServiceException.class)
     public void changeCargoStatusByNumber(int cargoNumber, CargoStatus cargoStatus) throws ServiceException {
         try {
             //check that cargo is exist
