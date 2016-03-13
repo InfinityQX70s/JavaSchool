@@ -10,6 +10,8 @@ logiweb.log~
 logiweb.iml
 /core/target
 /web/target
+/rs/target
 /core/core.iml
 /web/web.iml
+/rs/rs.iml
 Text.*

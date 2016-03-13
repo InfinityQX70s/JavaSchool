@@ -16,6 +16,7 @@
     <context:component-scan base-package="com.jschool.dao" />
     <context:component-scan base-package="com.jschool.entities" />
     <context:component-scan base-package="com.jschool.services" />
+    <context:component-scan base-package="com.jschool.rest" />
 
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean">
         <property name="persistenceUnitName" value="Logiweb"/>

@@ -63,10 +63,12 @@ public class OrderManagementServiceImpl implements OrderManagementService {
                     for (RoutePoint routePoint : routePoints) {
                         if (routePoint.getPickup() != null) {
                             Cargo element = routePoint.getPickup();
-                            List<CargoStatusLog> cargoStatusLogs = element.getStatusLogs();
-                            //check last status for all cargoes in order
-                            if (cargoStatusLogs.get(cargoStatusLogs.size() - 1).getStatus() != CargoStatus.delivered)
-                                isAllDelivered = false;
+                            if (element.getNumber() != cargo.getNumber()) {
+                                List<CargoStatusLog> cargoStatusLogs = element.getStatusLogs();
+                                //check last status for all cargoes in order
+                                if (cargoStatusLogs.get(cargoStatusLogs.size() - 1).getStatus() != CargoStatus.delivered)
+                                    isAllDelivered = false;
+                            }
                         }
                     }
                     if (isAllDelivered) {

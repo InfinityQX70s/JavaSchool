@@ -8,7 +8,6 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -19,13 +18,13 @@ import java.util.List;
  * Created by infinity on 10.03.16.
  */
 @Controller
-public class ApiFanctions {
+public class ApiFunctions {
 
-    private static final Logger LOG = Logger.getLogger(ApiFanctions.class);
+    private static final Logger LOG = Logger.getLogger(ApiFunctions.class);
     private ApiService apiService;
 
     @Autowired
-    public ApiFanctions(ApiService apiService) {
+    public ApiFunctions(ApiService apiService) {
         this.apiService = apiService;
     }
 

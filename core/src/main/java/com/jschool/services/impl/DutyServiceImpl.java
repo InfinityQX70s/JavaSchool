@@ -44,6 +44,7 @@ public class DutyServiceImpl implements DutyService {
      * @throws ServiceException
      */
     @Override
+    @Transactional(rollbackFor=ServiceException.class)
     public void loginDriverByNumber(int number, DriverStatus dutyStatus) throws ServiceException {
         setDriverStatus(number,dutyStatus);
     }
@@ -54,6 +55,7 @@ public class DutyServiceImpl implements DutyService {
      * @throws ServiceException
      */
     @Override
+    @Transactional(rollbackFor=ServiceException.class)
     public void changeDriverDutyStatusByNumber(int number, DriverStatus dutyStatus) throws ServiceException {
         setDriverStatus(number,dutyStatus);
     }
@@ -63,6 +65,7 @@ public class DutyServiceImpl implements DutyService {
      * @throws ServiceException
      */
     @Override
+    @Transactional(rollbackFor=ServiceException.class)
     public void logoutDriverByNumber(int number) throws ServiceException {
         setDriverStatus(number, DriverStatus.rest);
     }
@@ -72,31 +75,39 @@ public class DutyServiceImpl implements DutyService {
      * @param dutyStatus driver's current status
      * @throws ServiceException with status code DRIVER_NOT_FOUND if driver not exist in db
      */
-    @Transactional(rollbackFor=ServiceException.class)
     private void setDriverStatus(int number, DriverStatus dutyStatus) throws ServiceException {
         try {
             Driver driver = driverDao.findUniqueByNumber(number);
             if (driver != null){
-                // find last status of driver and check if it is same as current then do nothing
-                DriverStatusLog statusLog = driverStatusLogDao.findLastStatus(driver);
-                if (statusLog.getStatus() != dutyStatus){
-                    //check if last status is "driving" then set new status and count hours of worked and
-                    // insert this information in table driver statistic with current date and hours worked
-                    if (statusLog.getStatus() == DriverStatus.driving){
-                        long diff = new Date().getTime() - statusLog.getTimestamp().getTime();
-                        int diffHours = (int) (diff / (60 * 60 * 1000));
-                        DriverStatistic driverStatistic = new DriverStatistic();
-                        driverStatistic.setTimestamp(new Date());
-                        driverStatistic.setHoursWorked(diffHours);
-                        driverStatistic.setDriver(driver);
-                        driverStatisticDao.create(driverStatistic);
-                    }else {                                        //insert status in db for current driver
-                        DriverStatusLog driverStatusLog = new DriverStatusLog();
-                        driverStatusLog.setStatus(dutyStatus);
-                        driverStatusLog.setTimestamp(new Date());
-                        driverStatusLog.setDriver(driver);
-                        driverStatusLogDao.create(driverStatusLog);
+                if (driver.getOrder() != null) {
+                    // find last status of driver and check if it is same as current then do nothing
+                    DriverStatusLog statusLog = driverStatusLogDao.findLastStatus(driver);
+                    if (statusLog.getStatus() != dutyStatus) {
+                        //check if last status is "driving" then set new status and count hours of worked and
+                        // insert this information in table driver statistic with current date and hours worked
+                        if (statusLog.getStatus() == DriverStatus.driving) {
+                            long diff = new Date().getTime() - statusLog.getTimestamp().getTime();
+                            int diffHours = (int) (diff / (60 * 60 * 1000));
+                            DriverStatistic driverStatistic = new DriverStatistic();
+                            driverStatistic.setTimestamp(new Date());
+                            driverStatistic.setHoursWorked(diffHours);
+                            driverStatistic.setDriver(driver);
+                            driverStatisticDao.create(driverStatistic);
+                            DriverStatusLog driverStatusLog = new DriverStatusLog();
+                            driverStatusLog.setStatus(dutyStatus);
+                            driverStatusLog.setTimestamp(new Date());
+                            driverStatusLog.setDriver(driver);
+                            driverStatusLogDao.create(driverStatusLog);
+                        } else {                                        //insert status in db for current driver
+                            DriverStatusLog driverStatusLog = new DriverStatusLog();
+                            driverStatusLog.setStatus(dutyStatus);
+                            driverStatusLog.setTimestamp(new Date());
+                            driverStatusLog.setDriver(driver);
+                            driverStatusLogDao.create(driverStatusLog);
+                        }
                     }
+                }else {
+                    throw new ServiceException("Driver don't assign at order", ServiceStatusCode.DRIVER_NOT_ASSIGNED);
                 }
             }else {
                 throw new ServiceException("Driver not found", ServiceStatusCode.DRIVER_NOT_FOUND);

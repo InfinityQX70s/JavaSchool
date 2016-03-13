@@ -14,7 +14,7 @@ public class RoutePoint {
     private int id;
     @Column(name = "point", nullable = false)
     private int point;
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="orders_id", nullable = false)
     private Order order;
     @ManyToOne(fetch=FetchType.EAGER)
