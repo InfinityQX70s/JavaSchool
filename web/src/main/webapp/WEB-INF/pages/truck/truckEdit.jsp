@@ -42,7 +42,7 @@
         </div>
         <div class="row">
             <c:if test="${truck.repairState}">
-            <div class="input-field col s12">
+            <div class="input-field col s6">
                 <spring:bind path="truck.repairState">
                     <form:select path="truck.repairState">
                         <form:option value="true" label="OK"/>
@@ -54,7 +54,7 @@
             </div>
             </c:if>
             <c:if test="${not truck.repairState}">
-            <div class="input-field col s12">
+            <div class="input-field col s6">
                 <spring:bind path="truck.repairState">
                     <form:select path="truck.repairState">
                         <form:option value="false" label="Broken"/>
@@ -65,6 +65,13 @@
                 </spring:bind>
             </div>
             </c:if>
+            <div class="input-field col s6">
+                <spring:bind path="truck.city.name">
+                    <form:input path="truck.city.name" class="validate city" id="city" value="${truck.city.name}"/>
+                    <label for="city">City</label>
+                    <form:errors path="truck.city.name" cssClass="blockquote"/>
+                </spring:bind>
+            </div>
         </div>
         <div class="row right-align">
             <button class="btn waves-effect waves-light light-blue accent-999 light-blue-text text-accent-999" type="submit" name="action">Submit

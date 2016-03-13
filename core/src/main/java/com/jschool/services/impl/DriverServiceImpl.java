@@ -1,5 +1,6 @@
 package com.jschool.services.impl;
 
+import com.jschool.dao.api.CityDao;
 import com.jschool.dao.api.DriverDao;
 import com.jschool.dao.api.DriverStatisticDao;
 import com.jschool.dao.api.UserDao;
@@ -25,15 +26,17 @@ public class DriverServiceImpl implements DriverService{
     private static final Logger LOG = Logger.getLogger(DriverServiceImpl.class);
 
     private UserDao userDao;
+    private CityDao cityDao;
     private DriverDao driverDao;
     private DriverStatisticDao driverStatisticDao;
 
     @Autowired
     public DriverServiceImpl(UserDao userDao, DriverDao driverDao,
-                             DriverStatisticDao driverStatisticDao) {
+                             DriverStatisticDao driverStatisticDao, CityDao cityDao) {
         this.userDao = userDao;
         this.driverDao = driverDao;
         this.driverStatisticDao = driverStatisticDao;
+        this.cityDao = cityDao;
     }
 
     /**Create driver and user bended with him in DB and set driver status on
@@ -49,18 +52,23 @@ public class DriverServiceImpl implements DriverService{
             //check that we have no users or drivers with such identifier in DB
             if (userDao.findUniqueByEmail(driver.getUser().getEmail()) == null
                     && driverDao.findUniqueByNumber(driver.getNumber()) == null) {
-                User user = driver.getUser();
-                user.setPassword(DigestUtils.md5Hex(user.getPassword()));
-                userDao.create(user);
-                List<DriverStatusLog> driverStatusLogs = new ArrayList<>();
-                DriverStatusLog driverStatusLog = new DriverStatusLog();
-                driverStatusLog.setStatus(DriverStatus.rest);
-                driverStatusLog.setTimestamp(new Date());
-                driverStatusLog.setDriver(driver);
-                driverStatusLogs.add(driverStatusLog);
-                driver.setStatusLogs(driverStatusLogs);
-                driverDao.create(driver);
-                //driverStatusLogDao.create(driverStatusLog);
+                City city = cityDao.findUniqueByName(driver.getCity().getName());
+                if (city != null){
+                    User user = driver.getUser();
+                    user.setPassword(DigestUtils.md5Hex(user.getPassword()));
+                    userDao.create(user);
+                    List<DriverStatusLog> driverStatusLogs = new ArrayList<>();
+                    DriverStatusLog driverStatusLog = new DriverStatusLog();
+                    driverStatusLog.setStatus(DriverStatus.rest);
+                    driverStatusLog.setTimestamp(new Date());
+                    driverStatusLog.setDriver(driver);
+                    driverStatusLogs.add(driverStatusLog);
+                    driver.setStatusLogs(driverStatusLogs);
+                    driver.setCity(city);
+                    driverDao.create(driver);
+                }else {
+                    throw new ServiceException("City with such name not found", ServiceStatusCode.CITY_NOT_FOUND);
+                }
             }else {
                 throw new ServiceException("User or Driver with such identifier exist", ServiceStatusCode.USER_OR_DRIVER_ALREADY_EXIST);
             }
@@ -82,12 +90,18 @@ public class DriverServiceImpl implements DriverService{
             //check is driver in db
             Driver driverElement = driverDao.findUniqueByNumber(driver.getNumber());
             User user = userDao.findUniqueByEmail(driver.getUser().getEmail());
+            City city = cityDao.findUniqueByName(driver.getCity().getName());
             if (driverElement != null && driverElement.getOrder() == null && (user == null || driverElement.getUser().getEmail().equals(driver.getUser().getEmail()) )) {
-                driverElement.setFirstName(driver.getFirstName());
-                driverElement.setLastName(driver.getLastName());
-                driverElement.getUser().setEmail(driver.getUser().getEmail());
-                driverElement.getUser().setPassword(DigestUtils.md5Hex(driver.getUser().getEmail()));
-                driverDao.update(driverElement);
+                if (city != null){
+                    driverElement.setFirstName(driver.getFirstName());
+                    driverElement.setLastName(driver.getLastName());
+                    driverElement.getUser().setEmail(driver.getUser().getEmail());
+                    driverElement.getUser().setPassword(DigestUtils.md5Hex(driver.getUser().getEmail()));
+                    driverElement.setCity(city);
+                    driverDao.update(driverElement);
+                }else{
+                    throw new ServiceException("City with such name not found", ServiceStatusCode.CITY_NOT_FOUND);
+                }
             }
             else if (driverElement == null) {
                 throw new ServiceException("Driver not found", ServiceStatusCode.DRIVER_NOT_FOUND);

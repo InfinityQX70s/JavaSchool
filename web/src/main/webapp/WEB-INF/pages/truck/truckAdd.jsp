@@ -1,13 +1,6 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%--
-  Created by IntelliJ IDEA.
-  User: infinity
-  Date: 15.02.16
-  Time: 12:30
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <jsp:include page="../header.jsp">
     <jsp:param name="title" value="Trucks"/>
@@ -17,6 +10,13 @@
     <jsp:param name="orders" value=""/>
     <jsp:param name="trucks" value="active z-depth-2"/>
 </jsp:include>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('.city').autocomplete({
+            serviceUrl: '/api/cities'
+        });
+    });
+</script>
 <div class="row col s6 z-depth-2  offset-s4 white" style="margin-top:50px;">
     <c:if test="${not empty error}">
         <h5><blockquote>${error}</blockquote></h5>
@@ -48,7 +48,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="input-field col s12">
+            <div class="input-field col s6">
                 <spring:bind path="truck.repairState">
                     <form:select path="truck.repairState">
                         <form:option value="true" label="OK"/>
@@ -56,6 +56,13 @@
                     </form:select>
                     <label>Truck State</label>
                     <form:errors path="truck.repairState" cssClass="blockquote"/>
+                </spring:bind>
+            </div>
+            <div class="input-field col s6">
+                <spring:bind path="truck.city.name">
+                    <form:input path="truck.city.name" class="validate city" id="city"/>
+                    <label for="city">City</label>
+                    <form:errors path="truck.city.name" cssClass="blockquote"/>
                 </spring:bind>
             </div>
         </div>

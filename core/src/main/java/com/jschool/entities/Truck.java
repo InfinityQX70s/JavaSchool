@@ -30,6 +30,9 @@ public class Truck {
     private boolean repairState;
     @OneToOne(mappedBy="truck")
     private Order oreder;
+    @ManyToOne(fetch=FetchType.EAGER)
+    @JoinColumn(name="сity_id", nullable = false)
+    private City city;
 
     public int getId() {
         return id;
@@ -79,4 +82,11 @@ public class Truck {
         this.oreder = oreder;
     }
 
+    public City getCity() {
+        return city;
+    }
+
+    public void setCity(City city) {
+        this.city = city;
+    }
 }

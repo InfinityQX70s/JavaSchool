@@ -25,6 +25,7 @@ public class TruckFormValidator implements Validator {
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "number", "NotEmpty.truckForm.number");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "capacity", "NotEmpty.truckForm.capacity");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "shiftSize", "NotEmpty.truckForm.shiftSize");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "city.name", "NotEmpty.truckForm.city");
         if (!truck.getNumber().matches(TRUCK_PATTERN))
             errors.rejectValue("number", "Pattern.truckForm.number");
         if (truck.getCapacity() <= 0 || truck.getCapacity() > 70)

@@ -1,7 +1,9 @@
 package com.jschool.services.impl;
 
+import com.jschool.dao.api.CityDao;
 import com.jschool.dao.api.TruckDao;
 import com.jschool.dao.api.exception.DaoException;
+import com.jschool.entities.City;
 import com.jschool.entities.Truck;
 import com.jschool.services.api.TruckService;
 import com.jschool.services.api.exception.ServiceException;
@@ -22,10 +24,12 @@ public class TruckServiceImpl implements TruckService{
     private static final Logger LOG = Logger.getLogger(TruckServiceImpl.class);
 
     private TruckDao truckDao;
+    private CityDao cityDao;
 
     @Autowired
-    public TruckServiceImpl(TruckDao truckDao) {
+    public TruckServiceImpl(TruckDao truckDao, CityDao cityDao) {
         this.truckDao = truckDao;
+        this.cityDao = cityDao;
     }
 
     /**Add truck if it is not exist in db
@@ -37,9 +41,15 @@ public class TruckServiceImpl implements TruckService{
     public void addTruck(Truck truck) throws ServiceException {
         try {
             Truck element = truckDao.findUniqueByNumber(truck.getNumber());
-            if (element == null)
-                truckDao.create(truck);
-            else
+            if (element == null) {
+                City city = cityDao.findUniqueByName(truck.getCity().getName());
+                if (city != null) {
+                    truck.setCity(city);
+                    truckDao.create(truck);
+                } else {
+                    throw new ServiceException("City with such name not found", ServiceStatusCode.CITY_NOT_FOUND);
+                }
+            }else
                 throw new ServiceException("Truck with such identifier exist", ServiceStatusCode.TRUCK_ALREADY_EXIST);
         }catch (DaoException e) {
             LOG.warn(e.getMessage());
@@ -57,11 +67,17 @@ public class TruckServiceImpl implements TruckService{
         try {
             Truck element = truckDao.findUniqueByNumber(truck.getNumber());
             if (element != null && element.getOreder() == null) {
-                element.setNumber(truck.getNumber());
-                element.setCapacity(truck.getCapacity());
-                element.setShiftSize(truck.getShiftSize());
-                element.setRepairState(truck.isRepairState());
-                truckDao.update(element);
+                City city = cityDao.findUniqueByName(truck.getCity().getName());
+                if (city != null) {
+                    element.setNumber(truck.getNumber());
+                    element.setCapacity(truck.getCapacity());
+                    element.setShiftSize(truck.getShiftSize());
+                    element.setRepairState(truck.isRepairState());
+                    element.setCity(city);
+                    truckDao.update(element);
+                } else {
+                    throw new ServiceException("City with such name not found", ServiceStatusCode.CITY_NOT_FOUND);
+                }
             }
             if (element == null)
                 throw new ServiceException("Truck not found", ServiceStatusCode.TRUCK_NOT_FOUND);

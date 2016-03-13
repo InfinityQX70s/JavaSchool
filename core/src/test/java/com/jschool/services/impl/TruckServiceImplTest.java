@@ -1,5 +1,6 @@
 package com.jschool.services.impl;
 
+import com.jschool.dao.api.CityDao;
 import com.jschool.dao.api.TruckDao;
 import com.jschool.entities.Order;
 import com.jschool.entities.Truck;
@@ -21,12 +22,14 @@ import static org.junit.Assert.*;
 public class TruckServiceImplTest {
 
     private TruckDao truckDaoMoc;
+    private CityDao cityDao;
     private TruckService truckService;
 
     @Before
     public void setUp() throws Exception {
         truckDaoMoc = Mockito.mock(TruckDao.class);
-        truckService = new TruckServiceImpl(truckDaoMoc);
+        cityDao = Mockito.mock(CityDao.class);
+        truckService = new TruckServiceImpl(truckDaoMoc,cityDao);
     }
 
     private Truck getTruckForTest(){

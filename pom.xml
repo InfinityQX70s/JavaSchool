@@ -92,6 +92,11 @@
             <version>4.2.0.RELEASE</version>
         </dependency>
         <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+            <version>3.4.0</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
             <version>4.2.0.RELEASE</version>
@@ -166,29 +171,31 @@
                     <path>/</path>
                 </configuration>
             </plugin>
-            <!--<plugin>-->
-            <!--<groupId>org.liquibase</groupId>-->
-            <!--<artifactId>liquibase-maven-plugin</artifactId>-->
-            <!--<version>${liquibase-maven-plugin.version}</version>-->
-            <!--<configuration>-->
-            <!--<changeLogFile>db/liquibase/master.xml</changeLogFile>-->
-            <!--<driver>com.mysql.jdbc.Driver</driver>-->
-            <!--<url>jdbc:mysql://localhost:3306/logiweb</url>-->
-            <!--<username>logiweb</username>-->
-            <!--<password>secret</password>-->
-            <!--</configuration>-->
-            <!--<executions>-->
-            <!--<execution>-->
-            <!--<phase>process-resources</phase>-->
-            <!--<goals>-->
-            <!--<goal>update</goal>-->
-            <!--</goals>-->
-            <!--</execution>-->
-            <!--</executions>-->
-            <!--</plugin>-->
+            <plugin>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-maven-plugin</artifactId>
+                <version>3.4.0</version>
+                <configuration>
+                    <changeLogFile>/core/src/main/resources/liquibase/master.xml</changeLogFile>
+                    <driver>com.mysql.jdbc.Driver</driver>
+                    <url>jdbc:mysql://localhost:3306/logiweb</url>
+                    <username>logiweb</username>
+                    <password>secret</password>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>update</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
         <finalName>logiweb</finalName>
     </build>
+
+
     <profiles>
         <profile>
             <id>coverage-per-test</id>

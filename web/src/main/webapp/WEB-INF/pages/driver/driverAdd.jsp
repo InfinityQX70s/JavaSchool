@@ -10,6 +10,13 @@
     <jsp:param name="orders" value=""/>
     <jsp:param name="trucks" value=""/>
 </jsp:include>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('.city').autocomplete({
+            serviceUrl: '/api/cities'
+        });
+    });
+</script>
 <div class="row col s6 z-depth-2  offset-s4 white" style="margin-top:50px;">
     <c:if test="${not empty error}">
         <h5><blockquote>${error}</blockquote></h5>
@@ -41,11 +48,18 @@
             </div>
         </div>
         <div class="row">
-            <div class="input-field col s12">
+            <div class="input-field col s6">
                 <spring:bind path="driver.user.email">
                     <form:input path="driver.user.email" class="validate" id="email"/>
                     <label for="email">Email</label>
                     <form:errors path="driver.user.email" cssClass="blockquote"/>
+                </spring:bind>
+            </div>
+            <div class="input-field col s6">
+                <spring:bind path="driver.city.name">
+                    <form:input path="driver.city.name" class="validate city" id="city"/>
+                    <label for="city">City</label>
+                    <form:errors path="driver.city.name" cssClass="blockquote"/>
                 </spring:bind>
             </div>
         </div>

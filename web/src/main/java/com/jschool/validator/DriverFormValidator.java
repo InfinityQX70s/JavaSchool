@@ -28,6 +28,7 @@ public class DriverFormValidator implements Validator {
         User user  = driver.getUser();
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "firstName", "NotEmpty.driverForm.firstName");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "lastName", "NotEmpty.driverForm.lastName");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "city.name", "NotEmpty.driverForm.city");
         if(driver.getNumber() <= 0){
             errors.rejectValue("number", "NotEmpty.driverForm.number");
         }

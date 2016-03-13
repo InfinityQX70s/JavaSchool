@@ -1,0 +1,99 @@
+    CREATE TABLE Cargo
+		(
+		idCargo INT(11) PRIMARY KEY NOT NULL,
+		number INT(11) NOT NULL,
+		name VARCHAR(45) NOT NULL,
+		weight INT(11) NOT NULL,
+		pickup INT(11) NOT NULL,
+		unload INT(11) NOT NULL,
+		CONSTRAINT fk_Cargo_RoutePoint1 FOREIGN KEY (pickup) REFERENCES RoutePoint (idRoute),
+		CONSTRAINT fk_Cargo_RoutePoint2 FOREIGN KEY (unload) REFERENCES RoutePoint (idRoute)
+		);
+		CREATE INDEX fk_Cargo_RoutePoint1_idx ON Cargo (pickup);
+		CREATE INDEX fk_Cargo_RoutePoint2_idx ON Cargo (unload);
+		CREATE UNIQUE INDEX number_UNIQUE ON Cargo (number);
+		CREATE TABLE CargoStatusLog
+		(
+		idCargoStatusLog INT(11) PRIMARY KEY NOT NULL,
+		status ENUM('READY', 'DELIVERED', 'LOADED') NOT NULL,
+		timestamp DATETIME NOT NULL,
+		cargo_id INT(11) NOT NULL,
+		CONSTRAINT fk_CurrentCargoStatus_Cargo1 FOREIGN KEY (cargo_id) REFERENCES Cargo (idCargo)
+		);
+		CREATE INDEX fk_CurrentCargoStatus_Cargo1_idx ON CargoStatusLog (cargo_id);
+		CREATE TABLE City
+		(
+		idCity INT(11) PRIMARY KEY NOT NULL,
+		name VARCHAR(45) NOT NULL
+		);
+		CREATE UNIQUE INDEX name_UNIQUE ON City (name);
+		CREATE TABLE Driver
+		(
+		idDriver INT(11) PRIMARY KEY NOT NULL,
+		number INT(11) NOT NULL,
+		firstName VARCHAR(45) NOT NULL,
+		lastName VARCHAR(45) NOT NULL,
+		user_id INT(11) NOT NULL,
+		order_id INT(11),
+		CONSTRAINT fk_Driver_Order1 FOREIGN KEY (order_id) REFERENCES Orders (idOrders),
+		CONSTRAINT fk_Driver_User1 FOREIGN KEY (user_id) REFERENCES User (idUser)
+		);
+		CREATE INDEX fk_Driver_Order1_idx ON Driver (order_id);
+		CREATE INDEX fk_Driver_User1_idx ON Driver (user_id);
+		CREATE UNIQUE INDEX number_UNIQUE ON Driver (number);
+		CREATE TABLE DriverStatistic
+		(
+		idDriverStatistic INT(11) PRIMARY KEY NOT NULL,
+		timestamp DATE NOT NULL,
+		hoursWorked INT(11) NOT NULL,
+		driver_id INT(11) NOT NULL,
+		CONSTRAINT fk_DriverStatistic_Driver1 FOREIGN KEY (driver_id) REFERENCES Driver (idDriver)
+		);
+		CREATE INDEX fk_DriverStatistic_Driver1_idx ON DriverStatistic (driver_id);
+		CREATE TABLE DriverStatusLog
+		(
+		idDriverStatusLog INT(11) PRIMARY KEY NOT NULL,
+		status ENUM('REST', 'SHIFT', 'DRIVING') NOT NULL,
+		timestamp DATETIME NOT NULL,
+		driver_id INT(11) NOT NULL,
+		CONSTRAINT fk_CurrentDriverStatus_Driver1 FOREIGN KEY (driver_id) REFERENCES Driver (idDriver)
+		);
+		CREATE INDEX fk_CurrentDriverStatus_Driver1_idx ON DriverStatusLog (driver_id);
+		CREATE TABLE Orders
+		(
+		idOrders INT(11) PRIMARY KEY NOT NULL,
+		number INT(11) NOT NULL,
+		doneState TINYINT(1) NOT NULL,
+		truck_id INT(11),
+		CONSTRAINT fk_Order_Truck1 FOREIGN KEY (truck_id) REFERENCES Truck (idTruck)
+		);
+		CREATE INDEX fk_Order_Truck1_idx ON Orders (truck_id);
+		CREATE UNIQUE INDEX number_UNIQUE ON Orders (number);
+		CREATE TABLE RoutePoint
+		(
+		idRoute INT(11) PRIMARY KEY NOT NULL,
+		point INT(11) NOT NULL,
+		orders_id INT(11) NOT NULL,
+		city_id INT(11) NOT NULL,
+		CONSTRAINT fk_OrderDetails_City1 FOREIGN KEY (city_id) REFERENCES City (idCity),
+		CONSTRAINT fk_OrderDetails_Order1 FOREIGN KEY (orders_id) REFERENCES Orders (idOrders)
+		);
+		CREATE INDEX fk_OrderDetails_City1_idx ON RoutePoint (city_id);
+		CREATE INDEX fk_OrderDetails_Order1_idx ON RoutePoint (orders_id);
+		CREATE TABLE Truck
+		(
+		idTruck INT(11) PRIMARY KEY NOT NULL,
+		number VARCHAR(7) NOT NULL,
+		capacity INT(11) NOT NULL,
+		shiftSize INT(11) NOT NULL,
+		repairState TINYINT(1) NOT NULL
+		);
+		CREATE UNIQUE INDEX number_UNIQUE ON Truck (number);
+		CREATE TABLE User
+		(
+		idUser INT(11) PRIMARY KEY NOT NULL,
+		email VARCHAR(255) NOT NULL,
+		password VARCHAR(32) NOT NULL,
+		role TINYINT(1) NOT NULL
+		);
+		CREATE UNIQUE INDEX email_UNIQUE ON User (email);

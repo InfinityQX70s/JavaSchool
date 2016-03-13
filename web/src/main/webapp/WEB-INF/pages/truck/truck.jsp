@@ -22,6 +22,7 @@
         <th data-field="id">Number</th>
         <th data-field="capacity">Capacity</th>
         <th data-field="shift_size">Shift Size</th>
+        <th data-field="city">City</th>
         <th data-field="state">State</th>
         <th data-field="change"></th>
         <th data-field="delete"></th>
@@ -36,6 +37,8 @@
         <td><c:out value="${truck.capacity}"/>
         </td>
         <td><c:out value="${truck.shiftSize}"/>
+        </td>
+        <td><c:out value="${truck.city.name}"/>
         </td>
         <c:if test="${truck.repairState}">
             <td>OK</td>

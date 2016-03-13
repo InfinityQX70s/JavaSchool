@@ -25,6 +25,10 @@ public class City {
     private String name;
     @OneToMany(fetch=FetchType.LAZY, mappedBy = "city")
     private List<RoutePoint> routePoints;
+    @OneToMany(fetch=FetchType.LAZY, mappedBy = "city")
+    private List<Truck> trucks;
+    @OneToMany(fetch=FetchType.LAZY, mappedBy = "city")
+    private List<Driver> drivers;
 
     public int getId() {
         return id;
@@ -50,4 +54,19 @@ public class City {
         this.routePoints = routePoints;
     }
 
+    public List<Truck> getTrucks() {
+        return trucks;
+    }
+
+    public void setTrucks(List<Truck> trucks) {
+        this.trucks = trucks;
+    }
+
+    public List<Driver> getDrivers() {
+        return drivers;
+    }
+
+    public void setDrivers(List<Driver> drivers) {
+        this.drivers = drivers;
+    }
 }

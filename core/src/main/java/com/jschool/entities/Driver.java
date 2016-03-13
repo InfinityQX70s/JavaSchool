@@ -39,6 +39,9 @@ public class Driver {
     @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="order_id")
     private Order order;
+    @ManyToOne(fetch=FetchType.EAGER)
+    @JoinColumn(name="сity_id", nullable = false)
+    private City city;
 
     public int getId() {
         return id;
@@ -104,4 +107,11 @@ public class Driver {
         this.order = order;
     }
 
+    public City getCity() {
+        return city;
+    }
+
+    public void setCity(City city) {
+        this.city = city;
+    }
 }
