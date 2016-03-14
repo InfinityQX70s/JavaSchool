@@ -13,6 +13,6 @@ public interface DriverDao extends GenericDao<Driver> {
     Driver findUniqueByNumber(int number) throws DaoException;
     List<Driver> findAllByFirstNameAndLastName(String firstName, String lastName) throws DaoException;
     List<Driver> findAll() throws DaoException;
-    List<Driver> findAllFreeDrivers() throws DaoException;
+    List<Driver> findAllFreeDrivers(String city) throws DaoException;
     List<Driver> findAllByOffset(int offset, int limit) throws DaoException;
 }

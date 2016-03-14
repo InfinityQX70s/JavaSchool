@@ -154,9 +154,13 @@ public class TruckServiceImpl implements TruckService{
      */
     @Override
     @Transactional(rollbackFor=ServiceException.class)
-    public List<Truck> findAllAvailableTrucksByMinCapacity(int capacity) throws ServiceException {
+    public List<Truck> findAllAvailableTrucksByMinCapacity(int capacity, String city) throws ServiceException {
         try {
-            return truckDao.findAllFreeByStateAndGreaterThanCapacity(true,capacity);
+            City element = cityDao.findUniqueByName(city);
+            if (element != null)
+                return truckDao.findAllFreeByStateAndGreaterThanCapacity(true,capacity,element.getName());
+            else
+                throw new ServiceException("City with such name not found", ServiceStatusCode.CITY_NOT_FOUND);
         }catch (DaoException e) {
             LOG.warn(e.getMessage());
             throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);

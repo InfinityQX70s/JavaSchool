@@ -193,6 +193,9 @@ function SmartWizard(target, options) {
                 });
                 break;
             case 3:
+                $.each($(pickup).serializeArray(), function (key, value) {
+                    out = out + "&" + value.name + "=" + value.value;
+                });
                 $.each($(duration).serializeArray(), function (key, value) {
                     out = out + "&" + value.name + "=" + value.value;
                 });

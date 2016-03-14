@@ -12,6 +12,7 @@
             <th data-field="id">Check</th>
             <th data-field="capacity">Capacity</th>
             <th data-field="shiftSize">Shift size</th>
+            <th data-field="city">City</th>
         </tr>
         </thead>
         <tbody>
@@ -24,6 +25,8 @@
                 <td><c:out value="${truck.capacity}"/>
                 </td>
                 <td><c:out value="${truck.shiftSize}"/>
+                </td>
+                <td><c:out value="${truck.city.name}"/>
                 </td>
             </tr>
         </c:forEach>

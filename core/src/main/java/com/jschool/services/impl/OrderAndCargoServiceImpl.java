@@ -36,7 +36,7 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
     public OrderAndCargoServiceImpl(OrdersDao ordersDao,
                                     DriverDao driverDao, CargoDao cargoDao,
                                     RoutePointDao routePointDao, CityDao cityDao,
-                                    TruckDao truckDao,DriverStatisticDao driverStatisticDao) {
+                                    TruckDao truckDao, DriverStatisticDao driverStatisticDao) {
         this.ordersDao = ordersDao;
         this.driverDao = driverDao;
         this.cargoDao = cargoDao;
@@ -46,16 +46,18 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
         this.driverStatisticDao = driverStatisticDao;
     }
 
-    /**Add full order in db, large transaction with adding cargos, crago status,
+    /**
+     * Add full order in db, large transaction with adding cargos, crago status,
      * route pints, assign driver and truck
-     * @param order entity with filled fields
-     * @param cargos list of cargos for order
+     *
+     * @param order    entity with filled fields
+     * @param cargos   list of cargos for order
      * @param duration of order
      * @throws ServiceException with status code TRUCK_ASSIGNED_ORDER - Truck has an order,
-     * ORDER_ALREADY_EXIST - order with such identifier exist in db
+     *                          ORDER_ALREADY_EXIST - order with such identifier exist in db
      */
     @Override
-    @Transactional(rollbackFor=ServiceException.class)
+    @Transactional(rollbackFor = ServiceException.class)
     public void addOrder(Order order, List<Cargo> cargos, int duration) throws ServiceException {
         try {
             Order element = ordersDao.findUniqueByNumber(order.getNumber());
@@ -63,41 +65,47 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
                 // find truck and check that it did not has order
                 Truck truck = truckDao.findUniqueByNumber(order.getTruck().getNumber());
                 if (truck.getOreder() == null) {
-                    // get list of drivers we want to assign
-                    List<Driver> drivers = order.getDrivers();
-                    order.setRoutePoints(null);
-                    order.setDrivers(null);
-                    order.setTruck(truck);
-                    ordersDao.create(order);
-                    //method assign drivers to order
-                    assignDrivers(order, drivers,duration);
-                    // method add cargos to order and check capacity
-                    assignCargos(order, cargos, truck.getCapacity());
-                }else
+                    if (truck.getCity().getName().equals(cargos.get(0).getPickup().getCity().getName())) {
+                        // get list of drivers we want to assign
+                        List<Driver> drivers = order.getDrivers();
+                        order.setRoutePoints(null);
+                        order.setDrivers(null);
+                        order.setTruck(truck);
+                        ordersDao.create(order);
+                        //method assign drivers to order
+                        assignDrivers(order, drivers, duration);
+                        // method add cargos to order and check capacity
+                        assignCargos(order, cargos, truck.getCapacity());
+                    } else {
+                        throw new ServiceException("Truck not in same city", ServiceStatusCode.TRUCK_NOT_IN_SAME_CITY);
+                    }
+                } else
                     throw new ServiceException("Truck has an order", ServiceStatusCode.TRUCK_ASSIGNED_ORDER);
-            }else
+            } else
                 throw new ServiceException("Order with such identifier exist", ServiceStatusCode.ORDER_ALREADY_EXIST);
-        }catch (DaoException e){
+        } catch (DaoException e) {
             LOG.warn(e.getMessage());
             throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
         }
     }
 
-    /**Add cargoes to order and check that all cargoes enter in current truck
+    /**
+     * Add cargoes to order and check that all cargoes enter in current truck
+     *
      * @param order
-     * @param cargos list of cargoes and route points for order
+     * @param cargos   list of cargoes and route points for order
      * @param capacity of truck
      * @throws DaoException
      * @throws ServiceException status CITY_NOT_FOUND, CARGO_ALREADY_EXIST, TRUCK_WEIGHT_NOT_ENOUGH
      */
     private void assignCargos(Order order, List<Cargo> cargos, int capacity) throws DaoException, ServiceException {
         int maxWeight = 0;
-        for (Cargo cargo : cargos){
+        for (Cargo cargo : cargos) {
             //check cargo has unique number
             Cargo check = cargoDao.findUniqueByNumber(cargo.getNumber());
             if (check == null) {
                 //count max weight of cargoes
-                if (cargo.getWeight()>maxWeight)
+                if (cargo.getWeight() > maxWeight)
                     maxWeight = cargo.getWeight();
 
                 //create  pick up route point for current cargo
@@ -132,7 +140,7 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
 
                 cargo.setStatusLogs(cargoStatusLogs);
                 cargoDao.create(cargo);
-            }else {
+            } else {
                 throw new ServiceException("Cargo with such identifier exist", ServiceStatusCode.CARGO_ALREADY_EXIST);
             }
         }
@@ -142,9 +150,11 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
 
     }
 
-    /** Assign drivers to order and check hours of work for every driver
+    /**
+     * Assign drivers to order and check hours of work for every driver
+     *
      * @param order
-     * @param drivers list of drivers
+     * @param drivers  list of drivers
      * @param duration of order
      * @throws ServiceException status codes DRIVER_ASSIGNED_ORDER, DRIVER_HOURS_LIMIT, DRIVER_AND_SHIFT_SIZE_NOT_EQUAL
      * @throws DaoException
@@ -152,36 +162,42 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
     private void assignDrivers(Order order, List<Driver> drivers, int duration) throws ServiceException, DaoException {
         Truck truck = order.getTruck();
         //check that driver's count equals truck shift size
-        if (truck.getShiftSize()==drivers.size()){
+        if (truck.getShiftSize() == drivers.size()) {
             for (Driver driver : drivers) {
                 //check driver do not has order
                 if (driverDao.findUniqueByNumber(driver.getNumber()).getOrder() == null) {
-                    // count hours of work for current driver per month
-                    List<DriverStatistic> driverStatistics = driverStatisticDao.findAllByOneMonth(driver);
-                    int sum = 0;
-                    for (DriverStatistic driverStatistic : driverStatistics)
-                        sum += driverStatistic.getHoursWorked();
-                    if (sum + duration <= 176) {
-                        driver.setOrder(order);
-                        // assign driver to order
-                        driverDao.update(driver);
-                    }else
-                        throw new ServiceException("Driver hours limit is exhausted", ServiceStatusCode.DRIVER_HOURS_LIMIT);
-                }else {
+                    if (truck.getCity().getName().equals(driver.getCity().getName())) {
+                        // count hours of work for current driver per month
+                        List<DriverStatistic> driverStatistics = driverStatisticDao.findAllByOneMonth(driver);
+                        int sum = 0;
+                        for (DriverStatistic driverStatistic : driverStatistics)
+                            sum += driverStatistic.getHoursWorked();
+                        if (sum + duration <= 176) {
+                            driver.setOrder(order);
+                            // assign driver to order
+                            driverDao.update(driver);
+                        } else {
+                            throw new ServiceException("Driver hours limit is exhausted", ServiceStatusCode.DRIVER_HOURS_LIMIT);
+                        }
+                    } else
+                        throw new ServiceException("Driver not in same city", ServiceStatusCode.DRIVER_NOT_IN_SAME_CITY);
+                } else {
                     throw new ServiceException("Driver has an order", ServiceStatusCode.DRIVER_ASSIGNED_ORDER);
                 }
             }
-        }else {
+        } else {
             throw new ServiceException("Shift size and drivers count do not equals", ServiceStatusCode.DRIVER_AND_SHIFT_SIZE_NOT_EQUAL);
         }
     }
 
-    /** Update order if it is exist and done. Do not use right now
+    /**
+     * Update order if it is exist and done. Do not use right now
+     *
      * @param order
      * @throws ServiceException statuses ORDER_NOT_FOUND,ORDER_DID_NOT_DONE
      */
     @Override
-    @Transactional(rollbackFor=ServiceException.class)
+    @Transactional(rollbackFor = ServiceException.class)
     public void updateOrder(Order order) throws ServiceException {
         try {
             Order element = ordersDao.findUniqueByNumber(order.getNumber());
@@ -193,18 +209,20 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
                 throw new ServiceException("Order not found", ServiceStatusCode.ORDER_NOT_FOUND);
             if (!element.isDoneState())
                 throw new ServiceException("Order did not done", ServiceStatusCode.ORDER_DID_NOT_DONE);
-        }catch (DaoException e){
+        } catch (DaoException e) {
             LOG.warn(e.getMessage());
             throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
         }
     }
 
-    /** Delete order if it is exist and done. Do not use right now
+    /**
+     * Delete order if it is exist and done. Do not use right now
+     *
      * @param number of order
      * @throws ServiceException statuses ORDER_NOT_FOUND,ORDER_DID_NOT_DONE
      */
     @Override
-    @Transactional(rollbackFor=ServiceException.class)
+    @Transactional(rollbackFor = ServiceException.class)
     public void deleteOrder(int number) throws ServiceException {
         try {
             Order element = ordersDao.findUniqueByNumber(number);
@@ -215,44 +233,46 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
                 throw new ServiceException("Order not found", ServiceStatusCode.ORDER_NOT_FOUND);
             if (!element.isDoneState())
                 throw new ServiceException("Order did not done", ServiceStatusCode.ORDER_DID_NOT_DONE);
-        }catch (DaoException e){
+        } catch (DaoException e) {
             LOG.warn(e.getMessage());
             throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
         }
     }
 
     @Override
-    @Transactional(rollbackFor=ServiceException.class)
+    @Transactional(rollbackFor = ServiceException.class)
     public List<Order> findAllOrders() throws ServiceException {
         try {
             return ordersDao.findAll();
-        }catch (DaoException e){
+        } catch (DaoException e) {
             LOG.warn(e.getMessage());
             throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
         }
     }
 
     @Override
-    @Transactional(rollbackFor=ServiceException.class)
+    @Transactional(rollbackFor = ServiceException.class)
     public Order getOrderByNumber(int number) throws ServiceException {
         try {
             Order order = ordersDao.findUniqueByNumber(number);
             if (order == null)
                 throw new ServiceException("Order not found", ServiceStatusCode.ORDER_NOT_FOUND);
             return order;
-        }catch (DaoException e){
+        } catch (DaoException e) {
             LOG.warn(e.getMessage());
             throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
         }
     }
 
-    /**Return list of cargoes assign with order
+    /**
+     * Return list of cargoes assign with order
+     *
      * @param number of order
      * @return list of cargoes assign with order
      * @throws ServiceException status ORDER_NOT_FOUND
      */
     @Override
-    @Transactional(rollbackFor=ServiceException.class)
+    @Transactional(rollbackFor = ServiceException.class)
     public List<Cargo> findAllCargosByOrderNumber(int number) throws ServiceException {
         try {
             Order order = ordersDao.findUniqueByNumber(number);
@@ -264,16 +284,16 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
                         cargos.add(routePoint.getPickup());
                 }
                 return cargos;
-            }else
+            } else
                 throw new ServiceException("Order not found", ServiceStatusCode.ORDER_NOT_FOUND);
-        }catch (DaoException e) {
+        } catch (DaoException e) {
             LOG.warn(e.getMessage());
             throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
         }
     }
 
     @Override
-    @Transactional(rollbackFor=ServiceException.class)
+    @Transactional(rollbackFor = ServiceException.class)
     public Truck getAssignedTruckByOrderNumber(int orderNumber) throws ServiceException {
         try {
             Order order = ordersDao.findUniqueByNumber(orderNumber);
@@ -283,16 +303,16 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
                     return truck;
                 else
                     throw new ServiceException("Truck do not assign", ServiceStatusCode.TRUCK_DID_NOT_ASSIGNED_ORDER);
-            }else
+            } else
                 throw new ServiceException("Order not found", ServiceStatusCode.ORDER_NOT_FOUND);
-        }catch (DaoException e) {
+        } catch (DaoException e) {
             LOG.warn(e.getMessage());
             throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
         }
     }
 
     @Override
-    @Transactional(rollbackFor=ServiceException.class)
+    @Transactional(rollbackFor = ServiceException.class)
     public List<Driver> getAllAssignedDriversByOrderNumber(int orderNumber) throws ServiceException {
         try {
             Order order = ordersDao.findUniqueByNumber(orderNumber);
@@ -300,7 +320,7 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
                 return order.getDrivers();
             else
                 throw new ServiceException("Order not found", ServiceStatusCode.ORDER_NOT_FOUND);
-        }catch (DaoException e) {
+        } catch (DaoException e) {
             LOG.warn(e.getMessage());
             throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
         }

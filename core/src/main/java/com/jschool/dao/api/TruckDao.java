@@ -11,7 +11,7 @@ import java.util.List;
 public interface TruckDao extends GenericDao<Truck> {
 
     Truck findUniqueByNumber(String number) throws DaoException;
-    List<Truck> findAllFreeByStateAndGreaterThanCapacity(boolean isRepair, int capacity) throws DaoException;
+    List<Truck> findAllFreeByStateAndGreaterThanCapacity(boolean isRepair, int capacity, String city) throws DaoException;
     List<Truck> findAll() throws DaoException;
     List<Truck> findAllByOffset(int offset, int limit) throws DaoException;
 }

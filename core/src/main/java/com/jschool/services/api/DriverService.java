@@ -16,7 +16,7 @@ public interface DriverService {
     void deleteDriver(int number) throws ServiceException;
     Driver getDriverByPersonalNumber(int number) throws ServiceException;
     List<Driver> findAllDrivers() throws ServiceException;
-    Map<Driver,Integer> findAllAvailableDrivers(int hoursWorked) throws ServiceException;
+    Map<Driver,Integer> findAllAvailableDrivers(int hoursWorked, String city) throws ServiceException;
     List<Driver> findAllDriversByOffset(int offset, int limit) throws ServiceException;
 
 }

@@ -94,7 +94,7 @@ public class OrderController{
                         if (Integer.parseInt(weight) > max)
                             max = Integer.parseInt(weight);
                     }
-                    List<Truck> trucks = truckService.findAllAvailableTrucksByMinCapacity(max);
+                    List<Truck> trucks = truckService.findAllAvailableTrucksByMinCapacity(max,pickup[0]);
                     if (trucks.size() == 0)
                         model.addAttribute("message", "Count of trucks not enough, try to change order");
                     model.addAttribute("trucks", trucks);
@@ -112,11 +112,12 @@ public class OrderController{
                     model.addAttribute("cities", cities);
                     return "order/orderMap";
                 case "4":
+                    String pickupDriver[] = req.getParameterValues("pickup");
                     String duration = req.getParameter("duration").split(" ")[0];
                     String truckNumber = req.getParameter("truckNumber");
                     validator.validateTruckNumber(truckNumber);
                     Truck truck = truckService.getTruckByNumber(truckNumber);
-                    Map<Driver, Integer> driverHoursList = driverService.findAllAvailableDrivers(Integer.parseInt(duration));
+                    Map<Driver, Integer> driverHoursList = driverService.findAllAvailableDrivers(Integer.parseInt(duration),pickupDriver[0]);
                     if (truck.getShiftSize() > driverHoursList.size())
                         model.addAttribute("message", "Count of drivers not enough, try to change order");
                     model.addAttribute("drivers", driverHoursList);
@@ -191,16 +192,17 @@ public class OrderController{
             return jsonResponse;
         } catch (ServiceException e) {
             LOG.warn(e.getMessage());
-            JsonResponse jsonResponse = new JsonResponse();
-            jsonResponse.setStatus("error");
-            jsonResponse.setResult(errorProperties.getProperty(e.getStatusCode().name()));
-            return jsonResponse;
+            return getErrorJson(errorProperties.getProperty(e.getStatusCode().name()));
         }catch (ControllerException e){
             LOG.warn(e.getMessage());
-            JsonResponse jsonResponse = new JsonResponse();
-            jsonResponse.setStatus("error");
-            jsonResponse.setResult(errorProperties.getProperty(e.getStatusCode().name()));
-            return jsonResponse;
+            return getErrorJson(errorProperties.getProperty(e.getStatusCode().name()));
         }
+    }
+
+    private JsonResponse getErrorJson(String message){
+        JsonResponse jsonResponse = new JsonResponse();
+        jsonResponse.setStatus("error");
+        jsonResponse.setResult(message);
+        return jsonResponse;
     }
 }

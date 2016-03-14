@@ -43,12 +43,13 @@ public class TruckDaoImpl extends GenericDaoImpl<Truck> implements TruckDao {
      * @throws DaoException
      */
     @Override
-    public List<Truck> findAllFreeByStateAndGreaterThanCapacity(boolean isRepair, int capacity) throws DaoException {
+    public List<Truck> findAllFreeByStateAndGreaterThanCapacity(boolean isRepair, int capacity, String city) throws DaoException {
         try {
             TypedQuery<Truck> query =
                     entityManager.createNamedQuery("Truck.findAllFreeByStateAndCapacity", Truck.class);
             query.setParameter("repairState", isRepair);
             query.setParameter("capacity", capacity);
+            query.setParameter("city", city);
             return query.getResultList();
         }catch (Exception e){
             LOG.error("Unexpected DB exception", e);

@@ -8,6 +8,7 @@ import com.jschool.services.api.TruckService;
 import com.jschool.services.api.exception.ServiceException;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -104,10 +105,11 @@ public class TruckServiceImplTest {
         Assert.assertEquals(trucks.size(),1);
     }
 
+
     @Test
     public void testFindAllAvailableTrucksByMinCapacity() throws Exception {
-        Mockito.when(truckDaoMoc.findAllFreeByStateAndGreaterThanCapacity(true,40)).thenReturn(Arrays.asList(getTruckForTest()));
-        List<Truck> trucks = truckService.findAllAvailableTrucksByMinCapacity(40);
+        Mockito.when(truckDaoMoc.findAllFreeByStateAndGreaterThanCapacity(true,40,"Орел")).thenReturn(Arrays.asList(getTruckForTest()));
+        List<Truck> trucks = truckService.findAllAvailableTrucksByMinCapacity(40,"Орел");
         Assert.assertEquals(trucks.size(),1);
     }
 }

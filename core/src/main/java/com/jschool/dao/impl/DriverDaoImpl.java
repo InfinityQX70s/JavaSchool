@@ -73,10 +73,11 @@ public class DriverDaoImpl extends GenericDaoImpl<Driver> implements DriverDao {
      * @throws DaoException
      */
     @Override
-    public List<Driver> findAllFreeDrivers() throws DaoException {
+    public List<Driver> findAllFreeDrivers(String city) throws DaoException {
         try {
             TypedQuery<Driver> query =
                     entityManager.createNamedQuery("Driver.findAllFreeDrivers", Driver.class);
+            query.setParameter("city", city);
             return query.getResultList();
         }catch (Exception e){
             LOG.error("Unexpected DB exception", e);

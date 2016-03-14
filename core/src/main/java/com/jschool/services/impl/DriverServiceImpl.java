@@ -195,23 +195,27 @@ public class DriverServiceImpl implements DriverService{
      */
     @Override
     @Transactional(rollbackFor=ServiceException.class)
-    public Map<Driver,Integer> findAllAvailableDrivers(int hoursWorked) throws ServiceException {
+    public Map<Driver,Integer> findAllAvailableDrivers(int hoursWorked, String city) throws ServiceException {
         try {
             //get all free drivers
-            List<Driver> drivers = driverDao.findAllFreeDrivers();
-            Map<Driver,Integer> driverHoursList = new HashMap<>();
-            for (Driver driver : drivers) {
-                //count hours of work per month for every free driver
-                List<DriverStatistic> driverStatistics = driverStatisticDao.findAllByOneMonth(driver);
-                int sum = 0;
-                for (DriverStatistic driverStatistic : driverStatistics)
-                    sum += driverStatistic.getHoursWorked();
-                if (sum + hoursWorked <= 176) {
-                    //if hours <= 176 put driver and count hours in map
-                    driverHoursList.put(driver,sum);
+            List<Driver> drivers = driverDao.findAllFreeDrivers(city);
+            City element = cityDao.findUniqueByName(city);
+            if (element != null) {
+                Map<Driver,Integer> driverHoursList = new HashMap<>();
+                for (Driver driver : drivers) {
+                    //count hours of work per month for every free driver
+                    List<DriverStatistic> driverStatistics = driverStatisticDao.findAllByOneMonth(driver);
+                    int sum = 0;
+                    for (DriverStatistic driverStatistic : driverStatistics)
+                        sum += driverStatistic.getHoursWorked();
+                    if (sum + hoursWorked <= 176) {
+                        //if hours <= 176 put driver and count hours in map
+                        driverHoursList.put(driver,sum);
+                    }
                 }
-            }
-            return driverHoursList;
+                return driverHoursList;
+            }else
+                throw new ServiceException("City with such name not found", ServiceStatusCode.CITY_NOT_FOUND);
         }catch (DaoException e) {
             LOG.warn(e.getMessage());
             throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);

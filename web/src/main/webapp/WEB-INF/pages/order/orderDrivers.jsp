@@ -21,6 +21,7 @@
             <th data-field="id">Check</th>
             <th data-field="firstName">First Name</th>
             <th data-field="lastName">Last Name</th>
+            <th data-field="city">City</th>
             <th data-field="hoursWorked">Hours Worked</th>
         </tr>
         </thead>
@@ -33,6 +34,8 @@
                 <td><c:out value="${driverMap.key.firstName}"/>
                 </td>
                 <td><c:out value="${driverMap.key.lastName}"/>
+                </td>
+                <td><c:out value="${driverMap.key.city.name}"/>
                 </td>
                 <td><c:out value="${driverMap.value}"/>
                 </td>

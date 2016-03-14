@@ -187,11 +187,11 @@ public class DriverServiceImplTest {
         driverStatistic1.setTimestamp(new Date());
         driverStatistics.add(driverStatistic1);
         Driver driver = getDriverForTest();
-        Mockito.when(driverDaoMoc.findAllFreeDrivers()).thenReturn(Arrays.asList(driver));
+        Mockito.when(driverDaoMoc.findAllFreeDrivers("Орел")).thenReturn(Arrays.asList(driver));
         Mockito.when(driverStatisticDaoMoc.findAllByOneMonth(driver)).thenReturn(driverStatistics);
-        Map<Driver,Integer> map = driverService.findAllAvailableDrivers(30);
+        Map<Driver,Integer> map = driverService.findAllAvailableDrivers(30,"Орел");
         Assert.assertEquals(map.get(driver).intValue(),70);
-        map = driverService.findAllAvailableDrivers(120);
+        map = driverService.findAllAvailableDrivers(120,"Орел");
         Assert.assertEquals(map.isEmpty(),true);
 
 
