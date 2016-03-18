@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by infinity on 13.02.16.
@@ -38,47 +39,55 @@ public class DutyServiceImpl implements DutyService {
         this.driverStatisticDao = driverStatisticDao;
     }
 
-    /** Login driver and change his status
-     * @param number  personal number of driver in db
+    /**
+     * Login driver and change his status
+     *
+     * @param number     personal number of driver in db
      * @param dutyStatus status of driver
      * @throws ServiceException
      */
     @Override
-    @Transactional(rollbackFor=ServiceException.class)
+    @Transactional(rollbackFor = ServiceException.class)
     public void loginDriverByNumber(int number, DriverStatus dutyStatus) throws ServiceException {
-        setDriverStatus(number,dutyStatus);
+        setDriverStatus(number, dutyStatus);
     }
 
-    /**Change driver status then he is on work
-     * @param number driver personal number
+    /**
+     * Change driver status then he is on work
+     *
+     * @param number     driver personal number
      * @param dutyStatus his current status
      * @throws ServiceException
      */
     @Override
-    @Transactional(rollbackFor=ServiceException.class)
+    @Transactional(rollbackFor = ServiceException.class)
     public void changeDriverDutyStatusByNumber(int number, DriverStatus dutyStatus) throws ServiceException {
-        setDriverStatus(number,dutyStatus);
+        setDriverStatus(number, dutyStatus);
     }
 
-    /**Logout driver and set his curretn status to rest
+    /**
+     * Logout driver and set his curretn status to rest
+     *
      * @param number personal number of driver
      * @throws ServiceException
      */
     @Override
-    @Transactional(rollbackFor=ServiceException.class)
+    @Transactional(rollbackFor = ServiceException.class)
     public void logoutDriverByNumber(int number) throws ServiceException {
         setDriverStatus(number, DriverStatus.rest);
     }
 
-    /** Util method set driver status
-     * @param number of driver
+    /**
+     * Util method set driver status
+     *
+     * @param number     of driver
      * @param dutyStatus driver's current status
      * @throws ServiceException with status code DRIVER_NOT_FOUND if driver not exist in db
      */
     private void setDriverStatus(int number, DriverStatus dutyStatus) throws ServiceException {
         try {
             Driver driver = driverDao.findUniqueByNumber(number);
-            if (driver != null){
+            if (driver != null) {
                 if (driver.getOrder() != null) {
                     // find last status of driver and check if it is same as current then do nothing
                     DriverStatusLog statusLog = driverStatusLogDao.findLastStatus(driver);
@@ -99,20 +108,31 @@ public class DutyServiceImpl implements DutyService {
                             driverStatusLog.setDriver(driver);
                             driverStatusLogDao.create(driverStatusLog);
                         } else {                                        //insert status in db for current driver
+                            if (dutyStatus == DriverStatus.driving) {
+                                List<Driver> drivers = driver.getOrder().getDrivers();
+                                for (Driver coDriver : drivers) {
+                                    DriverStatusLog coStatusLog = driverStatusLogDao.findLastStatus(coDriver);
+                                    if (coStatusLog.getStatus() == DriverStatus.driving) {
+                                        throw new ServiceException("CoDriver in this order already driving", ServiceStatusCode.CODRIVER_DRIVING);
+                                    }
+                                }
+                            }
                             DriverStatusLog driverStatusLog = new DriverStatusLog();
                             driverStatusLog.setStatus(dutyStatus);
                             driverStatusLog.setTimestamp(new Date());
                             driverStatusLog.setDriver(driver);
                             driverStatusLogDao.create(driverStatusLog);
                         }
+                    }else{
+                        throw new ServiceException("Driver already has this status", ServiceStatusCode.DRIVER_HAS_STAUS);
                     }
-                }else {
+                } else {
                     throw new ServiceException("Driver don't assign at order", ServiceStatusCode.DRIVER_NOT_ASSIGNED);
                 }
-            }else {
+            } else {
                 throw new ServiceException("Driver not found", ServiceStatusCode.DRIVER_NOT_FOUND);
             }
-        }catch (DaoException e) {
+        } catch (DaoException e) {
             LOG.warn(e.getMessage());
             throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
         }
