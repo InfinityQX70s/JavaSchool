@@ -23,6 +23,7 @@ public class OrderManagementServiceImplTest {
     private OrdersDao ordersDaoMoc;
     private DriverDao driverDaoMoc;
     private CargoDao cargoDaoMoc;
+    private TruckDao truckDao;
     private CargoStatusLogDao cargoStatusLogDao;
     private OrderManagementService orderManagementService;
 
@@ -80,9 +81,10 @@ public class OrderManagementServiceImplTest {
         ordersDaoMoc = Mockito.mock(OrdersDao.class);
         driverDaoMoc = Mockito.mock(DriverDao.class);
         cargoDaoMoc = Mockito.mock(CargoDao.class);
+        truckDao = Mockito.mock(TruckDao.class);
         cargoStatusLogDao = Mockito.mock(CargoStatusLogDao.class);
         orderManagementService = new OrderManagementServiceImpl(ordersDaoMoc,driverDaoMoc,cargoDaoMoc,
-                cargoStatusLogDao);
+                cargoStatusLogDao,truckDao);
 
     }
 

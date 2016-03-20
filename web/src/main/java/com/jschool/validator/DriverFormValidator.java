@@ -16,6 +16,8 @@ public class DriverFormValidator implements Validator {
     private static final String EMAIL_PATTERN =
             "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
                     + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+    private static final String PHONE_NUMBER_PATTERN =
+            "^\\+7[0-9]{10}$";
 
     @Override
     public boolean supports(Class<?> aClass) {
@@ -37,6 +39,12 @@ public class DriverFormValidator implements Validator {
         }
         else if (!user.getEmail().matches(EMAIL_PATTERN)){
             errors.rejectValue("user.email", "Pattern.driverForm.email");
+        }
+        if (!driver.getPhoneNumber().matches(PHONE_NUMBER_PATTERN) && driver.getPhoneNumber().isEmpty()){
+            errors.rejectValue("phoneNumber", "NotEmpty.driverForm.phoneNumber");
+        }
+        else if (!driver.getPhoneNumber().matches(PHONE_NUMBER_PATTERN)){
+            errors.rejectValue("phoneNumber", "Pattern.driverForm.phoneNumber");
         }
     }
 }

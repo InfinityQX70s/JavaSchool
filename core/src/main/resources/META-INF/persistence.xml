@@ -6,6 +6,7 @@
         <class>com.jschool.entities.CargoStatusLog</class>
         <class>com.jschool.entities.City</class>
         <class>com.jschool.entities.Driver</class>
+        <class>com.jschool.entities.DriverAuthCode</class>
         <class>com.jschool.entities.DriverStatistic</class>
         <class>com.jschool.entities.DriverStatusLog</class>
         <class>com.jschool.entities.Order</class>

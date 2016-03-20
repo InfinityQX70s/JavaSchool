@@ -1,6 +1,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <div class="row z-depth-2 white">
+    <%--<div class="input-field col s6 center-align">--%>
+        <%--<c:out value="${cities}"/>--%>
+    <%--</div>--%>
     <div id="YMapsID" style="width:740px;height:370px"></div>
     <div class="row">
         <div class="input-field col s6">

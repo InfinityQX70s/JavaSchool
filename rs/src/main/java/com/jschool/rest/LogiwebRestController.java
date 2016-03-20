@@ -63,21 +63,29 @@ public class LogiwebRestController {
                 return jsonResponse;
             }else{
                 jsonResponse.setStatus("ok");
-                List<Cargo> cargos = orderAndCargoService.findAllCargosByOrderNumber(order.getNumber());
-                for (Cargo cargo : cargos){
-                    CargoStatus cargoStatus = cargo.getStatusLogs().get(cargo.getStatusLogs().size()-1).getStatus();
-                    if (cargoStatus == CargoStatus.ready){
-                        jsonResponse.setCargoName(cargo.getName());
-                        jsonResponse.setCargoNumber(cargo.getNumber());
-                        jsonResponse.setCity(cargo.getPickup().getCity().getName());
-                        jsonResponse.setType("loaded");
-                        return jsonResponse;
-                    }else if (cargoStatus == CargoStatus.loaded){
-                        jsonResponse.setCargoName(cargo.getName());
-                        jsonResponse.setCargoNumber(cargo.getNumber());
-                        jsonResponse.setCity(cargo.getUnload().getCity().getName());
-                        jsonResponse.setType("delivered");
-                        return jsonResponse;
+                List<RoutePoint> routePoints = orderAndCargoService.findAllRoutePointsByOrderNumber(order);
+                for (RoutePoint routePoint : routePoints){
+                    if (routePoint.getPickup()!= null){
+                        Cargo cargo = routePoint.getPickup();
+                        CargoStatus cargoStatus = cargo.getStatusLogs().get(cargo.getStatusLogs().size()-1).getStatus();
+                        if (cargoStatus == CargoStatus.ready){
+                            jsonResponse.setCargoName(cargo.getName());
+                            jsonResponse.setCargoNumber(cargo.getNumber());
+                            jsonResponse.setCity(cargo.getPickup().getCity().getName());
+                            jsonResponse.setType("loaded");
+                            return jsonResponse;
+                        }
+                    }
+                    if (routePoint.getUnload()!= null){
+                        Cargo cargo = routePoint.getUnload();
+                        CargoStatus cargoStatus = cargo.getStatusLogs().get(cargo.getStatusLogs().size()-1).getStatus();
+                        if (cargoStatus == CargoStatus.loaded){
+                            jsonResponse.setCargoName(cargo.getName());
+                            jsonResponse.setCargoNumber(cargo.getNumber());
+                            jsonResponse.setCity(cargo.getUnload().getCity().getName());
+                            jsonResponse.setType("delivered");
+                            return jsonResponse;
+                        }
                     }
                 }
                 jsonResponse.setStatus("done");

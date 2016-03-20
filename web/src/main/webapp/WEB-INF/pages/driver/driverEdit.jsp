@@ -63,6 +63,15 @@
                 </spring:bind>
             </div>
         </div>
+        <div class="row">
+            <div class="input-field col s6">
+                <spring:bind path="driver.phoneNumber">
+                    <form:input path="driver.phoneNumber" class="validate" id="phoneNumber" value="${driver.phoneNumber}"/>
+                    <label for="phoneNumber">Phone Number</label>
+                    <form:errors path="driver.phoneNumber" cssClass="blockquote"/>
+                </spring:bind>
+            </div>
+        </div>
         <div class="row right-align">
             <button class="btn waves-effect waves-light light-blue accent-999 light-blue-text text-accent-999" type="submit" name="action">Submit
                 <i class="material-icons right">send</i>

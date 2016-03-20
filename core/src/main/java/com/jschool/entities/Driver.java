@@ -29,6 +29,8 @@ public class Driver {
     private String firstName;
     @Column(name = "lastName", nullable = false)
     private String lastName;
+    @Column(name = "phoneNumber", nullable = false)
+    private String phoneNumber;
     @OneToOne(optional=false)
     @JoinColumn(name="user_id", nullable=false)
     private User user;
@@ -36,6 +38,8 @@ public class Driver {
     private List<DriverStatusLog> statusLogs;
     @OneToMany(fetch=FetchType.LAZY, mappedBy = "driver", cascade = CascadeType.ALL)//cascade=CascadeType.ALL
     private List<DriverStatistic> statistics;
+    @OneToMany(fetch=FetchType.LAZY, mappedBy = "driver", cascade = CascadeType.ALL)//cascade=CascadeType.ALL
+    private List<DriverAuthCode> driverAuthCodes;
     @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="order_id")
     private Order order;
@@ -75,6 +79,14 @@ public class Driver {
         this.lastName = lastName;
     }
 
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
     public User getUser() {
         return user;
     }
@@ -97,6 +109,14 @@ public class Driver {
 
     public void setStatistics(List<DriverStatistic> statistics) {
         this.statistics = statistics;
+    }
+
+    public List<DriverAuthCode> getDriverAuthCodes() {
+        return driverAuthCodes;
+    }
+
+    public void setDriverAuthCodes(List<DriverAuthCode> driverAuthCodes) {
+        this.driverAuthCodes = driverAuthCodes;
     }
 
     public Order getOrder() {

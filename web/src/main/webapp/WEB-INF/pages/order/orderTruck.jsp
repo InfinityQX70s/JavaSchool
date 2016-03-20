@@ -4,7 +4,7 @@
     <h5 class="center-align white-text">${message}</h5>
 </c:if>
 <c:if test="${empty message}">
-    <h5 class="center-align white-text">Cargo maximum weight is <c:out value="${max}"/>
+    <h5 class="center-align white-text">Cargo maximum weight is <c:out value="${maxWeight}"/> in <c:out value="${maxCity}"/>
     </h5>
     <table class="bordered centered z-depth-2 white">
         <thead>

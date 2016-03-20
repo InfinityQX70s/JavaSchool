@@ -6,6 +6,8 @@ import javax.persistence.*;
  * Created by infinity on 06.02.16.
  */
 @Entity
+@NamedQuery(name="RoutePoint.findByOrder",
+        query="SELECT r FROM RoutePoint r WHERE r.order = :orders ORDER BY r.point")
 @Table(name = "RoutePoint", schema = "logiweb")
 public class RoutePoint {
     @Id

@@ -28,6 +28,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String email = authentication.getName();
         String password = DigestUtils.md5Hex((String) authentication.getCredentials());
+        String verifyCode = request.getParameter("verifyCode");
         String number = request.getParameter("number");
         UserDetails userDetails;
         if (!email.isEmpty() && number.isEmpty()) {
@@ -42,7 +43,9 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                 userDetails = userService.loadUserByUsername(Integer.parseInt(number));
                 if (userDetails == null)
                     throw new BadCredentialsException("Driver not found");
-                return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+                if (!verifyCode.equals(userDetails.getPassword()))
+                    throw new BadCredentialsException("Invalid driver verify code");
+                return new UsernamePasswordAuthenticationToken(userDetails, verifyCode, userDetails.getAuthorities());
             }catch (NumberFormatException e){
                 throw new BadCredentialsException("Driver not found");
             }

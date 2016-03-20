@@ -36,7 +36,9 @@
                             <tr>
                                 <th data-field="id">Number</th>
                                 <th data-field="pickup">Pickup</th>
+                                <th data-field="number">Position</th>
                                 <th data-field="unload">Unload</th>
+                                <th data-field="number">Position</th>
                                 <th data-field="name">Name</th>
                                 <th data-field="weight">Weight</th>
                                 <th data-field="status">Status</th>
@@ -50,7 +52,11 @@
                                     </td>
                                     <td><c:out value="${cargo.pickup.city.name}"/>
                                     </td>
+                                    <td><c:out value="${cargo.pickup.point}"/>
+                                    </td>
                                     <td><c:out value="${cargo.unload.city.name}"/>
+                                    </td>
+                                    <td><c:out value="${cargo.unload.point}"/>
                                     </td>
                                     <td><c:out value="${cargo.name}"/>
                                     </td>

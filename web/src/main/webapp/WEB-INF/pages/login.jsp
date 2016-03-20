@@ -8,6 +8,7 @@
     <!--Import materialize.css-->
     <link type="text/css" rel="stylesheet" href="/css/materialize.css" media="screen,projection"/>
     <script type="text/javascript" src="/js/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="/js/jquery.login.js"></script>
     <script type="text/javascript" src="/js/materialize.min.js"></script>
     <c:if test="${not empty param.error}">
         <script type="text/javascript" >
@@ -32,7 +33,7 @@
 <br>
 <div class="row">
     <div class="col col s4 offset-l4">
-        <form action="/login" method="post">
+        <form action="/login" method="post" id="target">
         <div class="card white">
             <div class="card-content black-text">
                 <div class="row">
@@ -57,7 +58,7 @@
                         </div>
                     </div>
                     <div id="driver" class="col s12">
-                        <div class="row">
+                        <div class="row rootView">
                             <div class="input-field col s12">
                                 <input id="number" type="text" name="number" class="validate">
                                 <label for="number">Number</label>
@@ -66,7 +67,7 @@
                     </div>
                 </div>
                 <div class="card-action center">
-                    <a href="#" onclick="document.forms[0].submit();">Sign in</a>
+                    <a href="#" class="loginButton">Sign in</a>
                 </div>
             </div>
         </div>

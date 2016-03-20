@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.Resource;
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -89,26 +90,25 @@ public class OrderController{
                     String[] pickup = req.getParameterValues("pickup");
                     String[] unload = req.getParameterValues("unload");
                     validator.validateOrderAndCargo(orderNumber, cargoNumber, cargoName, cargoWeight, pickup, unload);
-                    int max = 0;
-                    for (String weight : cargoWeight) {
-                        if (Integer.parseInt(weight) > max)
-                            max = Integer.parseInt(weight);
-                    }
-                    List<Truck> trucks = truckService.findAllAvailableTrucksByMinCapacity(max,pickup[0]);
+                    List<String> info = getMaxWeight(cargoWeight,pickup,unload);
+                    int maxWeight = Integer.parseInt(info.get(0));
+                    String maxCity = info.get(1);
+                    List<Truck> trucks = truckService.findAllAvailableTrucksByMinCapacity(maxWeight,pickup[0]);
                     if (trucks.size() == 0)
                         model.addAttribute("message", "Count of trucks not enough, try to change order");
                     model.addAttribute("trucks", trucks);
-                    model.addAttribute("max", max);
+                    model.addAttribute("maxWeight", maxWeight);
+                    model.addAttribute("maxCity", maxCity);
                     return "order/orderTruck";
                 case "3":
                     String pickupCity[] = req.getParameterValues("pickup");
                     String unloadCity[] = req.getParameterValues("unload");
                     validator.validateCargoCities(pickupCity, unloadCity);
                     List<String> cities = new ArrayList<>();
-                    for (int i = 0; i < pickupCity.length; i++) {
-                        cities.add(pickupCity[i]);
-                        cities.add(unloadCity[i]);
-                    }
+                    List<Integer> countOfUse = new ArrayList<>();
+                    fillRoute(cities,countOfUse, pickupCity, unloadCity);
+                    LOG.warn(cities);
+                    LOG.warn(countOfUse);
                     model.addAttribute("cities", cities);
                     return "order/orderMap";
                 case "4":
@@ -151,6 +151,10 @@ public class OrderController{
             validator.validateOrderAndCargo(orderNumber,cargoNumber,cargoName,cargoWeight,pickup,unload);
             validator.validateTruckDriversAndDuration(truckNumber,driverNumbers,duration);
 
+            List<String> cities = new ArrayList<>();
+            List<Integer> countOfUse = new ArrayList<>();
+            fillRoute(cities,countOfUse, pickup, unload);
+
             Order order = new Order();
             order.setNumber(Integer.parseInt(orderNumber));
             order.setDoneState(false);
@@ -167,12 +171,26 @@ public class OrderController{
                 City unloadCity = new City();
                 unloadCity.setName(unload[i]);
 
+
+                int pickUpPosition = 0;
+                int unloadPosition = 0;
+                for (int j = 0; j < cities.size(); j++){
+                    if (pickup[i].equals(cities.get(j)) && countOfUse.get(j) > 0 && pickUpPosition == 0){
+                        pickUpPosition = j;
+                    }
+                    if (unload[i].equals(cities.get(j)) && countOfUse.get(j) > 0 && unloadPosition == 0){
+                        unloadPosition = j;
+                    }
+                }
+                countOfUse.set(pickUpPosition,countOfUse.get(pickUpPosition)-1);
+                countOfUse.set(unloadPosition,countOfUse.get(unloadPosition)-1);
+
                 RoutePoint pickRoute = new RoutePoint();
-                pickRoute.setPoint(i);
+                pickRoute.setPoint(pickUpPosition);
                 pickRoute.setCity(pickCity);
 
                 RoutePoint unloadRoute = new RoutePoint();
-                unloadRoute.setPoint(i);
+                unloadRoute.setPoint(unloadPosition);
                 unloadRoute.setCity(unloadCity);
 
                 cargo.setPickup(pickRoute);
@@ -185,8 +203,12 @@ public class OrderController{
                 drivers.add(driverService.getDriverByPersonalNumber(Integer.parseInt(driver)));
             order.setTruck(truck);
             order.setDrivers(drivers);
-
-            orderAndCargoService.addOrder(order, cargos, Integer.parseInt(duration));
+            List<String> info = getMaxWeight(cargoWeight,pickup,unload);
+            int maxWeight = Integer.parseInt(info.get(0));
+            orderAndCargoService.addOrder(order, cargos, Integer.parseInt(duration), maxWeight);
+//            for (Driver driver : drivers){
+//                driverService.sendOrderSms(driver,order.getNumber());
+//            }
             JsonResponse jsonResponse = new JsonResponse();
             jsonResponse.setStatus("success");
             return jsonResponse;
@@ -204,5 +226,72 @@ public class OrderController{
         jsonResponse.setStatus("error");
         jsonResponse.setResult(message);
         return jsonResponse;
+    }
+
+    private List<String> getMaxWeight(String[] cargoWeight, String[] pickup, String[] unload){
+        int maxWeight = 0;
+        String maxCity = "";
+        for (int i = 0; i < cargoWeight.length; i++) {
+            int j = i;
+            int maxWeightLocal = 0;
+            while (j < cargoWeight.length && pickup[i].equals(pickup[j])) {
+                maxWeightLocal += Integer.parseInt(cargoWeight[j]);
+                j++;
+            }
+            if (maxWeightLocal > maxWeight) {
+                maxWeight = maxWeightLocal;
+                maxCity = pickup[i];
+            }
+            j = i;
+            maxWeightLocal = 0;
+            while (j < cargoWeight.length && unload[i].equals(unload[j])) {
+                maxWeightLocal += Integer.parseInt(cargoWeight[j]);
+                j++;
+            }
+            if (maxWeightLocal > maxWeight) {
+                maxWeight = maxWeightLocal;
+                maxCity = unload[i];
+            }
+        }
+        List<String> info = new ArrayList<>();
+        info.add(String.valueOf(maxWeight));
+        info.add(maxCity);
+        return info;
+    }
+
+    private void fillRoute(List<String> cities, List<Integer> countOfUse, String[] pickupCity, String[] unloadCity){
+        int i = 0;
+        while (i<pickupCity.length){
+            cities.add(pickupCity[i]);
+            cities.add(unloadCity[i]);
+            countOfUse.add(0);
+            countOfUse.add(0);
+            int j = i;
+            while (j < pickupCity.length && pickupCity[i].equals(pickupCity[j]) && unloadCity[i].equals(unloadCity[j])){
+                countOfUse.set(countOfUse.size()-1,countOfUse.get(countOfUse.size()-1)+1);
+                countOfUse.set(countOfUse.size()-2,countOfUse.get(countOfUse.size()-2)+1);
+                j++;
+            }
+            if (j < pickupCity.length && pickupCity[i].equals(pickupCity[j]) && !unloadCity[i].equals(unloadCity[j])){
+                int position = countOfUse.size()-1;
+                while (j < pickupCity.length && pickupCity[i].equals(pickupCity[j]) && !unloadCity[i].equals(unloadCity[j])){
+                    cities.add(unloadCity[j]);
+                    countOfUse.set(position,countOfUse.get(position)+1);
+                    countOfUse.add(1);
+                    j++;
+                }
+            }else if (j < pickupCity.length && !pickupCity[i].equals(pickupCity[j]) && unloadCity[i].equals(unloadCity[j])){
+                while (j < pickupCity.length && !pickupCity[i].equals(pickupCity[j]) && unloadCity[i].equals(unloadCity[j])){
+                    String helpCity = cities.get(cities.size()-1);
+                    cities.set(cities.size()-1,pickupCity[j]);
+                    cities.add(helpCity);
+                    Integer value = countOfUse.get(countOfUse.size()-1);
+                    countOfUse.set(countOfUse.size()-1,1);
+                    countOfUse.add(value + 1);
+                    j++;
+                }
+            }
+            i=j;
+        }
     }
 }

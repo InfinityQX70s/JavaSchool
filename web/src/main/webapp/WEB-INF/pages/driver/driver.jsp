@@ -24,6 +24,7 @@
         <th data-field="first_name">First Name</th>
         <th data-field="last_name">Last Name</th>
         <th data-field="city">City</th>
+        <th data-field="phoneNumber">Phone Number</th>
         <th data-field="change"></th>
         <th data-field="delete"></th>
     </tr>
@@ -39,6 +40,8 @@
             <td><c:out value="${driver.lastName}"/>
             </td>
             <td><c:out value="${driver.city.name}"/>
+            </td>
+            <td><c:out value="${driver.phoneNumber}"/>
             </td>
             <c:if test="${empty driver.order}">
                 <td>Free</td>

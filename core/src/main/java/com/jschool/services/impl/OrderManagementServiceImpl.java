@@ -25,15 +25,17 @@ public class OrderManagementServiceImpl implements OrderManagementService {
     private OrdersDao ordersDao;
     private DriverDao driverDao;
     private CargoDao cargoDao;
+    private TruckDao truckDao;
     private CargoStatusLogDao cargoStatusLogDao;
 
     @Autowired
     public OrderManagementServiceImpl(OrdersDao ordersDao, DriverDao driverDao,
-                                      CargoDao cargoDao, CargoStatusLogDao cargoStatusLogDao) {
+                                      CargoDao cargoDao, CargoStatusLogDao cargoStatusLogDao, TruckDao truckDao) {
         this.ordersDao = ordersDao;
         this.driverDao = driverDao;
         this.cargoDao = cargoDao;
         this.cargoStatusLogDao = cargoStatusLogDao;
+        this.truckDao = truckDao;
     }
 
     /**Set status for cargo
@@ -54,6 +56,31 @@ public class OrderManagementServiceImpl implements OrderManagementService {
                 cargoStatusLogEntity.setCargo(cargo);
                 //set cargo status in db
                 cargoStatusLogDao.create(cargoStatusLogEntity);
+
+                if (cargoStatus == CargoStatus.loaded){
+                    Order order = cargo.getPickup().getOrder();
+                    City city = cargo.getPickup().getCity();
+                    List<Driver> drivers = order.getDrivers();
+                    for (Driver driver : drivers){
+                        driver.setCity(city);
+                        driverDao.update(driver);
+                    }
+                    Truck truck = order.getTruck();
+                    truck.setCity(city);
+                    truckDao.update(truck);
+                }
+                if (cargoStatus == CargoStatus.delivered){
+                    Order order = cargo.getPickup().getOrder();
+                    City city = cargo.getUnload().getCity();
+                    List<Driver> drivers = order.getDrivers();
+                    for (Driver driver : drivers){
+                        driver.setCity(city);
+                        driverDao.update(driver);
+                    }
+                    Truck truck = order.getTruck();
+                    truck.setCity(city);
+                    truckDao.update(truck);
+                }
                 //check if cargo status is "delivered" then check all other cargo's status
                 //and if they all are delivered, set order status "done" and free drivers and truck
                 if (cargoStatus == CargoStatus.delivered) {

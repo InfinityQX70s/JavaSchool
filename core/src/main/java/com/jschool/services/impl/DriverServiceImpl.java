@@ -1,15 +1,18 @@
 package com.jschool.services.impl;
 
-import com.jschool.dao.api.CityDao;
-import com.jschool.dao.api.DriverDao;
-import com.jschool.dao.api.DriverStatisticDao;
-import com.jschool.dao.api.UserDao;
+import com.jschool.dao.api.*;
 import com.jschool.dao.api.exception.DaoException;
 import com.jschool.entities.*;
 import com.jschool.services.api.DriverService;
 import com.jschool.services.api.exception.ServiceException;
 import com.jschool.services.api.exception.ServiceStatusCode;
+import com.twilio.sdk.TwilioRestClient;
+import com.twilio.sdk.TwilioRestException;
+import com.twilio.sdk.resource.factory.MessageFactory;
+import com.twilio.sdk.resource.instance.Message;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,14 +32,23 @@ public class DriverServiceImpl implements DriverService{
     private CityDao cityDao;
     private DriverDao driverDao;
     private DriverStatisticDao driverStatisticDao;
+    private DriverAuthCodeDao driverAuthCodeDao;
+    public static final String ACCOUNT_SID = "ACe0f5fa002b53662f3c016fef1859ba83";
+    public static final String AUTH_TOKEN = "fe6042cb993d8b698ded968c7c6e6b61";
+    private TwilioRestClient client;
+    private MessageFactory messageFactory;
 
     @Autowired
     public DriverServiceImpl(UserDao userDao, DriverDao driverDao,
-                             DriverStatisticDao driverStatisticDao, CityDao cityDao) {
+                             DriverStatisticDao driverStatisticDao, CityDao cityDao,
+                             DriverAuthCodeDao driverAuthCodeDao) {
         this.userDao = userDao;
         this.driverDao = driverDao;
         this.driverStatisticDao = driverStatisticDao;
+        this.driverAuthCodeDao = driverAuthCodeDao;
         this.cityDao = cityDao;
+        client = new TwilioRestClient(ACCOUNT_SID, AUTH_TOKEN);
+        messageFactory = client.getAccount().getMessageFactory();
     }
 
     /**Create driver and user bended with him in DB and set driver status on
@@ -217,6 +229,54 @@ public class DriverServiceImpl implements DriverService{
             }else
                 throw new ServiceException("City with such name not found", ServiceStatusCode.CITY_NOT_FOUND);
         }catch (DaoException e) {
+            LOG.warn(e.getMessage());
+            throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
+        }
+    }
+
+    @Override
+    public void sendOrderSms(Driver driver, int orderNumber) throws ServiceException {
+        try {
+            if (driver != null){
+                List<NameValuePair> params = new ArrayList<>();
+                params.add(new BasicNameValuePair("To", driver.getPhoneNumber()));
+                params.add(new BasicNameValuePair("From", "+12018967322"));
+                params.add(new BasicNameValuePair("Body", "You successfully assign at order " + orderNumber));
+
+                messageFactory.create(params);
+            }else
+                throw new ServiceException("Driver not found", ServiceStatusCode.DRIVER_NOT_FOUND);
+        }catch (TwilioRestException e) {
+            LOG.warn(e.getMessage());
+            throw new ServiceException("Problem with sending sms", e, ServiceStatusCode.TWILIO_EXCEPTION);
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor=ServiceException.class)
+    public void sendDriverVerifyCode(int number) throws ServiceException {
+        try {
+            Driver driver = driverDao.findUniqueByNumber(number);
+            if (driver != null){
+                Random random = new Random();
+                int code = 100000 + random.nextInt(900000);
+                List<NameValuePair> params = new ArrayList<>();
+                params.add(new BasicNameValuePair("To", driver.getPhoneNumber()));
+                params.add(new BasicNameValuePair("From", "+12018967322"));
+                params.add(new BasicNameValuePair("Body", "Your verification code: " + code));
+
+                messageFactory.create(params);
+                DriverAuthCode driverAuthCode = new DriverAuthCode();
+                driverAuthCode.setCode(code);
+                driverAuthCode.setTimestamp(new Date());
+                driverAuthCode.setDriver(driver);
+                driverAuthCodeDao.create(driverAuthCode);
+            }else
+                throw new ServiceException("Driver not found", ServiceStatusCode.DRIVER_NOT_FOUND);
+        }catch (TwilioRestException e) {
+            LOG.warn(e.getMessage());
+            throw new ServiceException("Problem with sending sms", e, ServiceStatusCode.TWILIO_EXCEPTION);
+        } catch (DaoException e) {
             LOG.warn(e.getMessage());
             throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
         }

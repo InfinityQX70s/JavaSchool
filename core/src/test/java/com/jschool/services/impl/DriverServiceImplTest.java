@@ -1,9 +1,6 @@
 package com.jschool.services.impl;
 
-import com.jschool.dao.api.CityDao;
-import com.jschool.dao.api.DriverDao;
-import com.jschool.dao.api.DriverStatisticDao;
-import com.jschool.dao.api.UserDao;
+import com.jschool.dao.api.*;
 import com.jschool.dao.api.exception.DaoException;
 import com.jschool.entities.Driver;
 import com.jschool.entities.DriverStatistic;
@@ -28,6 +25,7 @@ public class DriverServiceImplTest {
     private CityDao cityDao;
     private DriverDao driverDaoMoc;
     private DriverStatisticDao driverStatisticDaoMoc;
+    private DriverAuthCodeDao driverAuthCodeDaoMoc;
     private DriverService driverService;
 
     @Before
@@ -36,7 +34,8 @@ public class DriverServiceImplTest {
         driverDaoMoc = Mockito.mock(DriverDao.class);
         cityDao = Mockito.mock(CityDao.class);
         driverStatisticDaoMoc = Mockito.mock(DriverStatisticDao.class);
-        driverService = new DriverServiceImpl(userDaoMoc,driverDaoMoc,driverStatisticDaoMoc,cityDao);
+        driverAuthCodeDaoMoc = Mockito.mock(DriverAuthCodeDao.class);
+        driverService = new DriverServiceImpl(userDaoMoc,driverDaoMoc,driverStatisticDaoMoc,cityDao,driverAuthCodeDaoMoc);
     }
 
     private Driver getDriverForTest(){

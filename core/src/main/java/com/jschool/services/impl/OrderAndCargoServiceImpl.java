@@ -58,7 +58,7 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
      */
     @Override
     @Transactional(rollbackFor = ServiceException.class)
-    public void addOrder(Order order, List<Cargo> cargos, int duration) throws ServiceException {
+    public void addOrder(Order order, List<Cargo> cargos, int duration, int maxWeight) throws ServiceException {
         try {
             Order element = ordersDao.findUniqueByNumber(order.getNumber());
             if (element == null) {
@@ -75,7 +75,7 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
                         //method assign drivers to order
                         assignDrivers(order, drivers, duration);
                         // method add cargos to order and check capacity
-                        assignCargos(order, cargos, truck.getCapacity());
+                        assignCargos(order, cargos, truck.getCapacity(), maxWeight);
                     } else {
                         throw new ServiceException("Truck not in same city", ServiceStatusCode.TRUCK_NOT_IN_SAME_CITY);
                     }
@@ -98,16 +98,11 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
      * @throws DaoException
      * @throws ServiceException status CITY_NOT_FOUND, CARGO_ALREADY_EXIST, TRUCK_WEIGHT_NOT_ENOUGH
      */
-    private void assignCargos(Order order, List<Cargo> cargos, int capacity) throws DaoException, ServiceException {
-        int maxWeight = 0;
+    private void assignCargos(Order order, List<Cargo> cargos, int capacity, int maxWeight) throws DaoException, ServiceException {
         for (Cargo cargo : cargos) {
             //check cargo has unique number
             Cargo check = cargoDao.findUniqueByNumber(cargo.getNumber());
             if (check == null) {
-                //count max weight of cargoes
-                if (cargo.getWeight() > maxWeight)
-                    maxWeight = cargo.getWeight();
-
                 //create  pick up route point for current cargo
                 RoutePoint pickupRoutePoint = cargo.getPickup();
                 City city = cityDao.findUniqueByName(pickupRoutePoint.getCity().getName());
@@ -287,6 +282,17 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
             } else
                 throw new ServiceException("Order not found", ServiceStatusCode.ORDER_NOT_FOUND);
         } catch (DaoException e) {
+            LOG.warn(e.getMessage());
+            throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor=ServiceException.class)
+    public List<RoutePoint> findAllRoutePointsByOrderNumber(Order order) throws ServiceException {
+        try {
+            return routePointDao.findByOrder(order);
+        }catch (DaoException e) {
             LOG.warn(e.getMessage());
             throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
         }

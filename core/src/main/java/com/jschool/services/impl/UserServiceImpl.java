@@ -1,9 +1,11 @@
 package com.jschool.services.impl;
 
+import com.jschool.dao.api.DriverAuthCodeDao;
 import com.jschool.dao.api.DriverDao;
 import com.jschool.dao.api.UserDao;
 import com.jschool.dao.api.exception.DaoException;
 import com.jschool.entities.Driver;
+import com.jschool.entities.DriverAuthCode;
 import com.jschool.entities.User;
 import com.jschool.services.api.UserService;
 import com.jschool.services.api.exception.ServiceException;
@@ -34,13 +36,13 @@ public class UserServiceImpl implements UserService{
 
     private UserDao userDao;
     private DriverDao driverDao;
-    private HttpServletRequest request;
+    private DriverAuthCodeDao driverAuthCodeDao;
 
     @Autowired
-    public UserServiceImpl(UserDao userDao, DriverDao driverDao, HttpServletRequest request) {
+    public UserServiceImpl(UserDao userDao, DriverDao driverDao, DriverAuthCodeDao driverAuthCodeDao) {
         this.userDao = userDao;
         this.driverDao = driverDao;
-        this.request = request;
+        this.driverAuthCodeDao = driverAuthCodeDao;
     }
 
     /**
@@ -88,10 +90,15 @@ public class UserServiceImpl implements UserService{
             if (driver == null) {
                 throw new UsernameNotFoundException(String.valueOf(number));
             } else {
+                DriverAuthCode driverAuthCode = driverAuthCodeDao.findLastCode(driver);
+                if (driverAuthCode == null){
+                    throw new UsernameNotFoundException("Driver verify code not found");
+                }
+                String verifyCode = String.valueOf(driverAuthCode.getCode());
                 GrantedAuthority userRole = new SimpleGrantedAuthority("ROLE_DRIVER");
                 List<GrantedAuthority> authorities = new ArrayList<>();
                 authorities.add(userRole);
-                return new org.springframework.security.core.userdetails.User(String.valueOf(number), "", authorities);
+                return new org.springframework.security.core.userdetails.User(String.valueOf(number), verifyCode, authorities);
             }
         } catch (DaoException | NumberFormatException e) {
             LOG.warn("User Not Found Exception", e);

@@ -174,7 +174,7 @@ public class OrderAndCargoServiceImplTest {
         unloadCity.setName("Москва");
         Mockito.when(cityDaoMoc.findUniqueByName("Москва")).thenReturn(unloadCity);
 
-        orderAndCargoService.addOrder(order,getCargoList(), Integer.parseInt("30"));
+        orderAndCargoService.addOrder(order,getCargoList(), Integer.parseInt("30"),30);
     }
 
     @Test
@@ -194,7 +194,7 @@ public class OrderAndCargoServiceImplTest {
             unloadCity.setName("Москва");
             Mockito.when(cityDaoMoc.findUniqueByName("Москва")).thenReturn(unloadCity);
 
-            orderAndCargoService.addOrder(getOrder(),getCargoList(), Integer.parseInt("30"));
+            orderAndCargoService.addOrder(getOrder(),getCargoList(), Integer.parseInt("30"),30);
         } catch (ServiceException e) {
             Assert.assertEquals(ServiceStatusCode.TRUCK_WEIGHT_NOT_ENOUGH,e.getStatusCode());
         } catch (DaoException e) {
@@ -222,7 +222,7 @@ public class OrderAndCargoServiceImplTest {
             unloadCity.setName("Москва");
             Mockito.when(cityDaoMoc.findUniqueByName("Москва")).thenReturn(unloadCity);
 
-            orderAndCargoService.addOrder(order, getCargoList(), Integer.parseInt("100"));
+            orderAndCargoService.addOrder(order, getCargoList(), Integer.parseInt("100"),40);
         } catch (ServiceException e) {
             Assert.assertEquals(ServiceStatusCode.DRIVER_HOURS_LIMIT,e.getStatusCode());
         } catch (DaoException e) {
@@ -249,7 +249,7 @@ public class OrderAndCargoServiceImplTest {
             unloadCity.setName("Москва");
             Mockito.when(cityDaoMoc.findUniqueByName("Москва")).thenReturn(unloadCity);
 
-            orderAndCargoService.addOrder(order, getCargoList(), Integer.parseInt("100"));
+            orderAndCargoService.addOrder(order, getCargoList(), Integer.parseInt("100"),100);
         } catch (ServiceException e) {
             Assert.assertEquals(ServiceStatusCode.DRIVER_ASSIGNED_ORDER,e.getStatusCode());
         } catch (DaoException e) {
@@ -277,7 +277,7 @@ public class OrderAndCargoServiceImplTest {
             unloadCity.setName("Москва");
             Mockito.when(cityDaoMoc.findUniqueByName("Москва")).thenReturn(unloadCity);
 
-            orderAndCargoService.addOrder(order, getCargoList(), Integer.parseInt("100"));
+            orderAndCargoService.addOrder(order, getCargoList(), Integer.parseInt("100"),100);
         } catch (ServiceException e) {
             Assert.assertEquals(ServiceStatusCode.TRUCK_ASSIGNED_ORDER,e.getStatusCode());
         } catch (DaoException e) {
@@ -306,7 +306,7 @@ public class OrderAndCargoServiceImplTest {
             unloadCity.setName("Москва");
             Mockito.when(cityDaoMoc.findUniqueByName("Москва")).thenReturn(unloadCity);
 
-            orderAndCargoService.addOrder(order, getCargoList(), Integer.parseInt("100"));
+            orderAndCargoService.addOrder(order, getCargoList(), Integer.parseInt("100"),100);
         } catch (ServiceException e) {
             Assert.assertEquals(ServiceStatusCode.DRIVER_AND_SHIFT_SIZE_NOT_EQUAL,e.getStatusCode());
         } catch (DaoException e) {
