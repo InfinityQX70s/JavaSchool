@@ -2,10 +2,7 @@ package com.jschool.services.impl;
 
 import com.jschool.dao.api.*;
 import com.jschool.dao.api.exception.DaoException;
-import com.jschool.entities.Driver;
-import com.jschool.entities.DriverStatistic;
-import com.jschool.entities.Order;
-import com.jschool.entities.User;
+import com.jschool.entities.*;
 import com.jschool.services.api.DriverService;
 import com.jschool.services.api.exception.ServiceException;
 import com.jschool.services.api.exception.ServiceStatusCode;
@@ -48,6 +45,7 @@ public class DriverServiceImplTest {
         driver.setFirstName("Ivan");
         driver.setLastName("Ivanov");
         driver.setUser(user);
+        driver.setCity(getCityForTest());
         return driver;
     }
 
@@ -67,10 +65,17 @@ public class DriverServiceImplTest {
         return drivers;
     }
 
+    private City getCityForTest(){
+        City city = new City();
+        city.setName("Orel");
+        return city;
+    }
+
     @Test
     public void testAddDriver() throws Exception {
         Mockito.when(userDaoMoc.findUniqueByEmail("Test@gmail.com")).thenReturn(null);
         Mockito.when(driverDaoMoc.findUniqueByNumber(13)).thenReturn(null);
+        Mockito.when(cityDao.findUniqueByName(getDriverForTest().getCity().getName())).thenReturn(getCityForTest());
         driverService.addDriver(getDriverForTest());
     }
 
@@ -104,6 +109,7 @@ public class DriverServiceImplTest {
     @Test
     public void testUpdateDrive() throws Exception {
         Mockito.when(driverDaoMoc.findUniqueByNumber(13)).thenReturn(getDriverForTest());
+        Mockito.when(cityDao.findUniqueByName(getDriverForTest().getCity().getName())).thenReturn(getCityForTest());
         driverService.updateDrive(getDriverForTest());
     }
 
@@ -112,6 +118,7 @@ public class DriverServiceImplTest {
     public void testUpdateDriveNotFound() {
         try {
             Mockito.when(driverDaoMoc.findUniqueByNumber(13)).thenReturn(null);
+            Mockito.when(cityDao.findUniqueByName(getDriverForTest().getCity().getName())).thenReturn(getCityForTest());
             driverService.updateDrive(getDriverForTest());
         } catch (ServiceException e) {
             Assert.assertEquals(ServiceStatusCode.DRIVER_NOT_FOUND,e.getStatusCode());
@@ -129,6 +136,7 @@ public class DriverServiceImplTest {
             order.setNumber(2323);
             driver.setOrder(order);
             Mockito.when(driverDaoMoc.findUniqueByNumber(13)).thenReturn(driver);
+            Mockito.when(cityDao.findUniqueByName(getDriverForTest().getCity().getName())).thenReturn(getCityForTest());
             driverService.updateDrive(driver);
         } catch (ServiceException e) {
             Assert.assertEquals(ServiceStatusCode.DRIVER_ASSIGNED_ORDER,e.getStatusCode());
@@ -186,11 +194,12 @@ public class DriverServiceImplTest {
         driverStatistic1.setTimestamp(new Date());
         driverStatistics.add(driverStatistic1);
         Driver driver = getDriverForTest();
-        Mockito.when(driverDaoMoc.findAllFreeDrivers("Орел")).thenReturn(Arrays.asList(driver));
+        Mockito.when(cityDao.findUniqueByName(getDriverForTest().getCity().getName())).thenReturn(getCityForTest());
+        Mockito.when(driverDaoMoc.findAllFreeDrivers("Orel")).thenReturn(Arrays.asList(driver));
         Mockito.when(driverStatisticDaoMoc.findAllByOneMonth(driver)).thenReturn(driverStatistics);
-        Map<Driver,Integer> map = driverService.findAllAvailableDrivers(30,"Орел");
+        Map<Driver,Integer> map = driverService.findAllAvailableDrivers(30,"Orel");
         Assert.assertEquals(map.get(driver).intValue(),70);
-        map = driverService.findAllAvailableDrivers(120,"Орел");
+        map = driverService.findAllAvailableDrivers(120,"Orel");
         Assert.assertEquals(map.isEmpty(),true);
 
 

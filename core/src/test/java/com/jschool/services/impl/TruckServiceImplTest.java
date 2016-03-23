@@ -2,6 +2,7 @@ package com.jschool.services.impl;
 
 import com.jschool.dao.api.CityDao;
 import com.jschool.dao.api.TruckDao;
+import com.jschool.entities.City;
 import com.jschool.entities.Order;
 import com.jschool.entities.Truck;
 import com.jschool.services.api.TruckService;
@@ -39,12 +40,20 @@ public class TruckServiceImplTest {
         truck.setCapacity(50);
         truck.setShiftSize(2);
         truck.setRepairState(true);
+        truck.setCity(getCityForTest());
         return truck;
+    }
+
+    private City getCityForTest(){
+        City city = new City();
+        city.setName("Orel");
+        return city;
     }
 
     @Test
     public void testAddTruck() throws Exception {
         Mockito.when(truckDaoMoc.findUniqueByNumber(getTruckForTest().getNumber())).thenReturn(null);
+        Mockito.when(cityDao.findUniqueByName(getTruckForTest().getCity().getName())).thenReturn(getCityForTest());
         truckService.addTruck(getTruckForTest());
     }
 
@@ -57,6 +66,7 @@ public class TruckServiceImplTest {
     @Test
     public void testUpdateTruck() throws Exception {
         Mockito.when(truckDaoMoc.findUniqueByNumber(getTruckForTest().getNumber())).thenReturn(getTruckForTest());
+        Mockito.when(cityDao.findUniqueByName(getTruckForTest().getCity().getName())).thenReturn(getCityForTest());
         truckService.updateTruck(getTruckForTest());
     }
 
@@ -108,8 +118,9 @@ public class TruckServiceImplTest {
 
     @Test
     public void testFindAllAvailableTrucksByMinCapacity() throws Exception {
-        Mockito.when(truckDaoMoc.findAllFreeByStateAndGreaterThanCapacity(true,40,"Орел")).thenReturn(Arrays.asList(getTruckForTest()));
-        List<Truck> trucks = truckService.findAllAvailableTrucksByMinCapacity(40,"Орел");
+        Mockito.when(truckDaoMoc.findAllFreeByStateAndGreaterThanCapacity(true,40,"Orel")).thenReturn(Arrays.asList(getTruckForTest()));
+        Mockito.when(cityDao.findUniqueByName(getTruckForTest().getCity().getName())).thenReturn(getCityForTest());
+        List<Truck> trucks = truckService.findAllAvailableTrucksByMinCapacity(40,"Orel");
         Assert.assertEquals(trucks.size(),1);
     }
 }

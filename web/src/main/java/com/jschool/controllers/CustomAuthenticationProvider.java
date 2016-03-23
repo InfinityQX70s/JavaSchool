@@ -1,5 +1,6 @@
 package com.jschool.controllers;
 
+import com.jschool.services.api.UserService;
 import com.jschool.services.impl.UserServiceImpl;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     @Autowired
-    private UserServiceImpl userService;
+    private UserService userService;
     @Autowired
     private HttpServletRequest request;
 

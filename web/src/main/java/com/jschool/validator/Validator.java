@@ -2,8 +2,6 @@ package com.jschool.validator;
 
 import com.jschool.controllers.exception.ControllerException;
 import com.jschool.controllers.exception.ControllerStatusCode;
-import com.sun.javafx.binding.BidirectionalBinding;
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.stereotype.Component;
 
 /**

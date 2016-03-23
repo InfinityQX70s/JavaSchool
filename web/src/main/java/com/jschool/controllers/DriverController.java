@@ -1,6 +1,7 @@
 package com.jschool.controllers;
 
 import com.jschool.entities.Driver;
+import com.jschool.model.JsonResponse;
 import com.jschool.services.api.DriverService;
 import com.jschool.services.api.exception.ServiceException;
 import com.jschool.validator.DriverFormValidator;
@@ -35,6 +36,26 @@ public class DriverController {
         this.driverService = driverService;
         this.driverFormValidator = driverFormValidator;
     }
+
+
+    @RequestMapping(value = "/api/verify")
+    public @ResponseBody
+    JsonResponse sendVerifyCode(@RequestParam(value = "driver") Integer number) {
+        try {
+            driverService.sendDriverVerifyCode(number);
+            JsonResponse jsonResponse = new JsonResponse();
+            jsonResponse.setStatus("ok");
+            jsonResponse.setResult("Verification code send successfully");
+            return jsonResponse;
+        } catch (ServiceException e) {
+            LOG.warn(e.getMessage());
+            JsonResponse jsonResponse = new JsonResponse();
+            jsonResponse.setStatus("error");
+            jsonResponse.setResult(e.getMessage());
+            return jsonResponse;
+        }
+    }
+
 
     @RequestMapping(value = "/employee/drivers", method = RequestMethod.GET)
     public String showDrivers(@RequestParam(value = "page", defaultValue = "1") int page, Model model, RedirectAttributes redirectAttributes){
@@ -126,6 +147,5 @@ public class DriverController {
             }
         }
     }
-
 
 }

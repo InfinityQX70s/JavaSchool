@@ -88,7 +88,6 @@ public class DutyServiceImpl implements DutyService {
         try {
             Driver driver = driverDao.findUniqueByNumber(number);
             if (driver != null) {
-                if (driver.getOrder() != null) {
                     // find last status of driver and check if it is same as current then do nothing
                     DriverStatusLog statusLog = driverStatusLogDao.findLastStatus(driver);
                     if (statusLog.getStatus() != dutyStatus) {
@@ -109,11 +108,13 @@ public class DutyServiceImpl implements DutyService {
                             driverStatusLogDao.create(driverStatusLog);
                         } else {                                        //insert status in db for current driver
                             if (dutyStatus == DriverStatus.driving) {
-                                List<Driver> drivers = driver.getOrder().getDrivers();
-                                for (Driver coDriver : drivers) {
-                                    DriverStatusLog coStatusLog = driverStatusLogDao.findLastStatus(coDriver);
-                                    if (coStatusLog.getStatus() == DriverStatus.driving) {
-                                        throw new ServiceException("CoDriver in this order already driving", ServiceStatusCode.CODRIVER_DRIVING);
+                                if (driver.getOrder() != null) {
+                                    List<Driver> drivers = driver.getOrder().getDrivers();
+                                    for (Driver coDriver : drivers) {
+                                        DriverStatusLog coStatusLog = driverStatusLogDao.findLastStatus(coDriver);
+                                        if (coStatusLog.getStatus() == DriverStatus.driving) {
+                                            throw new ServiceException("CoDriver in this order already driving", ServiceStatusCode.CODRIVER_DRIVING);
+                                        }
                                     }
                                 }
                             }
@@ -126,9 +127,6 @@ public class DutyServiceImpl implements DutyService {
                     }else{
                         throw new ServiceException("Driver already has this status", ServiceStatusCode.DRIVER_HAS_STAUS);
                     }
-                } else {
-                    throw new ServiceException("Driver don't assign at order", ServiceStatusCode.DRIVER_NOT_ASSIGNED);
-                }
             } else {
                 throw new ServiceException("Driver not found", ServiceStatusCode.DRIVER_NOT_FOUND);
             }

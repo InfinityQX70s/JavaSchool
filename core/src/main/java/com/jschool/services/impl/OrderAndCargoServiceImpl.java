@@ -332,4 +332,72 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
         }
     }
 
+    public List<String> getMaxWeight(String[] cargoWeight, String[] pickup, String[] unload){
+        int maxWeight = 0;
+        String maxCity = "";
+        for (int i = 0; i < cargoWeight.length; i++) {
+            int j = i;
+            int maxWeightLocal = 0;
+            while (j < cargoWeight.length && pickup[i].equals(pickup[j])) {
+                maxWeightLocal += Integer.parseInt(cargoWeight[j]);
+                j++;
+            }
+            if (maxWeightLocal > maxWeight) {
+                maxWeight = maxWeightLocal;
+                maxCity = pickup[i];
+            }
+            j = i;
+            maxWeightLocal = 0;
+            while (j < cargoWeight.length && unload[i].equals(unload[j])) {
+                maxWeightLocal += Integer.parseInt(cargoWeight[j]);
+                j++;
+            }
+            if (maxWeightLocal > maxWeight) {
+                maxWeight = maxWeightLocal;
+                maxCity = unload[i];
+            }
+        }
+        List<String> info = new ArrayList<>();
+        info.add(String.valueOf(maxWeight));
+        info.add(maxCity);
+        return info;
+    }
+
+    public void fillRoute(List<String> cities, List<Integer> countOfUse, String[] pickupCity, String[] unloadCity){
+        int i = 0;
+        while (i<pickupCity.length){
+            cities.add(pickupCity[i]);
+            cities.add(unloadCity[i]);
+            countOfUse.add(0);
+            countOfUse.add(0);
+            int j = i;
+            while (j < pickupCity.length && pickupCity[i].equals(pickupCity[j]) && unloadCity[i].equals(unloadCity[j])){
+                countOfUse.set(countOfUse.size()-1,countOfUse.get(countOfUse.size()-1)+1);
+                countOfUse.set(countOfUse.size()-2,countOfUse.get(countOfUse.size()-2)+1);
+                j++;
+            }
+            if (j < pickupCity.length && pickupCity[i].equals(pickupCity[j]) && !unloadCity[i].equals(unloadCity[j])){
+                int position = countOfUse.size()-1;
+                while (j < pickupCity.length && pickupCity[i].equals(pickupCity[j]) && !unloadCity[i].equals(unloadCity[j])){
+                    cities.add(unloadCity[j]);
+                    countOfUse.set(position,countOfUse.get(position)+1);
+                    countOfUse.add(1);
+                    j++;
+                }
+            }else if (j < pickupCity.length && !pickupCity[i].equals(pickupCity[j]) && unloadCity[i].equals(unloadCity[j])){
+                while (j < pickupCity.length && !pickupCity[i].equals(pickupCity[j]) && unloadCity[i].equals(unloadCity[j])){
+                    String helpCity = cities.get(cities.size()-1);
+                    cities.set(cities.size()-1,pickupCity[j]);
+                    cities.add(helpCity);
+                    Integer value = countOfUse.get(countOfUse.size()-1);
+                    countOfUse.set(countOfUse.size()-1,1);
+                    countOfUse.add(value + 1);
+                    j++;
+                }
+            }
+            i=j;
+        }
+    }
+
+
 }

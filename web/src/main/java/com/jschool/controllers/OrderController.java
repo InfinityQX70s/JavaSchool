@@ -90,7 +90,7 @@ public class OrderController{
                     String[] pickup = req.getParameterValues("pickup");
                     String[] unload = req.getParameterValues("unload");
                     validator.validateOrderAndCargo(orderNumber, cargoNumber, cargoName, cargoWeight, pickup, unload);
-                    List<String> info = getMaxWeight(cargoWeight,pickup,unload);
+                    List<String> info = orderAndCargoService.getMaxWeight(cargoWeight,pickup,unload);
                     int maxWeight = Integer.parseInt(info.get(0));
                     String maxCity = info.get(1);
                     List<Truck> trucks = truckService.findAllAvailableTrucksByMinCapacity(maxWeight,pickup[0]);
@@ -106,9 +106,7 @@ public class OrderController{
                     validator.validateCargoCities(pickupCity, unloadCity);
                     List<String> cities = new ArrayList<>();
                     List<Integer> countOfUse = new ArrayList<>();
-                    fillRoute(cities,countOfUse, pickupCity, unloadCity);
-                    LOG.warn(cities);
-                    LOG.warn(countOfUse);
+                    orderAndCargoService.fillRoute(cities,countOfUse, pickupCity, unloadCity);
                     model.addAttribute("cities", cities);
                     return "order/orderMap";
                 case "4":
@@ -125,10 +123,9 @@ public class OrderController{
                     model.addAttribute("shiftSize", truck.getShiftSize());
                     return "order/orderDrivers";
             }
-        } catch (ServiceException e) {
+        } catch (ServiceException | ControllerException e) {
             LOG.warn(e.getMessage());
-        }catch (ControllerException e){
-            LOG.warn(e.getMessage());
+
         }
         return "redirect:/employee/orders";
     }
@@ -153,7 +150,7 @@ public class OrderController{
 
             List<String> cities = new ArrayList<>();
             List<Integer> countOfUse = new ArrayList<>();
-            fillRoute(cities,countOfUse, pickup, unload);
+            orderAndCargoService.fillRoute(cities,countOfUse, pickup, unload);
 
             Order order = new Order();
             order.setNumber(Integer.parseInt(orderNumber));
@@ -203,12 +200,12 @@ public class OrderController{
                 drivers.add(driverService.getDriverByPersonalNumber(Integer.parseInt(driver)));
             order.setTruck(truck);
             order.setDrivers(drivers);
-            List<String> info = getMaxWeight(cargoWeight,pickup,unload);
+            List<String> info = orderAndCargoService.getMaxWeight(cargoWeight,pickup,unload);
             int maxWeight = Integer.parseInt(info.get(0));
             orderAndCargoService.addOrder(order, cargos, Integer.parseInt(duration), maxWeight);
-//            for (Driver driver : drivers){
-//                driverService.sendOrderSms(driver,order.getNumber());
-//            }
+            for (Driver driver : drivers){
+                driverService.sendOrderSms(driver,order.getNumber());
+            }
             JsonResponse jsonResponse = new JsonResponse();
             jsonResponse.setStatus("success");
             return jsonResponse;
@@ -228,70 +225,4 @@ public class OrderController{
         return jsonResponse;
     }
 
-    private List<String> getMaxWeight(String[] cargoWeight, String[] pickup, String[] unload){
-        int maxWeight = 0;
-        String maxCity = "";
-        for (int i = 0; i < cargoWeight.length; i++) {
-            int j = i;
-            int maxWeightLocal = 0;
-            while (j < cargoWeight.length && pickup[i].equals(pickup[j])) {
-                maxWeightLocal += Integer.parseInt(cargoWeight[j]);
-                j++;
-            }
-            if (maxWeightLocal > maxWeight) {
-                maxWeight = maxWeightLocal;
-                maxCity = pickup[i];
-            }
-            j = i;
-            maxWeightLocal = 0;
-            while (j < cargoWeight.length && unload[i].equals(unload[j])) {
-                maxWeightLocal += Integer.parseInt(cargoWeight[j]);
-                j++;
-            }
-            if (maxWeightLocal > maxWeight) {
-                maxWeight = maxWeightLocal;
-                maxCity = unload[i];
-            }
-        }
-        List<String> info = new ArrayList<>();
-        info.add(String.valueOf(maxWeight));
-        info.add(maxCity);
-        return info;
-    }
-
-    private void fillRoute(List<String> cities, List<Integer> countOfUse, String[] pickupCity, String[] unloadCity){
-        int i = 0;
-        while (i<pickupCity.length){
-            cities.add(pickupCity[i]);
-            cities.add(unloadCity[i]);
-            countOfUse.add(0);
-            countOfUse.add(0);
-            int j = i;
-            while (j < pickupCity.length && pickupCity[i].equals(pickupCity[j]) && unloadCity[i].equals(unloadCity[j])){
-                countOfUse.set(countOfUse.size()-1,countOfUse.get(countOfUse.size()-1)+1);
-                countOfUse.set(countOfUse.size()-2,countOfUse.get(countOfUse.size()-2)+1);
-                j++;
-            }
-            if (j < pickupCity.length && pickupCity[i].equals(pickupCity[j]) && !unloadCity[i].equals(unloadCity[j])){
-                int position = countOfUse.size()-1;
-                while (j < pickupCity.length && pickupCity[i].equals(pickupCity[j]) && !unloadCity[i].equals(unloadCity[j])){
-                    cities.add(unloadCity[j]);
-                    countOfUse.set(position,countOfUse.get(position)+1);
-                    countOfUse.add(1);
-                    j++;
-                }
-            }else if (j < pickupCity.length && !pickupCity[i].equals(pickupCity[j]) && unloadCity[i].equals(unloadCity[j])){
-                while (j < pickupCity.length && !pickupCity[i].equals(pickupCity[j]) && unloadCity[i].equals(unloadCity[j])){
-                    String helpCity = cities.get(cities.size()-1);
-                    cities.set(cities.size()-1,pickupCity[j]);
-                    cities.add(helpCity);
-                    Integer value = countOfUse.get(countOfUse.size()-1);
-                    countOfUse.set(countOfUse.size()-1,1);
-                    countOfUse.add(value + 1);
-                    j++;
-                }
-            }
-            i=j;
-        }
-    }
 }

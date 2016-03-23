@@ -6,7 +6,6 @@ import com.jschool.services.api.DutyService;
 import com.jschool.services.api.OrderAndCargoService;
 import com.jschool.services.api.OrderManagementService;
 import com.jschool.services.api.exception.ServiceException;
-import com.sun.xml.internal.ws.api.message.Packet;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;

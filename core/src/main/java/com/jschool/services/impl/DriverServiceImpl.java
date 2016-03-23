@@ -6,18 +6,14 @@ import com.jschool.entities.*;
 import com.jschool.services.api.DriverService;
 import com.jschool.services.api.exception.ServiceException;
 import com.jschool.services.api.exception.ServiceStatusCode;
-import com.twilio.sdk.TwilioRestClient;
-import com.twilio.sdk.TwilioRestException;
-import com.twilio.sdk.resource.factory.MessageFactory;
-import com.twilio.sdk.resource.instance.Message;
+import com.jschool.utils.SmsUtil;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -33,10 +29,7 @@ public class DriverServiceImpl implements DriverService{
     private DriverDao driverDao;
     private DriverStatisticDao driverStatisticDao;
     private DriverAuthCodeDao driverAuthCodeDao;
-    public static final String ACCOUNT_SID = "ACe0f5fa002b53662f3c016fef1859ba83";
-    public static final String AUTH_TOKEN = "fe6042cb993d8b698ded968c7c6e6b61";
-    private TwilioRestClient client;
-    private MessageFactory messageFactory;
+    private SmsUtil smsUtil;
 
     @Autowired
     public DriverServiceImpl(UserDao userDao, DriverDao driverDao,
@@ -47,8 +40,7 @@ public class DriverServiceImpl implements DriverService{
         this.driverStatisticDao = driverStatisticDao;
         this.driverAuthCodeDao = driverAuthCodeDao;
         this.cityDao = cityDao;
-        client = new TwilioRestClient(ACCOUNT_SID, AUTH_TOKEN);
-        messageFactory = client.getAccount().getMessageFactory();
+        smsUtil = new SmsUtil();
     }
 
     /**Create driver and user bended with him in DB and set driver status on
@@ -238,15 +230,10 @@ public class DriverServiceImpl implements DriverService{
     public void sendOrderSms(Driver driver, int orderNumber) throws ServiceException {
         try {
             if (driver != null){
-                List<NameValuePair> params = new ArrayList<>();
-                params.add(new BasicNameValuePair("To", driver.getPhoneNumber()));
-                params.add(new BasicNameValuePair("From", "+12018967322"));
-                params.add(new BasicNameValuePair("Body", "You successfully assign at order " + orderNumber));
-
-                messageFactory.create(params);
+                smsUtil.sendSms(driver.getPhoneNumber(), "You successfully assign at order " + orderNumber);
             }else
                 throw new ServiceException("Driver not found", ServiceStatusCode.DRIVER_NOT_FOUND);
-        }catch (TwilioRestException e) {
+        }catch (IOException | InterruptedException e) {
             LOG.warn(e.getMessage());
             throw new ServiceException("Problem with sending sms", e, ServiceStatusCode.TWILIO_EXCEPTION);
         }
@@ -260,12 +247,7 @@ public class DriverServiceImpl implements DriverService{
             if (driver != null){
                 Random random = new Random();
                 int code = 100000 + random.nextInt(900000);
-                List<NameValuePair> params = new ArrayList<>();
-                params.add(new BasicNameValuePair("To", driver.getPhoneNumber()));
-                params.add(new BasicNameValuePair("From", "+12018967322"));
-                params.add(new BasicNameValuePair("Body", "Your verification code: " + code));
-
-                messageFactory.create(params);
+                smsUtil.sendSms(driver.getPhoneNumber(), "Your verification code: " + code);
                 DriverAuthCode driverAuthCode = new DriverAuthCode();
                 driverAuthCode.setCode(code);
                 driverAuthCode.setTimestamp(new Date());
@@ -273,7 +255,7 @@ public class DriverServiceImpl implements DriverService{
                 driverAuthCodeDao.create(driverAuthCode);
             }else
                 throw new ServiceException("Driver not found", ServiceStatusCode.DRIVER_NOT_FOUND);
-        }catch (TwilioRestException e) {
+        }catch (IOException | InterruptedException e) {
             LOG.warn(e.getMessage());
             throw new ServiceException("Problem with sending sms", e, ServiceStatusCode.TWILIO_EXCEPTION);
         } catch (DaoException e) {

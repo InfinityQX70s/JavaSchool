@@ -4,7 +4,7 @@
 <head>
     <!--Import Google Icon Font-->
     <title>Login</title>
-    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!--Import materialize.css-->
     <link type="text/css" rel="stylesheet" href="/css/materialize.css" media="screen,projection"/>
     <script type="text/javascript" src="/js/jquery-2.1.1.min.js"></script>

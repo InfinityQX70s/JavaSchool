@@ -2,6 +2,7 @@ package com.jschool.services.impl;
 
 import com.jschool.dao.api.*;
 import com.jschool.entities.*;
+import com.jschool.services.api.DutyService;
 import com.jschool.services.api.OrderAndCargoService;
 import com.jschool.services.api.OrderManagementService;
 import org.junit.Before;
@@ -34,10 +35,10 @@ public class OrderManagementServiceImplTest {
         cargo.setWeight(50);
 
         City pickCity = new City();
-        pickCity.setName("Орел");
+        pickCity.setName("Orel");
 
         City unloadCity = new City();
-        unloadCity.setName("Москва");
+        unloadCity.setName("Moskva");
 
         List<RoutePoint> routePoints = new ArrayList<>();
 
@@ -58,6 +59,9 @@ public class OrderManagementServiceImplTest {
         order.setDoneState(false);
         order.setRoutePoints(routePoints);
         order.setDrivers(Arrays.asList(driver));
+
+        Truck truck = new Truck();
+        order.setTruck(truck);
 
         RoutePoint pickRoute = new RoutePoint();
         pickRoute.setPoint(0);

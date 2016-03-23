@@ -62,6 +62,9 @@ public class OrderAndCargoServiceImplTest {
         truck.setNumber("EW23456");
         truck.setCapacity(50);
         truck.setShiftSize(1);
+        City city = new City();
+        city.setName("Орел");
+        truck.setCity(city);
         return truck;
     }
 
@@ -70,6 +73,9 @@ public class OrderAndCargoServiceImplTest {
         truck.setNumber("EW23456");
         truck.setCapacity(50);
         truck.setShiftSize(0);
+        City city = new City();
+        city.setName("Орел");
+        truck.setCity(city);
         return truck;
     }
 
@@ -89,6 +95,9 @@ public class OrderAndCargoServiceImplTest {
         truck.setNumber("EW23456");
         truck.setCapacity(40);
         truck.setShiftSize(1);
+        City city = new City();
+        city.setName("Орел");
+        truck.setCity(city);
         return truck;
     }
 
@@ -97,6 +106,9 @@ public class OrderAndCargoServiceImplTest {
         driver.setNumber(13);
         driver.setFirstName("Ivan");
         driver.setLastName("Ivanov");
+        City city = new City();
+        city.setName("Орел");
+        driver.setCity(city);
         return driver;
     }
 

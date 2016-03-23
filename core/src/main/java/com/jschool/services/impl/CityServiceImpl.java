@@ -3,7 +3,7 @@ package com.jschool.services.impl;
 import com.jschool.dao.api.CityDao;
 import com.jschool.dao.api.exception.DaoException;
 import com.jschool.entities.City;
-import com.jschool.services.api.ApiService;
+import com.jschool.services.api.CityService;
 import com.jschool.services.api.exception.ServiceException;
 import com.jschool.services.api.exception.ServiceStatusCode;
 import org.apache.log4j.Logger;
@@ -17,14 +17,14 @@ import java.util.List;
  * Created by infinity on 10.03.16.
  */
 @Service
-public class ApiServiceImpl implements ApiService{
+public class CityServiceImpl implements CityService {
 
-    private static final Logger LOG = Logger.getLogger(ApiServiceImpl.class);
+    private static final Logger LOG = Logger.getLogger(CityServiceImpl.class);
 
     private CityDao cityDao;
 
     @Autowired
-    public ApiServiceImpl(CityDao cityDao) {
+    public CityServiceImpl(CityDao cityDao) {
         this.cityDao = cityDao;
     }
 

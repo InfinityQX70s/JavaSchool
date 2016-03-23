@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by infinity on 10.03.16.
  */
-public interface ApiService {
+public interface CityService {
 
     List<City> findAllCitiesByName(String query) throws ServiceException;
 }

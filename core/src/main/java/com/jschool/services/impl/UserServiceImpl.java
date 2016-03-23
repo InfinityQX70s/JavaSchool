@@ -67,6 +67,8 @@ public class UserServiceImpl implements UserService{
         }
     }
 
+    @Override
+    @Transactional
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         try {
             User user = userDao.findUniqueByEmail(email);
@@ -84,16 +86,19 @@ public class UserServiceImpl implements UserService{
         }
     }
 
+    @Override
+    @Transactional
     public UserDetails loadUserByUsername(int number) throws UsernameNotFoundException {
         try {
             Driver driver = driverDao.findUniqueByNumber(number);
             if (driver == null) {
                 throw new UsernameNotFoundException(String.valueOf(number));
             } else {
-                DriverAuthCode driverAuthCode = driverAuthCodeDao.findLastCode(driver);
-                if (driverAuthCode == null){
+                List<DriverAuthCode> driverAuthCodes = driverAuthCodeDao.findLastCode(driver);
+                if (driverAuthCodes.isEmpty()){
                     throw new UsernameNotFoundException("Driver verify code not found");
                 }
+                DriverAuthCode driverAuthCode = driverAuthCodes.get(0);
                 String verifyCode = String.valueOf(driverAuthCode.getCode());
                 GrantedAuthority userRole = new SimpleGrantedAuthority("ROLE_DRIVER");
                 List<GrantedAuthority> authorities = new ArrayList<>();

@@ -11,5 +11,5 @@ import java.util.List;
  */
 public interface DriverAuthCodeDao extends GenericDao<DriverAuthCode>{
 
-    DriverAuthCode findLastCode(Driver driver) throws DaoException;
+    List<DriverAuthCode> findLastCode(Driver driver) throws DaoException;
 }

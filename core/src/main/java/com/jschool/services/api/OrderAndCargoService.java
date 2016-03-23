@@ -19,5 +19,6 @@ public interface OrderAndCargoService {
     List<RoutePoint> findAllRoutePointsByOrderNumber(Order order) throws ServiceException;
     Truck getAssignedTruckByOrderNumber(int orderNumber) throws ServiceException;
     List<Driver> getAllAssignedDriversByOrderNumber(int orderNumber) throws ServiceException;
-
+    List<String> getMaxWeight(String[] cargoWeight, String[] pickup, String[] unload);
+    void fillRoute(List<String> cities, List<Integer> countOfUse, String[] pickupCity, String[] unloadCity);
 }
