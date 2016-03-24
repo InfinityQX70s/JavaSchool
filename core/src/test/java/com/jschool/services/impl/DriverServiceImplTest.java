@@ -6,6 +6,8 @@ import com.jschool.entities.*;
 import com.jschool.services.api.DriverService;
 import com.jschool.services.api.exception.ServiceException;
 import com.jschool.services.api.exception.ServiceStatusCode;
+import com.jschool.utils.MailUtil;
+import com.jschool.utils.SmsUtil;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,6 +26,8 @@ public class DriverServiceImplTest {
     private DriverStatisticDao driverStatisticDaoMoc;
     private DriverAuthCodeDao driverAuthCodeDaoMoc;
     private DriverService driverService;
+    private SmsUtil smsUtil;
+    private MailUtil mailUtil;
 
     @Before
     public void setUp() throws Exception {
@@ -32,7 +36,8 @@ public class DriverServiceImplTest {
         cityDao = Mockito.mock(CityDao.class);
         driverStatisticDaoMoc = Mockito.mock(DriverStatisticDao.class);
         driverAuthCodeDaoMoc = Mockito.mock(DriverAuthCodeDao.class);
-        driverService = new DriverServiceImpl(userDaoMoc,driverDaoMoc,driverStatisticDaoMoc,cityDao,driverAuthCodeDaoMoc);
+        driverService = new DriverServiceImpl(userDaoMoc,driverDaoMoc,driverStatisticDaoMoc,cityDao,driverAuthCodeDaoMoc,
+                smsUtil,mailUtil);
     }
 
     private Driver getDriverForTest(){

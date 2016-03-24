@@ -1,5 +1,7 @@
 package com.jschool.utils;
 
+import org.springframework.stereotype.Component;
+
 import java.net.*;
 import java.io.*;
 import java.lang.Math;
@@ -7,6 +9,7 @@ import java.lang.Math;
 /**
  * Created by infinity on 20.03.16.
  */
+@Component
 public class SmsUtil {
     String SMSC_LOGIN = "mazumisha";     // логин клиента
     String SMSC_PASSWORD = "de157ecb35aa035a255a6121feb4cc55";  // пароль или MD5-хеш пароля в нижнем регистре

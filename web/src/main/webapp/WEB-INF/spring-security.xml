@@ -11,6 +11,7 @@
         <intercept-url pattern="/api/**" access="permitAll" />
         <intercept-url pattern="/employee/**" access="hasRole('ROLE_EMPLOYEE')" />
         <intercept-url pattern="/driver" access="hasRole('ROLE_DRIVER')" />
+        <intercept-url pattern="/share/**" access="permitAll" />
         <form-login login-page="/sign" authentication-failure-url="/sign?error=true" username-parameter="email"/>
         <csrf disabled="true"/>
     </http>

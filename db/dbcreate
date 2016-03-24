@@ -79,6 +79,7 @@ CREATE TABLE IF NOT EXISTS `logiweb`.`Driver` (
   `firstName` VARCHAR(45) NOT NULL,
   `lastName` VARCHAR(45) NOT NULL,
   `phoneNumber` VARCHAR(20) NOT NULL,
+  `token` VARCHAR(32) NULL,
   `user_id` INT NOT NULL,
   `order_id` INT NULL,
   `сity_id` INT NOT NULL,

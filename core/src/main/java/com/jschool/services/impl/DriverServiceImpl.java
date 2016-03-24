@@ -6,6 +6,7 @@ import com.jschool.entities.*;
 import com.jschool.services.api.DriverService;
 import com.jschool.services.api.exception.ServiceException;
 import com.jschool.services.api.exception.ServiceStatusCode;
+import com.jschool.utils.MailUtil;
 import com.jschool.utils.SmsUtil;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.log4j.Logger;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.mail.MessagingException;
 import java.io.IOException;
 import java.util.*;
 
@@ -30,17 +32,19 @@ public class DriverServiceImpl implements DriverService{
     private DriverStatisticDao driverStatisticDao;
     private DriverAuthCodeDao driverAuthCodeDao;
     private SmsUtil smsUtil;
+    private MailUtil mailUtil;
 
     @Autowired
     public DriverServiceImpl(UserDao userDao, DriverDao driverDao,
                              DriverStatisticDao driverStatisticDao, CityDao cityDao,
-                             DriverAuthCodeDao driverAuthCodeDao) {
+                             DriverAuthCodeDao driverAuthCodeDao, SmsUtil smsUtil, MailUtil mailUtil) {
         this.userDao = userDao;
         this.driverDao = driverDao;
         this.driverStatisticDao = driverStatisticDao;
         this.driverAuthCodeDao = driverAuthCodeDao;
         this.cityDao = cityDao;
-        smsUtil = new SmsUtil();
+        this.smsUtil = smsUtil;
+        this.mailUtil = mailUtil;
     }
 
     /**Create driver and user bended with him in DB and set driver status on
@@ -258,6 +262,33 @@ public class DriverServiceImpl implements DriverService{
         }catch (IOException | InterruptedException e) {
             LOG.warn(e.getMessage());
             throw new ServiceException("Problem with sending sms", e, ServiceStatusCode.TWILIO_EXCEPTION);
+        } catch (DaoException e) {
+            LOG.warn(e.getMessage());
+            throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
+        }
+    }
+
+    @Override
+    public void sendInvitatinMail(String driverEmail) throws ServiceException {
+        try {
+            mailUtil.sendInvitationMail(driverEmail);
+        } catch (MessagingException e) {
+            LOG.warn(e.getMessage());
+            throw new ServiceException("Problem with sending email", e, ServiceStatusCode.MAIL_EXCEPTION);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void sendOrderInfoMail(Driver driver) throws ServiceException {
+        try {
+            String token = DigestUtils.md5Hex(driver.getPhoneNumber()+driver.getUser().getEmail());
+            driver.setToken(token);
+            driverDao.update(driver);
+            mailUtil.sendShareMail(driver);
+        } catch (MessagingException e) {
+            LOG.warn(e.getMessage());
+            throw new ServiceException("Problem with sending email", e, ServiceStatusCode.MAIL_EXCEPTION);
         } catch (DaoException e) {
             LOG.warn(e.getMessage());
             throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);

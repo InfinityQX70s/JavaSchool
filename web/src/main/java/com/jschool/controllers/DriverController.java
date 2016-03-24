@@ -92,6 +92,7 @@ public class DriverController {
             driver.getUser().setRole(true);
             try {
                 driverService.addDriver(driver);
+                driverService.sendInvitatinMail(driver.getUser().getEmail());
             } catch (ServiceException e) {
                 LOG.warn(e.getMessage());
                 model.addAttribute("error", errorProperties.getProperty(e.getStatusCode().name()));

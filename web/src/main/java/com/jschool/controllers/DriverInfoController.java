@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -53,31 +54,51 @@ public class DriverInfoController{
             //getting driver from session scope
             String number = SecurityContextHolder.getContext().getAuthentication().getName();
             Driver driver = driverService.getDriverByPersonalNumber(Integer.parseInt(number));
-            Order order = driver.getOrder();
-            if (order != null){
-                model.addAttribute("assign", true);
-                List<Cargo> cargos = orderAndCargoService.findAllCargosByOrderNumber(order.getNumber());
-                List<Driver> drivers = order.getDrivers();
-                List<String> cities = new ArrayList<>();
-                for (Cargo cargo : cargos) {
-                    cities.add(cargo.getPickup().getCity().getName());
-                    cities.add(cargo.getUnload().getCity().getName());
-                }
-                model.addAttribute("cities", cities);
-                model.addAttribute("driver", driver);
-                model.addAttribute("cargos", cargos);
-                model.addAttribute("drivers", drivers);
-                model.addAttribute("order", order);
-            }else{
-                model.addAttribute("assign", false);
-                model.addAttribute("driver", driver);
-            }
+            fillContent(driver,model);
             return "driverInfo";
         } catch (ServiceException e) {
             LOG.warn(e.getMessage());
             model.addAttribute("error", errorProperties.getProperty(e.getStatusCode().name()));
             return "driverInfo";
         }
+    }
 
+    @RequestMapping(value = "/share/{number}/{token}", method = RequestMethod.GET)
+    public String showDriverInfo(Model model, @PathVariable("number") String number, @PathVariable("token") String token){
+        try {
+            Driver driver = driverService.getDriverByPersonalNumber(Integer.parseInt(number));
+            if (driver != null && driver.getToken().equals(token)) {
+                fillContent(driver,model);
+                return "share";
+            }
+            else{
+                throw new ControllerException("Page not found", ControllerStatusCode.PAGE_NOT_FOUND);
+            }
+        } catch (ServiceException | ControllerException e) {
+            LOG.warn(e.getMessage());
+            return "redirect:/sign";
+        }
+    }
+
+    private void fillContent(Driver driver, Model model) throws ServiceException {
+        Order order = driver.getOrder();
+        if (order != null) {
+            model.addAttribute("assign", true);
+            List<Cargo> cargos = orderAndCargoService.findAllCargosByOrderNumber(order.getNumber());
+            List<Driver> drivers = order.getDrivers();
+            List<String> cities = new ArrayList<>();
+            for (Cargo cargo : cargos) {
+                cities.add(cargo.getPickup().getCity().getName());
+                cities.add(cargo.getUnload().getCity().getName());
+            }
+            model.addAttribute("cities", cities);
+            model.addAttribute("driver", driver);
+            model.addAttribute("cargos", cargos);
+            model.addAttribute("drivers", drivers);
+            model.addAttribute("order", order);
+        } else {
+            model.addAttribute("assign", false);
+            model.addAttribute("driver", driver);
+        }
     }
 }

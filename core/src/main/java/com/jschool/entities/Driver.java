@@ -31,6 +31,8 @@ public class Driver {
     private String lastName;
     @Column(name = "phoneNumber", nullable = false)
     private String phoneNumber;
+    @Column(name = "token")
+    private String token;
     @OneToOne(optional=false)
     @JoinColumn(name="user_id", nullable=false)
     private User user;
@@ -81,6 +83,14 @@ public class Driver {
 
     public String getPhoneNumber() {
         return phoneNumber;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public void setPhoneNumber(String phoneNumber) {

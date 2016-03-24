@@ -21,4 +21,6 @@ public interface DriverService {
     List<Driver> findAllDriversByOffset(int offset, int limit) throws ServiceException;
     void sendOrderSms(Driver driver, int orderNumber) throws ServiceException;
     void sendDriverVerifyCode(int number) throws ServiceException;
+    void sendInvitatinMail(String driverEmail) throws ServiceException;
+    void sendOrderInfoMail(Driver driver) throws ServiceException;
 }

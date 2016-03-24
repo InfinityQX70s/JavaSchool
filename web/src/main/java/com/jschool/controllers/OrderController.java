@@ -205,6 +205,7 @@ public class OrderController{
             orderAndCargoService.addOrder(order, cargos, Integer.parseInt(duration), maxWeight);
             for (Driver driver : drivers){
                 driverService.sendOrderSms(driver,order.getNumber());
+                driverService.sendOrderInfoMail(driver);
             }
             JsonResponse jsonResponse = new JsonResponse();
             jsonResponse.setStatus("success");
