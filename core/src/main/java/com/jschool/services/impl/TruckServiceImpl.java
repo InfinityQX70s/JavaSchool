@@ -2,9 +2,11 @@ package com.jschool.services.impl;
 
 import com.jschool.dao.api.CityDao;
 import com.jschool.dao.api.TruckDao;
+import com.jschool.dao.api.TruckStatisticDao;
 import com.jschool.dao.api.exception.DaoException;
 import com.jschool.entities.City;
 import com.jschool.entities.Truck;
+import com.jschool.entities.TruckStatistic;
 import com.jschool.services.api.TruckService;
 import com.jschool.services.api.exception.ServiceException;
 import com.jschool.services.api.exception.ServiceStatusCode;
@@ -13,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -24,11 +27,13 @@ public class TruckServiceImpl implements TruckService{
     private static final Logger LOG = Logger.getLogger(TruckServiceImpl.class);
 
     private TruckDao truckDao;
+    private TruckStatisticDao truckStatisticDao;
     private CityDao cityDao;
 
     @Autowired
-    public TruckServiceImpl(TruckDao truckDao, CityDao cityDao) {
+    public TruckServiceImpl(TruckDao truckDao, CityDao cityDao, TruckStatisticDao truckStatisticDao) {
         this.truckDao = truckDao;
+        this.truckStatisticDao = truckStatisticDao;
         this.cityDao = cityDao;
     }
 
@@ -46,6 +51,11 @@ public class TruckServiceImpl implements TruckService{
                 if (city != null) {
                     truck.setCity(city);
                     truckDao.create(truck);
+                    TruckStatistic truckStatistic = new TruckStatistic();
+                    truckStatistic.setTimestamp(new Date());
+                    truckStatistic.setTruck(truck);
+                    truckStatistic.setCity(city);
+                    truckStatisticDao.create(truckStatistic);
                 } else {
                     throw new ServiceException("City with such name not found", ServiceStatusCode.CITY_NOT_FOUND);
                 }
@@ -69,6 +79,13 @@ public class TruckServiceImpl implements TruckService{
             if (element != null && element.getOreder() == null) {
                 City city = cityDao.findUniqueByName(truck.getCity().getName());
                 if (city != null) {
+                    if (!city.getName().equals(element.getCity().getName())){
+                        TruckStatistic truckStatistic = new TruckStatistic();
+                        truckStatistic.setTimestamp(new Date());
+                        truckStatistic.setTruck(element);
+                        truckStatistic.setCity(city);
+                        truckStatisticDao.create(truckStatistic);
+                    }
                     element.setNumber(truck.getNumber());
                     element.setCapacity(truck.getCapacity());
                     element.setShiftSize(truck.getShiftSize());
@@ -130,6 +147,17 @@ public class TruckServiceImpl implements TruckService{
     public List<Truck> findAllTrucks() throws ServiceException {
         try {
             return truckDao.findAll();
+        }catch (DaoException e) {
+            LOG.warn(e.getMessage());
+            throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor=ServiceException.class)
+    public List<TruckStatistic> findTruckStatisticByOneMonth(Truck truck) throws ServiceException {
+        try {
+            return truckStatisticDao.findAllByOneMonth(truck);
         }catch (DaoException e) {
             LOG.warn(e.getMessage());
             throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);

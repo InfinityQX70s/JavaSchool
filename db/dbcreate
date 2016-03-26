@@ -229,6 +229,30 @@ CREATE TABLE IF NOT EXISTS `logiweb`.`DriverAuthCode` (
 ENGINE = InnoDB;
 
 
+-- -----------------------------------------------------
+-- Table `logiweb`.`TruckStatistic`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `logiweb`.`TruckStatistic` (
+  `idTruckStatistic` INT NOT NULL AUTO_INCREMENT,
+  `timestamp` DATE NOT NULL,
+  `truck_id` INT NOT NULL,
+  `city_id` INT NOT NULL,
+  PRIMARY KEY (`idTruckStatistic`),
+  INDEX `fk_TruckStatistic_Truck1_idx` (`truck_id` ASC),
+  INDEX `fk_TruckStatistic_City1_idx` (`city_id` ASC),
+  CONSTRAINT `fk_TruckStatistic_Truck1`
+    FOREIGN KEY (`truck_id`)
+    REFERENCES `logiweb`.`Truck` (`idTruck`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_TruckStatistic_City1`
+    FOREIGN KEY (`city_id`)
+    REFERENCES `logiweb`.`City` (`idCity`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

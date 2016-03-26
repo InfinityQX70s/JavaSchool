@@ -12,6 +12,7 @@
         <class>com.jschool.entities.Order</class>
         <class>com.jschool.entities.RoutePoint</class>
         <class>com.jschool.entities.Truck</class>
+        <class>com.jschool.entities.TruckStatistic</class>
         <class>com.jschool.entities.User</class>
 
         <properties>

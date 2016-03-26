@@ -1,6 +1,7 @@
 package com.jschool.services.api;
 
 import com.jschool.entities.Truck;
+import com.jschool.entities.TruckStatistic;
 import com.jschool.services.api.exception.ServiceException;
 
 import java.util.List;
@@ -15,6 +16,7 @@ public interface TruckService {
      void deleteTruck(String number) throws ServiceException;
      Truck getTruckByNumber(String number) throws ServiceException;
      List<Truck> findAllTrucks() throws ServiceException;
+     List<TruckStatistic> findTruckStatisticByOneMonth(Truck truck) throws ServiceException;
      List<Truck> findAllAvailableTrucksByMinCapacity(int capacity, String city) throws ServiceException;
      List<Truck> findAllTrucksByOffset(int offset, int limit) throws ServiceException;
 }

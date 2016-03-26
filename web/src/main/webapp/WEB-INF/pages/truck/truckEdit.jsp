@@ -10,6 +10,13 @@
     <jsp:param name="orders" value=""/>
     <jsp:param name="trucks" value="active z-depth-2"/>
 </jsp:include>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('.city').autocomplete({
+            serviceUrl: '/api/cities'
+        });
+    });
+</script>
 <div class="row col s6 z-depth-2  offset-s4 white" style="margin-top:50px;">
     <c:if test="${not empty error}">
         <h5><blockquote>${error}</blockquote></h5>

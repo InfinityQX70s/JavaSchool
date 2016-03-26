@@ -1,6 +1,7 @@
 package com.jschool.entities;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * Created by infinity on 06.02.16.
@@ -33,6 +34,8 @@ public class Truck {
     @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="сity_id", nullable = false)
     private City city;
+    @OneToMany(fetch=FetchType.LAZY, mappedBy = "truck", cascade = CascadeType.ALL)//cascade=CascadeType.ALL
+    private List<TruckStatistic> truckStatistics;
 
     public int getId() {
         return id;
@@ -88,5 +91,13 @@ public class Truck {
 
     public void setCity(City city) {
         this.city = city;
+    }
+
+    public List<TruckStatistic> getTruckStatistics() {
+        return truckStatistics;
+    }
+
+    public void setTruckStatistics(List<TruckStatistic> truckStatistics) {
+        this.truckStatistics = truckStatistics;
     }
 }

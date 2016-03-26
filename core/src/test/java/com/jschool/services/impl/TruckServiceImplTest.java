@@ -2,6 +2,7 @@ package com.jschool.services.impl;
 
 import com.jschool.dao.api.CityDao;
 import com.jschool.dao.api.TruckDao;
+import com.jschool.dao.api.TruckStatisticDao;
 import com.jschool.entities.City;
 import com.jschool.entities.Order;
 import com.jschool.entities.Truck;
@@ -25,13 +26,15 @@ public class TruckServiceImplTest {
 
     private TruckDao truckDaoMoc;
     private CityDao cityDao;
+    private TruckStatisticDao truckStatisticDao;
     private TruckService truckService;
 
     @Before
     public void setUp() throws Exception {
         truckDaoMoc = Mockito.mock(TruckDao.class);
         cityDao = Mockito.mock(CityDao.class);
-        truckService = new TruckServiceImpl(truckDaoMoc,cityDao);
+        truckStatisticDao = Mockito.mock(TruckStatisticDao.class);
+        truckService = new TruckServiceImpl(truckDaoMoc,cityDao,truckStatisticDao);
     }
 
     private Truck getTruckForTest(){
