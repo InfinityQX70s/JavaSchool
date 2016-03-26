@@ -2,6 +2,8 @@ package com.jschool.services.api;
 
 import com.jschool.entities.Driver;
 import com.jschool.entities.DriverAuthCode;
+import com.jschool.entities.DriverStatistic;
+import com.jschool.entities.DriverStatusLog;
 import com.jschool.services.api.exception.ServiceException;
 
 import java.util.List;
@@ -19,6 +21,8 @@ public interface DriverService {
     List<Driver> findAllDrivers() throws ServiceException;
     Map<Driver,Integer> findAllAvailableDrivers(int hoursWorked, String city) throws ServiceException;
     List<Driver> findAllDriversByOffset(int offset, int limit) throws ServiceException;
+    List<DriverStatistic> findDriversMonthStatistic(Driver driver) throws ServiceException;
+    DriverStatusLog findLastStatus(Driver driver) throws ServiceException;
     void sendOrderSms(Driver driver, int orderNumber) throws ServiceException;
     void sendDriverVerifyCode(int number) throws ServiceException;
     void sendInvitatinMail(String driverEmail) throws ServiceException;

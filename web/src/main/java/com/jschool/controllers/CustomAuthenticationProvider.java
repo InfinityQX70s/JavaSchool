@@ -9,10 +9,14 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by infinity on 10.03.16.
@@ -47,7 +51,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                 if (!verifyCode.equals(userDetails.getPassword()))
                     throw new BadCredentialsException("Invalid driver verify code");
                 return new UsernamePasswordAuthenticationToken(userDetails, verifyCode, userDetails.getAuthorities());
-            }catch (NumberFormatException e){
+            } catch (NumberFormatException e) {
                 throw new BadCredentialsException("Driver not found");
             }
         } else {

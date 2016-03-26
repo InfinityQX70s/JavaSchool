@@ -1,6 +1,8 @@
 package com.jschool.controllers;
 
 import com.jschool.entities.Driver;
+import com.jschool.entities.DriverStatistic;
+import com.jschool.entities.DriverStatusLog;
 import com.jschool.model.JsonResponse;
 import com.jschool.services.api.DriverService;
 import com.jschool.services.api.exception.ServiceException;
@@ -14,7 +16,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -64,9 +68,19 @@ public class DriverController {
             List<Driver> utilElem = driverService.findAllDrivers();
             int pageCount = (int) Math.ceil(utilElem.size() / (float) limitElements);
             List<Driver> drivers = driverService.findAllDriversByOffset((page - 1) * limitElements, limitElements);
+            Map<Driver, List<DriverStatistic>> driverListMap = new HashMap<>();
+            Map<Driver, DriverStatusLog> driverStatusLogMap = new HashMap<>();
+            for (Driver driver : drivers){
+                List<DriverStatistic> driverStatistics = driverService.findDriversMonthStatistic(driver);
+                DriverStatusLog driverStatusLog = driverService.findLastStatus(driver);
+                driverListMap.put(driver,driverStatistics);
+                driverStatusLogMap.put(driver,driverStatusLog);
+            }
             model.addAttribute("pageCount", pageCount);
             model.addAttribute("currentPage", page);
             model.addAttribute("drivers", drivers);
+            model.addAttribute("driverListMap", driverListMap);
+            model.addAttribute("driverStatusLogMap", driverStatusLogMap);
             return "driver/driver";
         } catch (ServiceException e) {
             LOG.warn(e.getMessage());

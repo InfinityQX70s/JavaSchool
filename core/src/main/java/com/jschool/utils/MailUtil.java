@@ -33,8 +33,8 @@ public class MailUtil {
         message.setRecipients(Message.RecipientType.TO,
                 InternetAddress.parse(driverEmail));
         message.setSubject("Logiweb Invitation");
-        message.setContent("<h5>Congratulation</h5>" +
-                "<br>You were successfully added in Logiweb system, you can login using this link: https://logiweb.herokuapp.com/sign","text/html");
+        message.setContent("<h5>Congratulation!</h5>" +
+                "<p>You were successfully added in Logiweb system, you can login using this link: https://logiweb.herokuapp.com/sign","text/html");
         Transport.send(message);
     }
 
@@ -51,8 +51,7 @@ public class MailUtil {
         message.setRecipients(Message.RecipientType.TO,
                 InternetAddress.parse(driver.getUser().getEmail()));
         message.setSubject("Assign at order");
-        message.setContent("<h5>Congratulation</h5>" +
-                "<br>You were assigned to order, follow this link to watch it: " + link,"text/html");
+        message.setContent("You were assigned to order, follow this link to watch it: " + link,"text/html");
         Transport.send(message);
     }
 

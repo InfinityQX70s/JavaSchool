@@ -10,6 +10,7 @@ import com.jschool.entities.User;
 import com.jschool.services.api.UserService;
 import com.jschool.services.api.exception.ServiceException;
 import com.jschool.services.api.exception.ServiceStatusCode;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -54,6 +55,7 @@ public class UserServiceImpl implements UserService{
      * @throws ServiceException
      */
     @Override
+    @Transactional
     public User findUserByEmail(String email) throws ServiceException {
         try {
             User user = userDao.findUniqueByEmail(email);
@@ -69,16 +71,66 @@ public class UserServiceImpl implements UserService{
 
     @Override
     @Transactional
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    public List<User> findAllManagers() throws ServiceException {
+        try {
+            return userDao.findAllByRole(false);
+        } catch (DaoException e) {
+            LOG.warn(e.getMessage());
+            throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void addUser(User user) throws ServiceException {
+        try {
+            User element = userDao.findUniqueByEmail(user.getEmail());
+            if (element != null) {
+                throw new ServiceException("User with such identifier exist", ServiceStatusCode.USER_ALREADY_EXIST);
+            }else {
+                user.setPassword(DigestUtils.md5Hex(user.getPassword()));
+                userDao.create(user);
+            }
+        } catch (DaoException e) {
+            LOG.warn(e.getMessage());
+            throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void deleteManagerByEmail(String email) throws ServiceException {
         try {
             User user = userDao.findUniqueByEmail(email);
-            if (user == null || user.isRole()) {
-                throw new UsernameNotFoundException(email);
-            } else {
-                GrantedAuthority userRole = new SimpleGrantedAuthority("ROLE_EMPLOYEE");
+            if (user != null){
+                userDao.delete(user);
+            }else
+                throw new ServiceException("User not found", ServiceStatusCode.USER_NOT_FOUND);
+        } catch (DaoException e) {
+            LOG.warn(e.getMessage());
+            throw new ServiceException("Unknown exception", e, ServiceStatusCode.UNKNOWN);
+        }
+    }
+
+    @Override
+    @Transactional
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        try {
+            if (email.equals("admin")){
+                GrantedAuthority userRole = new SimpleGrantedAuthority("ROLE_ADMIN");
                 List<GrantedAuthority> authorities = new ArrayList<>();
                 authorities.add(userRole);
-                return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authorities);
+                return new org.springframework.security.core.userdetails.User(email, DigestUtils.md5Hex(email), authorities);
+            }else {
+                User user = userDao.findUniqueByEmail(email);
+                if (user == null || user.isRole()) {
+                    throw new UsernameNotFoundException(email);
+                } else {
+                    GrantedAuthority userRole = new SimpleGrantedAuthority("ROLE_EMPLOYEE");
+                    List<GrantedAuthority> authorities = new ArrayList<>();
+                    authorities.add(userRole);
+                    return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authorities);
+                }
             }
         } catch (DaoException e) {
             LOG.warn("User Not Found Exception", e);

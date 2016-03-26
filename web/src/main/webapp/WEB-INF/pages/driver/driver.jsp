@@ -1,5 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <jsp:include page="../header.jsp">
     <jsp:param name="title" value="Drivers"/>
@@ -9,9 +9,11 @@
     <jsp:param name="orders" value=""/>
     <jsp:param name="trucks" value=""/>
 </jsp:include>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
 <c:if test="${not empty message}">
-    <script type="text/javascript" >
-        $(document).ready(function(){
+    <script type="text/javascript">
+        $(document).ready(function () {
             Materialize.toast("${message}", 4000);
         });
     </script>
@@ -27,6 +29,7 @@
         <th data-field="phoneNumber">Phone Number</th>
         <th data-field="change"></th>
         <th data-field="delete"></th>
+        <th data-field="info"></th>
     </tr>
     </thead>
 
@@ -54,7 +57,7 @@
                 <td>
                     <form action="/employee/driver/delete" method="post">
                         <input type="hidden" name="number" value="<c:out value="${driver.number}"/>">
-                        <a class="secondary-content light-blue-text text-accent-888" style="margin-right:20px;"
+                        <a class="secondary-content light-blue-text text-accent-888"
                            onclick="parentNode.submit();">
                             <i class="material-icons">clear</i>
                         </a>
@@ -68,6 +71,94 @@
                 <td>
                 </td>
             </c:if>
+            <td>
+                <a class="secondary-content light-blue-text text-accent-888 modal-trigger" href="#modal${driver.number}"
+                   style="margin-right:20px;">
+                    <i class="material-icons">info_outline</i>
+                </a>
+                <div id="modal${driver.number}" class="modal">
+                    <a class="secondary-content disabled right-align light-blue-text text-accent-888 modal-action modal-close">
+                        <i class="material-icons">clear</i></a>
+                    <div class="modal-content">
+                        <blockquote>
+                            <h5>${driver.number} ${driver.firstName} ${driver.lastName}</h5>
+                        </blockquote>
+                        <c:if test="${driver.order != null}">
+                            <h6>Assigned on order: <c:out value="${driver.order.number}"/></h6>
+                            <h6>Truck number : <c:out value="${driver.order.truck.number}"/></h6>
+                        </c:if>
+                        Current status: ${driverStatusLogMap[driver].status}
+                        <div id="container${driver.number}" class="center z-depth-1"></div>
+                        <script type="text/javascript">
+                            $(document).ready(function () {
+                                var categorieList = [
+                                    <c:forEach var="date" items="${driverListMap[driver]}">
+                                    '<c:out value="${date.timestamp}"/>',
+                                    </c:forEach>
+                                ];
+                                $('#container${driver.number}').highcharts({
+                                    chart: {
+                                        type: 'area'
+                                    },
+                                    title: {
+                                        text: 'Driver worked hours statistic'
+                                    },
+                                    xAxis: {
+                                        categories: [
+                                            <c:forEach var="date" items="${driverListMap[driver]}">
+                                            '<c:out value="${date.timestamp}"/>',
+                                            </c:forEach>
+                                        ],
+                                        allowDecimals: false,
+                                        labels: {
+                                            formatter: function () {
+                                                return categorieList[this.value];
+                                            }
+                                        }
+                                    },
+                                    yAxis: {
+                                        title: {
+                                            text: 'Hours'
+                                        },
+                                        labels: {
+                                            formatter: function () {
+                                                return this.value + 'h';
+                                            }
+                                        }
+                                    },
+//                                    tooltip: {
+//                                        pointFormat: '{series.name}: <b>{point.y}</b><br/>',
+//                                        valueSuffix: ' h',
+//                                        shared: true
+//                                    },
+//                                    plotOptions: {
+//                                        area: {
+//                                            marker: {
+//                                                enabled: false,
+//                                                symbol: 'circle',
+//                                                radius: 2,
+//                                                states: {
+//                                                    hover: {
+//                                                        enabled: true
+//                                                    }
+//                                                }
+//                                            }
+//                                        }
+//                                    },
+                                    series: [{
+                                        name: 'Driver hours worked',
+                                        data: [
+                                            <c:forEach var="statistic" items="${driverListMap[driver]}">
+                                            <c:out value="${statistic.hoursWorked}"/>,
+                                            </c:forEach>
+                                        ]
+                                    }]
+                                });
+                            });
+                        </script>
+                    </div>
+                </div>
+            </td>
         </tr>
     </c:forEach>
     </tbody>

@@ -25,6 +25,7 @@ public class DriverServiceImplTest {
     private DriverDao driverDaoMoc;
     private DriverStatisticDao driverStatisticDaoMoc;
     private DriverAuthCodeDao driverAuthCodeDaoMoc;
+    private DriverStatusLogDao driverStatusLogDao;
     private DriverService driverService;
     private SmsUtil smsUtil;
     private MailUtil mailUtil;
@@ -36,7 +37,8 @@ public class DriverServiceImplTest {
         cityDao = Mockito.mock(CityDao.class);
         driverStatisticDaoMoc = Mockito.mock(DriverStatisticDao.class);
         driverAuthCodeDaoMoc = Mockito.mock(DriverAuthCodeDao.class);
-        driverService = new DriverServiceImpl(userDaoMoc,driverDaoMoc,driverStatisticDaoMoc,cityDao,driverAuthCodeDaoMoc,
+        driverStatusLogDao = Mockito.mock(DriverStatusLogDao.class);
+        driverService = new DriverServiceImpl(userDaoMoc,driverDaoMoc,driverStatisticDaoMoc,cityDao,driverAuthCodeDaoMoc,driverStatusLogDao,
                 smsUtil,mailUtil);
     }
 

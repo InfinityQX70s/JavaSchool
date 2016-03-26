@@ -1,4 +1,5 @@
 $(document).ready(function(){
+    $('.modal-trigger').leanModal();
     $('select').material_select();
     $('#wizard').smartWizard(
         {contentURL:'/employee/order/add',

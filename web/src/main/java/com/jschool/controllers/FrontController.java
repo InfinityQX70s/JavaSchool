@@ -40,11 +40,14 @@ public class FrontController {
 
         GrantedAuthority employeeRole = new SimpleGrantedAuthority("ROLE_EMPLOYEE");
         GrantedAuthority driverRole = new SimpleGrantedAuthority("ROLE_DRIVER");
+        GrantedAuthority userRole = new SimpleGrantedAuthority("ROLE_ADMIN");
 
         if (authorities.contains(employeeRole)) {
             return "redirect:/employee/orders";
         }else if (authorities.contains(driverRole)) {
             return "redirect:/driver";
+        }else if (authorities.contains(userRole)) {
+            return "redirect:/admin/users";
         }else
             return "redirect:/sign";
     }
