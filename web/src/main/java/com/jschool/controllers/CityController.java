@@ -2,9 +2,7 @@ package com.jschool.controllers;
 
 import com.jschool.entities.City;
 import com.jschool.model.AutoComplete;
-import com.jschool.model.JsonResponse;
 import com.jschool.services.api.CityService;
-import com.jschool.services.api.DriverService;
 import com.jschool.services.api.exception.ServiceException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +40,7 @@ public class CityController {
             autoComplete.setSuggestions(names);
             return autoComplete;
         } catch (ServiceException e) {
-            LOG.warn(e.getMessage());
+            LOG.warn(e);
             return null;
         }
     }

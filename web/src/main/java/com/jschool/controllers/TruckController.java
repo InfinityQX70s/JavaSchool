@@ -1,6 +1,7 @@
 package com.jschool.controllers;
 
 import com.jschool.entities.Truck;
+import com.jschool.entities.TruckStatistic;
 import com.jschool.services.api.TruckService;
 import com.jschool.services.api.exception.ServiceException;
 import com.jschool.validator.TruckFormValidator;
@@ -13,7 +14,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -41,14 +44,19 @@ public class TruckController{
             int limitElements = 7;
             List<Truck> utilElem = truckService.findAllTrucks();
             int pageCount = (int) Math.ceil(utilElem.size()/(float)limitElements);
-            List<Truck> trucks;
-            trucks = truckService.findAllTrucksByOffset((page-1)*limitElements,limitElements);
+            List<Truck> trucks = truckService.findAllTrucksByOffset((page-1)*limitElements,limitElements);
+            Map<Truck, List<TruckStatistic>> truckListMap = new HashMap<>();
+            for (Truck truck : trucks){
+                List<TruckStatistic> truckStatistics = truckService.findTruckStatisticByOneMonth(truck);
+                truckListMap.put(truck,truckStatistics);
+            }
             model.addAttribute("pageCount", pageCount);
             model.addAttribute("currentPage", page);
             model.addAttribute("trucks", trucks);
+            model.addAttribute("truckListMap", truckListMap);
             return "truck/truck";
         } catch (ServiceException e) {
-            LOG.warn(e.getMessage());
+            LOG.warn(e);
             redirectAttributes.addFlashAttribute("message", errorProperties.getProperty(e.getStatusCode().name()));
             return "redirect:/employee/trucks";
         }
@@ -71,7 +79,7 @@ public class TruckController{
             try {
                 truckService.addTruck(truck);
             } catch (ServiceException e) {
-                LOG.warn(e.getMessage());
+                LOG.warn(e);
                 model.addAttribute("error", errorProperties.getProperty(e.getStatusCode().name()));
                 return "truck/truckAdd";
             }
@@ -87,7 +95,7 @@ public class TruckController{
             redirectAttributes.addFlashAttribute("message", "Truck deleted successfully!");
             return "redirect:/employee/trucks";
         } catch (ServiceException e) {
-            LOG.warn(e.getMessage());
+            LOG.warn(e);
             redirectAttributes.addFlashAttribute("message", errorProperties.getProperty(e.getStatusCode().name()));
             return "redirect:/employee/trucks";
         }
@@ -100,7 +108,7 @@ public class TruckController{
             model.addAttribute("truck", truck);
             return "truck/truckEdit";
         } catch (ServiceException e) {
-            LOG.warn(e.getMessage());
+            LOG.warn(e);
             redirectAttributes.addFlashAttribute("message", errorProperties.getProperty(e.getStatusCode().name()));
             return "redirect:/employee/trucks";
         }
@@ -120,7 +128,7 @@ public class TruckController{
                 redirectAttributes.addFlashAttribute("message", "Truck edited successfully!");
                 return "redirect:/employee/trucks";
             } catch (ServiceException e) {
-                LOG.warn(e.getMessage());
+                LOG.warn(e);
                 model.addAttribute("error", errorProperties.getProperty(e.getStatusCode().name()));
                 return "truck/truckEdit";
             }

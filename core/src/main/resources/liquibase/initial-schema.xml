@@ -2576,8 +2576,137 @@
 			START TRANSACTION;
 			INSERT INTO logiweb.User (idUser, email, password, role) VALUES (15, 'mazumisha@gmail.com', '61fd06bc7bc863dd7efc7263f0486a23', 0);
 			INSERT INTO logiweb.User (idUser, email, password, role) VALUES (25, 'github@gmail.com', 'a2f426c4592934e8be047e585aa61f35', 0);
+			INSERT INTO logiweb.User (idUser, email, password, role) VALUES (26, 'mazu-misha@yandex.ru', '3d0be4610182232354804b103ffcefa3', 1);
+			INSERT INTO logiweb.User (idUser, email, password, role) VALUES (27, 'sveta@yandex.ru', 'a95440f4a73765b571f6f1621797f2e5', 1);
+			INSERT INTO logiweb.User (idUser, email, password, role) VALUES (28, 'test@yandex.ru', 'c3b3fb33ecee99b86a24a017e2e0e9f1', 1);
 			COMMIT;
 
+			START TRANSACTION;
+			INSERT INTO logiweb.Truck (idTruck, number, capacity, shiftSize, repairState, сity_id) VALUES (2, 'ER23456', 40, 1, 1, 4650);
+			INSERT INTO logiweb.Truck (idTruck, number, capacity, shiftSize, repairState, сity_id) VALUES (3, 'WE45434', 50, 1, 1, 4400);
+			INSERT INTO logiweb.Truck (idTruck, number, capacity, shiftSize, repairState, сity_id) VALUES (4, 'SD32453', 50, 1, 0, 4400);
+			COMMIT;
+
+			START TRANSACTION;
+			INSERT INTO logiweb.TruckStatistic (idTruckStatistic, timestamp, truck_id, city_id) VALUES (5, '2016-03-27', 2, 4650);
+			INSERT INTO logiweb.TruckStatistic (idTruckStatistic, timestamp, truck_id, city_id) VALUES (6, '2016-03-27', 2, 5352);
+			INSERT INTO logiweb.TruckStatistic (idTruckStatistic, timestamp, truck_id, city_id) VALUES (7, '2016-03-27', 2, 4400);
+			INSERT INTO logiweb.TruckStatistic (idTruckStatistic, timestamp, truck_id, city_id) VALUES (8, '2016-03-27', 2, 4962);
+			INSERT INTO logiweb.TruckStatistic (idTruckStatistic, timestamp, truck_id, city_id) VALUES (9, '2016-03-27', 3, 4650);
+			INSERT INTO logiweb.TruckStatistic (idTruckStatistic, timestamp, truck_id, city_id) VALUES (10, '2016-03-27', 4, 4650);
+			INSERT INTO logiweb.TruckStatistic (idTruckStatistic, timestamp, truck_id, city_id) VALUES (11, '2016-03-28', 2, 4650);
+			INSERT INTO logiweb.TruckStatistic (idTruckStatistic, timestamp, truck_id, city_id) VALUES (12, '2016-03-28', 3, 4400);
+			INSERT INTO logiweb.TruckStatistic (idTruckStatistic, timestamp, truck_id, city_id) VALUES (13, '2016-03-28', 4, 4400);
+			COMMIT;
+
+			START TRANSACTION;
+			INSERT INTO logiweb.Orders (idOrders, number, doneState, truck_id) VALUES (1, 1, 1, null);
+			INSERT INTO logiweb.Orders (idOrders, number, doneState, truck_id) VALUES (2, 4, 1, null);
+			INSERT INTO logiweb.Orders (idOrders, number, doneState, truck_id) VALUES (3, 6, 1, null);
+			INSERT INTO logiweb.Orders (idOrders, number, doneState, truck_id) VALUES (19, 10, 1, null);
+			INSERT INTO logiweb.Orders (idOrders, number, doneState, truck_id) VALUES (20, 12, 0, 2);
+			INSERT INTO logiweb.Orders (idOrders, number, doneState, truck_id) VALUES (21, 13, 0, 3);
+			COMMIT;
+
+			START TRANSACTION;
+			INSERT INTO logiweb.Driver (idDriver, number, firstName, lastName, phoneNumber, token, user_id, order_id, сity_id) VALUES (1, 100, 'Mikhail', 'Mazurkevich', '+79155031134', '77e25904f9257b422808c2c8c8912874', 26, 20, 4650);
+			INSERT INTO logiweb.Driver (idDriver, number, firstName, lastName, phoneNumber, token, user_id, order_id, сity_id) VALUES (2, 101, 'Svetlana', 'Mazurkevich', '+79155031134', '77afb7833a4e0776affa16cf6814ebdb', 27, null, 4400);
+			INSERT INTO logiweb.Driver (idDriver, number, firstName, lastName, phoneNumber, token, user_id, order_id, сity_id) VALUES (3, 102, 'test', 'test', '+79155031134', '186a7a02ef6e16ad064651211290d316', 28, 21, 4400);
+			COMMIT;
+
+			START TRANSACTION;
+			INSERT INTO logiweb.DriverStatistic (idDriverStatistic, timestamp, hoursWorked, driver_id) VALUES (1, '2016-03-27', 8, 1);
+			INSERT INTO logiweb.DriverStatistic (idDriverStatistic, timestamp, hoursWorked, driver_id) VALUES (2, '2016-03-25', 8, 1);
+			INSERT INTO logiweb.DriverStatistic (idDriverStatistic, timestamp, hoursWorked, driver_id) VALUES (3, '2016-03-28', 8, 1);
+			INSERT INTO logiweb.DriverStatistic (idDriverStatistic, timestamp, hoursWorked, driver_id) VALUES (4, '2016-03-23', 10, 1);
+			INSERT INTO logiweb.DriverStatistic (idDriverStatistic, timestamp, hoursWorked, driver_id) VALUES (5, '2016-03-20', 12, 1);
+			INSERT INTO logiweb.DriverStatistic (idDriverStatistic, timestamp, hoursWorked, driver_id) VALUES (6, '2016-03-19', 5, 1);
+			INSERT INTO logiweb.DriverStatistic (idDriverStatistic, timestamp, hoursWorked, driver_id) VALUES (7, '2016-03-16', 9, 1);
+			INSERT INTO logiweb.DriverStatistic (idDriverStatistic, timestamp, hoursWorked, driver_id) VALUES (8, '2016-03-14', 3, 2);
+			INSERT INTO logiweb.DriverStatistic (idDriverStatistic, timestamp, hoursWorked, driver_id) VALUES (9, '2016-03-16', 5, 2);
+			INSERT INTO logiweb.DriverStatistic (idDriverStatistic, timestamp, hoursWorked, driver_id) VALUES (10, '2016-03-18', 6, 2);
+			INSERT INTO logiweb.DriverStatistic (idDriverStatistic, timestamp, hoursWorked, driver_id) VALUES (11, '2016-03-19', 8, 2);
+			INSERT INTO logiweb.DriverStatistic (idDriverStatistic, timestamp, hoursWorked, driver_id) VALUES (12, '2016-03-22', 9, 2);
+			INSERT INTO logiweb.DriverStatistic (idDriverStatistic, timestamp, hoursWorked, driver_id) VALUES (13, '2016-03-28', 10, 3);
+			INSERT INTO logiweb.DriverStatistic (idDriverStatistic, timestamp, hoursWorked, driver_id) VALUES (14, '2016-03-27', 11, 3);
+			INSERT INTO logiweb.DriverStatistic (idDriverStatistic, timestamp, hoursWorked, driver_id) VALUES (15, '2016-03-24', 9, 3);
+			INSERT INTO logiweb.DriverStatistic (idDriverStatistic, timestamp, hoursWorked, driver_id) VALUES (16, '2016-03-23', 7, 3);
+			INSERT INTO logiweb.DriverStatistic (idDriverStatistic, timestamp, hoursWorked, driver_id) VALUES (17, '2016-03-22', 5, 3);
+			COMMIT;
+
+			START TRANSACTION;
+			INSERT INTO logiweb.RoutePoint (idRoute, point, orders_id, city_id) VALUES (1, 0, 1, 4650);
+			INSERT INTO logiweb.RoutePoint (idRoute, point, orders_id, city_id) VALUES (2, 2, 1, 4400);
+			INSERT INTO logiweb.RoutePoint (idRoute, point, orders_id, city_id) VALUES (3, 1, 1, 5352);
+			INSERT INTO logiweb.RoutePoint (idRoute, point, orders_id, city_id) VALUES (4, 2, 1, 4400);
+			INSERT INTO logiweb.RoutePoint (idRoute, point, orders_id, city_id) VALUES (5, 3, 1, 4400);
+			INSERT INTO logiweb.RoutePoint (idRoute, point, orders_id, city_id) VALUES (6, 4, 1, 4962);
+			INSERT INTO logiweb.RoutePoint (idRoute, point, orders_id, city_id) VALUES (7, 0, 2, 4962);
+			INSERT INTO logiweb.RoutePoint (idRoute, point, orders_id, city_id) VALUES (8, 1, 2, 4650);
+			INSERT INTO logiweb.RoutePoint (idRoute, point, orders_id, city_id) VALUES (9, 0, 3, 4650);
+			INSERT INTO logiweb.RoutePoint (idRoute, point, orders_id, city_id) VALUES (10, 1, 3, 4400);
+			INSERT INTO logiweb.RoutePoint (idRoute, point, orders_id, city_id) VALUES (11, 0, 19, 4650);
+			INSERT INTO logiweb.RoutePoint (idRoute, point, orders_id, city_id) VALUES (12, 1, 19, 4400);
+			INSERT INTO logiweb.RoutePoint (idRoute, point, orders_id, city_id) VALUES (13, 0, 20, 4650);
+			INSERT INTO logiweb.RoutePoint (idRoute, point, orders_id, city_id) VALUES (14, 1, 20, 4400);
+			INSERT INTO logiweb.RoutePoint (idRoute, point, orders_id, city_id) VALUES (15, 0, 21, 4400);
+			INSERT INTO logiweb.RoutePoint (idRoute, point, orders_id, city_id) VALUES (16, 1, 21, 4650);
+			COMMIT;
+
+			START TRANSACTION;
+			INSERT INTO logiweb.Cargo (idCargo, number, name, weight, pickup, unload) VALUES (1, 1, 'Wood', 30, 1, 2);
+			INSERT INTO logiweb.Cargo (idCargo, number, name, weight, pickup, unload) VALUES (2, 2, 'Water', 10, 3, 4);
+			INSERT INTO logiweb.Cargo (idCargo, number, name, weight, pickup, unload) VALUES (3, 3, 'Wood', 30, 5, 6);
+			INSERT INTO logiweb.Cargo (idCargo, number, name, weight, pickup, unload) VALUES (4, 4, 'Wood', 30, 7, 8);
+			INSERT INTO logiweb.Cargo (idCargo, number, name, weight, pickup, unload) VALUES (5, 6, 'Water', 30, 9, 10);
+			INSERT INTO logiweb.Cargo (idCargo, number, name, weight, pickup, unload) VALUES (6, 10, 'Water', 30, 11, 12);
+			INSERT INTO logiweb.Cargo (idCargo, number, name, weight, pickup, unload) VALUES (7, 12, 'Water', 30, 13, 14);
+			INSERT INTO logiweb.Cargo (idCargo, number, name, weight, pickup, unload) VALUES (8, 13, 'Wood', 10, 15, 16);
+			COMMIT;
+
+			START TRANSACTION;
+			INSERT INTO logiweb.CargoStatusLog (idCargoStatusLog, status, timestamp, cargo_id) VALUES (1, 'ready', '2016-03-27 00:42:15', 1);
+			INSERT INTO logiweb.CargoStatusLog (idCargoStatusLog, status, timestamp, cargo_id) VALUES (2, 'ready', '2016-03-27 00:42:15', 2);
+			INSERT INTO logiweb.CargoStatusLog (idCargoStatusLog, status, timestamp, cargo_id) VALUES (3, 'ready', '2016-03-27 00:42:15', 3);
+			INSERT INTO logiweb.CargoStatusLog (idCargoStatusLog, status, timestamp, cargo_id) VALUES (4, 'loaded', '2016-03-27 00:44:08', 1);
+			INSERT INTO logiweb.CargoStatusLog (idCargoStatusLog, status, timestamp, cargo_id) VALUES (5, 'loaded', '2016-03-27 00:44:10', 2);
+			INSERT INTO logiweb.CargoStatusLog (idCargoStatusLog, status, timestamp, cargo_id) VALUES (6, 'delivered', '2016-03-27 00:44:12', 1);
+			INSERT INTO logiweb.CargoStatusLog (idCargoStatusLog, status, timestamp, cargo_id) VALUES (7, 'delivered', '2016-03-27 00:44:20', 2);
+			INSERT INTO logiweb.CargoStatusLog (idCargoStatusLog, status, timestamp, cargo_id) VALUES (8, 'loaded', '2016-03-27 00:44:22', 3);
+			INSERT INTO logiweb.CargoStatusLog (idCargoStatusLog, status, timestamp, cargo_id) VALUES (9, 'delivered', '2016-03-27 00:44:43', 3);
+			INSERT INTO logiweb.CargoStatusLog (idCargoStatusLog, status, timestamp, cargo_id) VALUES (10, 'ready', '2016-03-27 22:11:51', 4);
+			INSERT INTO logiweb.CargoStatusLog (idCargoStatusLog, status, timestamp, cargo_id) VALUES (11, 'loaded', '2016-03-27 22:14:17', 4);
+			INSERT INTO logiweb.CargoStatusLog (idCargoStatusLog, status, timestamp, cargo_id) VALUES (12, 'ready', '2016-03-27 22:22:55', 5);
+			INSERT INTO logiweb.CargoStatusLog (idCargoStatusLog, status, timestamp, cargo_id) VALUES (13, 'ready', '2016-03-28 14:12:21', 6);
+			INSERT INTO logiweb.CargoStatusLog (idCargoStatusLog, status, timestamp, cargo_id) VALUES (14, 'delivered', '2016-03-28 14:41:07', 4);
+			INSERT INTO logiweb.CargoStatusLog (idCargoStatusLog, status, timestamp, cargo_id) VALUES (15, 'loaded', '2016-03-28 14:41:21', 5);
+			INSERT INTO logiweb.CargoStatusLog (idCargoStatusLog, status, timestamp, cargo_id) VALUES (16, 'delivered', '2016-03-28 14:41:23', 5);
+			INSERT INTO logiweb.CargoStatusLog (idCargoStatusLog, status, timestamp, cargo_id) VALUES (17, 'loaded', '2016-03-28 14:41:30', 6);
+			INSERT INTO logiweb.CargoStatusLog (idCargoStatusLog, status, timestamp, cargo_id) VALUES (18, 'delivered', '2016-03-28 14:41:32', 6);
+			INSERT INTO logiweb.CargoStatusLog (idCargoStatusLog, status, timestamp, cargo_id) VALUES (19, 'ready', '2016-03-28 14:42:24', 7);
+			INSERT INTO logiweb.CargoStatusLog (idCargoStatusLog, status, timestamp, cargo_id) VALUES (20, 'ready', '2016-03-28 14:43:56', 8);
+			COMMIT;
+
+
+			START TRANSACTION;
+			INSERT INTO logiweb.DriverStatusLog (idDriverStatusLog, status, timestamp, driver_id) VALUES (1, 'rest', '2016-03-27 00:40:27', 1);
+			INSERT INTO logiweb.DriverStatusLog (idDriverStatusLog, status, timestamp, driver_id) VALUES (2, 'shift', '2016-03-27 00:43:36', 1);
+			INSERT INTO logiweb.DriverStatusLog (idDriverStatusLog, status, timestamp, driver_id) VALUES (3, 'driving', '2016-03-27 00:43:52', 1);
+			INSERT INTO logiweb.DriverStatusLog (idDriverStatusLog, status, timestamp, driver_id) VALUES (4, 'shift', '2016-03-27 00:45:06', 1);
+			INSERT INTO logiweb.DriverStatusLog (idDriverStatusLog, status, timestamp, driver_id) VALUES (5, 'rest', '2016-03-27 00:45:07', 1);
+			INSERT INTO logiweb.DriverStatusLog (idDriverStatusLog, status, timestamp, driver_id) VALUES (6, 'shift', '2016-03-27 22:14:05', 1);
+			INSERT INTO logiweb.DriverStatusLog (idDriverStatusLog, status, timestamp, driver_id) VALUES (7, 'driving', '2016-03-27 22:14:08', 1);
+			INSERT INTO logiweb.DriverStatusLog (idDriverStatusLog, status, timestamp, driver_id) VALUES (8, 'rest', '2016-03-27 22:14:36', 1);
+			INSERT INTO logiweb.DriverStatusLog (idDriverStatusLog, status, timestamp, driver_id) VALUES (9, 'rest', '2016-03-27 22:21:50', 2);
+			INSERT INTO logiweb.DriverStatusLog (idDriverStatusLog, status, timestamp, driver_id) VALUES (10, 'rest', '2016-03-28 14:07:04', 3);
+			INSERT INTO logiweb.DriverStatusLog (idDriverStatusLog, status, timestamp, driver_id) VALUES (11, 'shift', '2016-03-28 14:41:03', 1);
+			INSERT INTO logiweb.DriverStatusLog (idDriverStatusLog, status, timestamp, driver_id) VALUES (12, 'driving', '2016-03-28 14:41:14', 1);
+			INSERT INTO logiweb.DriverStatusLog (idDriverStatusLog, status, timestamp, driver_id) VALUES (13, 'rest', '2016-03-28 14:41:16', 1);
+			INSERT INTO logiweb.DriverStatusLog (idDriverStatusLog, status, timestamp, driver_id) VALUES (14, 'shift', '2016-03-28 14:41:19', 2);
+			INSERT INTO logiweb.DriverStatusLog (idDriverStatusLog, status, timestamp, driver_id) VALUES (15, 'rest', '2016-03-28 14:41:25', 2);
+			INSERT INTO logiweb.DriverStatusLog (idDriverStatusLog, status, timestamp, driver_id) VALUES (16, 'shift', '2016-03-28 14:41:28', 3);
+			INSERT INTO logiweb.DriverStatusLog (idDriverStatusLog, status, timestamp, driver_id) VALUES (17, 'rest', '2016-03-28 14:41:33', 3);
+			COMMIT;
 		</sql>
 	</changeSet>
 

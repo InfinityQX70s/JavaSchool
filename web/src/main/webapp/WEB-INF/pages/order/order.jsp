@@ -31,14 +31,13 @@
                 </c:if>
                 <div class="collapsible-body">
                     <ul class="collection">
-                        <table class="striped white">
+                        <table class="striped centered white">
                             <thead>
                             <tr>
-                                <th data-field="id">Number</th>
+                                <th data-field="number">Point</th>
                                 <th data-field="pickup">Pickup</th>
-                                <th data-field="number">Position</th>
+                                <th data-field="number">Point</th>
                                 <th data-field="unload">Unload</th>
-                                <th data-field="number">Position</th>
                                 <th data-field="name">Name</th>
                                 <th data-field="weight">Weight</th>
                                 <th data-field="status">Status</th>
@@ -48,15 +47,13 @@
                             <tbody>
                             <c:forEach var="cargo" items="${orderList.value}">
                                 <tr>
-                                    <td><c:out value="${cargo.number}"/>
+                                    <td><c:out value="${cargo.pickup.point}"/>
                                     </td>
                                     <td><c:out value="${cargo.pickup.city.name}"/>
                                     </td>
-                                    <td><c:out value="${cargo.pickup.point}"/>
+                                    <td><c:out value="${cargo.unload.point}"/>
                                     </td>
                                     <td><c:out value="${cargo.unload.city.name}"/>
-                                    </td>
-                                    <td><c:out value="${cargo.unload.point}"/>
                                     </td>
                                     <td><c:out value="${cargo.name}"/>
                                     </td>
@@ -69,7 +66,15 @@
                                             <c:forEach var="cargoStatusLog" items="${cargo.statusLogs}"
                                                        varStatus="loop">
                                                 <c:if test="${loop.last}">
-                                                    <c:out value="${cargoStatusLog.status}"/>
+                                                    <c:if test="${cargoStatusLog.status eq 'ready'}">
+                                                        <i class="material-icons" style="color: #31c100">lens</i>
+                                                    </c:if>
+                                                    <c:if test="${cargoStatusLog.status eq 'loaded'}">
+                                                        <i class="material-icons" style="color: #ca7834">local_shipping</i>
+                                                    </c:if>
+                                                    <c:if test="${cargoStatusLog.status eq 'delivered'}">
+                                                        <i class="material-icons" style="color: #6ecddd">done</i>
+                                                    </c:if>
                                                 </c:if>
                                             </c:forEach>
                                         </c:if>

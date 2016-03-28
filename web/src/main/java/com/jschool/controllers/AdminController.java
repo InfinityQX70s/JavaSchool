@@ -45,7 +45,7 @@ public class AdminController {
             model.addAttribute("users", users);
             return "user";
         } catch (ServiceException e) {
-            LOG.warn(e.getMessage());
+            LOG.warn(e);
             redirectAttributes.addFlashAttribute("message", errorProperties.getProperty(e.getStatusCode().name()));
             return "redirect:/admin/users";
         }
@@ -68,7 +68,7 @@ public class AdminController {
             try {
                 userService.addUser(user);
             } catch (ServiceException e) {
-                LOG.warn(e.getMessage());
+                LOG.warn(e);
                 model.addAttribute("error", errorProperties.getProperty(e.getStatusCode().name()));
                 return "userAdd";
             }
@@ -78,13 +78,13 @@ public class AdminController {
     }
 
     @RequestMapping(value = "/admin/user/delete", method = RequestMethod.POST)
-    public String deleteDriver(@RequestParam(value = "email", required = false) String email, Model model, RedirectAttributes redirectAttributes){
+    public String deleteDriver(@RequestParam(value = "email", required = false) String email, RedirectAttributes redirectAttributes){
         try {
             userService.deleteManagerByEmail(email);
             redirectAttributes.addFlashAttribute("message", "User deleted successfully!");
             return "redirect:/admin/users";
         } catch (ServiceException e) {
-            LOG.warn(e.getMessage());
+            LOG.warn(e);
             redirectAttributes.addFlashAttribute("message", errorProperties.getProperty(e.getStatusCode().name()));
             return "redirect:/admin/users";
         }

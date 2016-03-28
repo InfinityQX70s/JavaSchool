@@ -8,7 +8,7 @@ import java.util.Date;
  */
 @Entity
 @NamedQuery(name = "TruckStatistic.findAllByOneMonth",
-        query = "SELECT t FROM TruckStatistic t WHERE t.truck = :truck AND t.timestamp >= :endDate")
+        query = "SELECT t FROM TruckStatistic t WHERE t.truck = :truck AND t.timestamp >= :endDate ORDER BY t.timestamp")
 @Table(name = "TruckStatistic", schema = "logiweb")
 public class TruckStatistic {
     @Id
@@ -18,7 +18,7 @@ public class TruckStatistic {
     @Column(name = "timestamp", nullable = false)
     @Temporal(value = TemporalType.DATE)
     private Date timestamp;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "city_id", nullable = false)
     private City city;
     @ManyToOne(fetch = FetchType.LAZY)

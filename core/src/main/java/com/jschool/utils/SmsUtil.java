@@ -11,36 +11,9 @@ import java.lang.Math;
  */
 @Component
 public class SmsUtil {
-    String SMSC_LOGIN = "mazumisha";     // логин клиента
-    String SMSC_PASSWORD = "de157ecb35aa035a255a6121feb4cc55";  // пароль или MD5-хеш пароля в нижнем регистре
-    boolean SMSC_HTTPS = false;         // использовать HTTPS протокол
-    String SMSC_CHARSET = "utf-8";       // кодировка сообщения: koi8-r, windows-1251 или utf-8 (по умолчанию)
-    boolean SMSC_DEBUG = false;         // флаг отладки
-    boolean SMSC_POST = false;         // Использовать метод POST
-
-    /**
-     * constructors
-     */
-    public SmsUtil() {
-    }
-
-    public SmsUtil(String login, String password) {
-        SMSC_LOGIN = login;
-        SMSC_PASSWORD = password;
-    }
-
-    public SmsUtil(String login, String password, String charset) {
-        SMSC_LOGIN = login;
-        SMSC_PASSWORD = password;
-        SMSC_CHARSET = charset;
-    }
-
-    public SmsUtil(String login, String password, String charset, boolean debug) {
-        SMSC_LOGIN = login;
-        SMSC_PASSWORD = password;
-        SMSC_CHARSET = charset;
-        SMSC_DEBUG = debug;
-    }
+    String one = "mazumisha";     // логин клиента
+    String two = "de157ecb35aa035a255a6121feb4cc55";  // пароль или MD5-хеш пароля в нижнем регистре
+    String smsCharset = "utf-8";       // кодировка сообщения: koi8-r, windows-1251 или utf-8 (по умолчанию)
 
     /**
      * Отправка SMS
@@ -54,18 +27,9 @@ public class SmsUtil {
     public String[] sendSms(String phones, String message) throws IOException, InterruptedException {
         int translit = 1;
         String id = "";
-        String[] m = {};
-        m = _smsc_send_cmd("send", "cost=3&phones=" + URLEncoder.encode(phones, SMSC_CHARSET)
-                + "&mes=" + URLEncoder.encode(message, SMSC_CHARSET)
+        String[] m = _smsc_send_cmd("send", "cost=3&phones=" + URLEncoder.encode(phones, smsCharset)
+                + "&mes=" + URLEncoder.encode(message, smsCharset)
                 + "&translit=" + translit + "&id=" + id);
-        if (SMSC_DEBUG) {
-            if (Integer.parseInt(m[1]) > 0) {
-                System.out.println("Сообщение отправлено успешно. ID: " + m[0] + ", всего SMS: " + m[1] + ", стоимость: " + m[2] + ", баланс: " + m[3]);
-            } else {
-                System.out.print("Ошибка №" + Math.abs(Integer.parseInt(m[1])));
-                System.out.println(Integer.parseInt(m[0]) > 0 ? (", ID: " + m[0]) : "");
-            }
-        }
         return m;
     }
 
@@ -84,20 +48,11 @@ public class SmsUtil {
 
     public String[] get_sms_cost(String phones, String message, int translit, int format, String sender, String query) throws IOException, InterruptedException {
         String[] formats = {"", "flash=1", "push=1", "hlr=1", "bin=1", "bin=2", "ping=1"};
-        String[] m = {};
-        m = _smsc_send_cmd("send", "cost=1&phones=" + URLEncoder.encode(phones, SMSC_CHARSET)
-                + "&mes=" + URLEncoder.encode(message, SMSC_CHARSET)
+        String[] m = _smsc_send_cmd("send", "cost=1&phones=" + URLEncoder.encode(phones, smsCharset)
+                + "&mes=" + URLEncoder.encode(message, smsCharset)
                 + "&translit=" + translit + (format > 0 ? "&" + formats[format] : "")
-                + (sender == "" ? "" : "&sender=" + URLEncoder.encode(sender, SMSC_CHARSET))
+                + (sender == "" ? "" : "&sender=" + URLEncoder.encode(sender, smsCharset))
                 + (query == "" ? "" : "&" + query));
-        // (cost, cnt) или (0, -error)
-        if (SMSC_DEBUG) {
-            if (Integer.parseInt(m[1]) > 0) {
-                System.out.println("Стоимость рассылки: " + m[0] + ", Всего SMS: " + m[1]);
-            } else {
-                System.out.print("Ошибка №" + Math.abs(Integer.parseInt(m[1])));
-            }
-        }
         return m;
     }
 
@@ -119,14 +74,7 @@ public class SmsUtil {
     public String[] get_status(int id, String phone, int all) throws IOException, InterruptedException {
         String[] m = {};
         String tmp;
-        m = _smsc_send_cmd("status", "phone=" + URLEncoder.encode(phone, SMSC_CHARSET) + "&id=" + id + "&all=" + all);
-        if (SMSC_DEBUG) {
-            if (m[1] != "" && Integer.parseInt(m[1]) >= 0) {
-                java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(Integer.parseInt(m[1]));
-                System.out.println("Статус SMS = " + m[0]);
-            } else
-                System.out.println("Ошибка №" + Math.abs(Integer.parseInt(m[1])));
-        }
+        m = _smsc_send_cmd("status", "phone=" + URLEncoder.encode(phone, smsCharset) + "&id=" + id + "&all=" + all);
         if (all == 1 && m.length > 9 && (m.length < 14 || m[14] != "HLR")) {
             tmp = _implode(m, ",");
             m = tmp.split(",", 9);
@@ -143,12 +91,6 @@ public class SmsUtil {
     public String get_balance() throws IOException, InterruptedException {
         String[] m = {};
         m = _smsc_send_cmd("balance", ""); // (balance) или (0, -error)
-        if (SMSC_DEBUG) {
-            if (m.length == 1)
-                System.out.println("Сумма на счете: " + m[0]);
-            else
-                System.out.println("Ошибка №" + Math.abs(Integer.parseInt(m[1])));
-        }
         return m.length == 2 ? "" : m[0];
     }
 
@@ -162,9 +104,9 @@ public class SmsUtil {
     private String[] _smsc_send_cmd(String cmd, String arg) throws IOException, InterruptedException {
         String[] m = {};
         String ret = ",";
-        String url = (SMSC_HTTPS ? "https" : "http") + "://smsc.ru/sys/" + cmd + ".php?login=" + URLEncoder.encode(SMSC_LOGIN, SMSC_CHARSET)
-                + "&psw=" + URLEncoder.encode(SMSC_PASSWORD, SMSC_CHARSET)
-                + "&fmt=1&charset=" + SMSC_CHARSET + "&" + arg;
+        String url = "http" + "://smsc.ru/sys/" + cmd + ".php?login=" + URLEncoder.encode(one, smsCharset)
+                + "&psw=" + URLEncoder.encode(two, smsCharset)
+                + "&fmt=1&charset=" + smsCharset + "&" + arg;
         int i = 0;
         do {
             if (i > 0)
@@ -186,27 +128,10 @@ public class SmsUtil {
     private String _smsc_read_url(String url) throws IOException {
         String line = "", real_url = url;
         String[] param = {};
-        boolean is_post = (SMSC_POST || url.length() > 2000);
-        if (is_post) {
-            param = url.split("\\?", 2);
-            real_url = param[0];
-        }
         URL u = new URL(real_url);
         InputStream is;
-
-        if (is_post) {
-            URLConnection conn = u.openConnection();
-            conn.setDoOutput(true);
-            OutputStreamWriter os = new OutputStreamWriter(conn.getOutputStream(), SMSC_CHARSET);
-            os.write(param[1]);
-            os.flush();
-            os.close();
-            System.out.println("post");
-            is = conn.getInputStream();
-        } else {
-            is = u.openStream();
-        }
-        InputStreamReader reader = new InputStreamReader(is, SMSC_CHARSET);
+        is = u.openStream();
+        InputStreamReader reader = new InputStreamReader(is, smsCharset);
         int ch;
         while ((ch = reader.read()) != -1) {
             line += (char) ch;

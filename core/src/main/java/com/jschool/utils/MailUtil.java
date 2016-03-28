@@ -16,15 +16,15 @@ import javax.mail.internet.MimeMessage;
 public class MailUtil {
 
     private final String from = "mazumisha@gmail.com";
-    private final String username = "mazumisha";
-    private final String password = "MishaSveta230411";
+    private final String one = "mazumisha";
+    private final String two = "MishaSveta230411";
     private final String host = "smtp.gmail.com";
 
 
     public void sendInvitationMail(String driverEmail) throws MessagingException {
         Authenticator authenticator = new Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(username, password);
+                return new PasswordAuthentication(one, two);
             }
         };
         Session session = Session.getInstance(getProperties(), authenticator);
@@ -41,7 +41,7 @@ public class MailUtil {
     public void sendShareMail(Driver driver) throws MessagingException {
         Authenticator authenticator = new Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(username, password);
+                return new PasswordAuthentication(one, two);
             }
         };
         String link = "https://logiweb.herokuapp.com/share/" + driver.getNumber() + "/" + driver.getToken();

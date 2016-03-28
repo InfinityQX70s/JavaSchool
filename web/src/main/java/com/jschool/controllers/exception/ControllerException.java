@@ -5,7 +5,7 @@ package com.jschool.controllers.exception;
  */
 public class ControllerException extends Exception {
 
-    private ControllerStatusCode controllerStatusCode;
+    private final ControllerStatusCode controllerStatusCode;
 
     public ControllerException(String message, ControllerStatusCode controllerStatusCode) {
         super(message);

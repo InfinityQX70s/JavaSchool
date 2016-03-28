@@ -46,7 +46,7 @@ public class LogiwebRestController {
                 return getErrorObject("Driver don't assign at order");
             }
         } catch (ServiceException e) {
-            LOG.warn(e.getMessage());
+            LOG.warn(e);
             return getErrorObject(e.getMessage());
         }
     }
@@ -91,7 +91,7 @@ public class LogiwebRestController {
                 return jsonResponse;
             }
         } catch (ServiceException e) {
-            LOG.warn(e.getMessage());
+            LOG.warn(e);
             return getErrorObject(e.getMessage());
         }
     }
@@ -107,7 +107,7 @@ public class LogiwebRestController {
             jsonResponse.setResult("Driver " + String.valueOf(number) + " set shift status successfully");
             return jsonResponse;
         } catch (ServiceException e) {
-            LOG.warn(e.getMessage());
+            LOG.warn(e);
             return getErrorObject(e.getMessage());
         }
     }
@@ -121,7 +121,7 @@ public class LogiwebRestController {
             jsonResponse.setResult("Driver " + String.valueOf(number) + " set rest status successfully");
             return jsonResponse;
         } catch (ServiceException e) {
-            LOG.warn(e.getMessage());
+            LOG.warn(e);
             return getErrorObject(e.getMessage());
         }
     }
@@ -135,7 +135,7 @@ public class LogiwebRestController {
             jsonResponse.setResult("Driver " + String.valueOf(number) + " set driving status successfully");
             return jsonResponse;
         } catch (ServiceException e) {
-            LOG.warn(e.getMessage());
+            LOG.warn(e);
             return getErrorObject(e.getMessage());
         }
     }
@@ -149,7 +149,7 @@ public class LogiwebRestController {
             jsonResponse.setResult("Cargo " + String.valueOf(number) + " set delivered status successfully");
             return jsonResponse;
         } catch (ServiceException e) {
-            LOG.warn(e.getMessage());
+            LOG.warn(e);
             return getErrorObject(e.getMessage());
         }
     }
@@ -163,7 +163,7 @@ public class LogiwebRestController {
             jsonResponse.setResult("Cargo " + String.valueOf(number) + " set loaded status successfully");
             return jsonResponse;
         } catch (ServiceException e) {
-            LOG.warn(e.getMessage());
+            LOG.warn(e);
             return getErrorObject(e.getMessage());
         }
     }

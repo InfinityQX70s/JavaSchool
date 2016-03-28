@@ -8,7 +8,7 @@ import java.util.Date;
  */
 @Entity
 @NamedQuery(name="DriverStatistic.findAllByOneMonth",
-        query="SELECT d FROM DriverStatistic d WHERE d.driver = :driver AND d.timestamp >= :endDate")
+        query="SELECT d FROM DriverStatistic d WHERE d.driver = :driver AND d.timestamp >= :endDate ORDER BY d.timestamp")
 @Table(name = "DriverStatistic", schema = "logiweb")
 public class DriverStatistic {
     @Id

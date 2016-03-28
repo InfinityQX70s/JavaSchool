@@ -312,7 +312,7 @@ public class DriverServiceImpl implements DriverService {
     @Transactional
     public void sendOrderInfoMail(Driver driver) throws ServiceException {
         try {
-            String token = DigestUtils.md5Hex(driver.getPhoneNumber() + driver.getUser().getEmail());
+            String token = DigestUtils.md5Hex(driver.getOrder().getNumber() + driver.getUser().getEmail());
             driver.setToken(token);
             driverDao.update(driver);
             mailUtil.sendShareMail(driver);

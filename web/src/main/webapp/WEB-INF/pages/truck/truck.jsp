@@ -26,6 +26,7 @@
         <th data-field="state">State</th>
         <th data-field="change"></th>
         <th data-field="delete"></th>
+        <th data-field="info"></th>
     </tr>
     </thead>
 
@@ -41,10 +42,10 @@
         <td><c:out value="${truck.city.name}"/>
         </td>
         <c:if test="${truck.repairState}">
-            <td>OK</td>
+            <td><i class="material-icons" style="color: #297dc1">thumb_up</i></td>
         </c:if>
         <c:if test="${not truck.repairState}">
-        <td>Broken</td>
+            <td><i class="material-icons" style="color: #ca7834">thumb_down</i></td>
         </c:if>
         <c:if test="${empty truck.oreder}">
             <td>Free</td>
@@ -56,7 +57,7 @@
             <td>
                 <form action="/employee/truck/delete" method="post">
                     <input type="hidden" name="number" value="<c:out value="${truck.number}"/>">
-                    <a class="secondary-content light-blue-text text-accent-888" style="margin-right:20px;" onclick="parentNode.submit();">
+                    <a class="secondary-content light-blue-text text-accent-888" onclick="parentNode.submit();">
                         <i class="material-icons">clear</i>
                     </a>
                 </form>
@@ -69,6 +70,44 @@
             <td>
             </td>
         </c:if>
+        <td>
+            <a class="secondary-content light-blue-text text-accent-888 modal-trigger" href="#modal${truck.number}"
+               style="margin-right:20px;">
+                <i class="material-icons">info_outline</i>
+            </a>
+            <div id="modal${truck.number}" class="modal">
+                <a class="secondary-content disabled right-align light-blue-text text-accent-888 modal-action modal-close">
+                    <i class="material-icons">clear</i></a>
+                <div class="modal-content">
+                    <blockquote>
+                        <h5>${truck.number}</h5>
+                    </blockquote>
+                    <c:if test="${truck.oreder != null}">
+                        <h6>Assigned on order: <c:out value="${truck.oreder.number}"/></h6>
+                        <h6>Driver List :
+                            <c:forEach var="driver" items="${truck.oreder.drivers}">
+                            ${driver.number} ${driver.firstName} ${driver.lastName}
+                            </c:forEach>
+                    </c:if>
+                    <table class="striped centered white">
+                        <thead>
+                        <tr>
+                            <th data-field="date">Date</th>
+                            <th data-field="city">City</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <c:forEach var="status" items="${truckListMap[truck]}">
+                        <tr>
+                                <td>${status.timestamp}</td>
+                                <td>${status.city.name}</td>
+                        </tr>
+                        </c:forEach>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </td>
     </tr>
     </c:forEach>
     </tbody>

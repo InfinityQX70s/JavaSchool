@@ -1,13 +1,5 @@
 INSERT INTO logiweb.User (idUser, email, password, role) VALUES (15, 'mazumisha@gmail.com', '61fd06bc7bc863dd7efc7263f0486a23', 0);
 INSERT INTO logiweb.User (idUser, email, password, role) VALUES (25, 'github@gmail.com', 'a2f426c4592934e8be047e585aa61f35', 0);
-INSERT INTO logiweb.User (idUser, email, password, role) VALUES (26, 'Haddess1935@cuvox.de', 'add53a38902cb7301be0f71557d1c095', 1);
-INSERT INTO logiweb.User (idUser, email, password, role) VALUES (27, 'chofrarupa@thrma.com', '8231b9b6e3a52a17fcb68ec30b8debff', 1);
-INSERT INTO logiweb.User (idUser, email, password, role) VALUES (28, 'crutaputhu@thrma.com', 'b745d6518f0ab3d48477f6d0ffad0732', 1);
-INSERT INTO logiweb.User (idUser, email, password, role) VALUES (29, 'nutuchujol@thrma.com', 'a3c508391f4efdb17bde16aa6e102acf', 1);
-INSERT INTO logiweb.User (idUser, email, password, role) VALUES (30, 'kufrolefre@thrma.com', '063265bff5247d6d1ba3bce88b4481a5', 1);
-INSERT INTO logiweb.User (idUser, email, password, role) VALUES (32, 'jucluratol@thrma.com', 'c75a5350d19bb399082e24d1507f5317', 1);
-INSERT INTO logiweb.User (idUser, email, password, role) VALUES (33, 'slejapulih@thrma.com', '5dbd2f8513dbbd8515f507f1b32df7be', 1);
-INSERT INTO logiweb.User (idUser, email, password, role) VALUES (34, 'galephulep@thrma.com', 'bb47d8afe5b2fc73e1bd1225353c8d31', 1);
-INSERT INTO logiweb.User (idUser, email, password, role) VALUES (35, 'chustatudu@thrma.com', 'e4f2e51edd2ebd482d6da22abd3b43c0', 1);
-INSERT INTO logiweb.User (idUser, email, password, role) VALUES (36, 'driver34@gmail.com', '1adc0ad6e5bf11e764bf9797c8bdf334', 1);
-INSERT INTO logiweb.User (idUser, email, password, role) VALUES (41, 'maz@gmail.com', '4af11dd3525cc9c07a59663df54eb52f', 1);
+INSERT INTO logiweb.User (idUser, email, password, role) VALUES (26, 'mazu-misha@yandex.ru', '3d0be4610182232354804b103ffcefa3', 1);
+INSERT INTO logiweb.User (idUser, email, password, role) VALUES (27, 'sveta@yandex.ru', 'a95440f4a73765b571f6f1621797f2e5', 1);
+INSERT INTO logiweb.User (idUser, email, password, role) VALUES (28, 'test@yandex.ru', 'c3b3fb33ecee99b86a24a017e2e0e9f1', 1);

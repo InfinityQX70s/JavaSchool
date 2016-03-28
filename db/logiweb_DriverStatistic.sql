@@ -1,0 +1,17 @@
+INSERT INTO logiweb.DriverStatistic (idDriverStatistic, timestamp, hoursWorked, driver_id) VALUES (1, '2016-03-27', 8, 1);
+INSERT INTO logiweb.DriverStatistic (idDriverStatistic, timestamp, hoursWorked, driver_id) VALUES (2, '2016-03-25', 8, 1);
+INSERT INTO logiweb.DriverStatistic (idDriverStatistic, timestamp, hoursWorked, driver_id) VALUES (3, '2016-03-28', 8, 1);
+INSERT INTO logiweb.DriverStatistic (idDriverStatistic, timestamp, hoursWorked, driver_id) VALUES (4, '2016-03-23', 10, 1);
+INSERT INTO logiweb.DriverStatistic (idDriverStatistic, timestamp, hoursWorked, driver_id) VALUES (5, '2016-03-20', 12, 1);
+INSERT INTO logiweb.DriverStatistic (idDriverStatistic, timestamp, hoursWorked, driver_id) VALUES (6, '2016-03-19', 5, 1);
+INSERT INTO logiweb.DriverStatistic (idDriverStatistic, timestamp, hoursWorked, driver_id) VALUES (7, '2016-03-16', 9, 1);
+INSERT INTO logiweb.DriverStatistic (idDriverStatistic, timestamp, hoursWorked, driver_id) VALUES (8, '2016-03-14', 3, 2);
+INSERT INTO logiweb.DriverStatistic (idDriverStatistic, timestamp, hoursWorked, driver_id) VALUES (9, '2016-03-16', 5, 2);
+INSERT INTO logiweb.DriverStatistic (idDriverStatistic, timestamp, hoursWorked, driver_id) VALUES (10, '2016-03-18', 6, 2);
+INSERT INTO logiweb.DriverStatistic (idDriverStatistic, timestamp, hoursWorked, driver_id) VALUES (11, '2016-03-19', 8, 2);
+INSERT INTO logiweb.DriverStatistic (idDriverStatistic, timestamp, hoursWorked, driver_id) VALUES (12, '2016-03-22', 9, 2);
+INSERT INTO logiweb.DriverStatistic (idDriverStatistic, timestamp, hoursWorked, driver_id) VALUES (13, '2016-03-28', 10, 3);
+INSERT INTO logiweb.DriverStatistic (idDriverStatistic, timestamp, hoursWorked, driver_id) VALUES (14, '2016-03-27', 11, 3);
+INSERT INTO logiweb.DriverStatistic (idDriverStatistic, timestamp, hoursWorked, driver_id) VALUES (15, '2016-03-24', 9, 3);
+INSERT INTO logiweb.DriverStatistic (idDriverStatistic, timestamp, hoursWorked, driver_id) VALUES (16, '2016-03-23', 7, 3);
+INSERT INTO logiweb.DriverStatistic (idDriverStatistic, timestamp, hoursWorked, driver_id) VALUES (17, '2016-03-22', 5, 3);

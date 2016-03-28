@@ -52,7 +52,7 @@ public class DriverController {
             jsonResponse.setResult("Verification code send successfully");
             return jsonResponse;
         } catch (ServiceException e) {
-            LOG.warn(e.getMessage());
+            LOG.warn(e);
             JsonResponse jsonResponse = new JsonResponse();
             jsonResponse.setStatus("error");
             jsonResponse.setResult(e.getMessage());
@@ -83,7 +83,7 @@ public class DriverController {
             model.addAttribute("driverStatusLogMap", driverStatusLogMap);
             return "driver/driver";
         } catch (ServiceException e) {
-            LOG.warn(e.getMessage());
+            LOG.warn(e);
             redirectAttributes.addFlashAttribute("message", errorProperties.getProperty(e.getStatusCode().name()));
             return "redirect:/employee/drivers";
         }
@@ -108,7 +108,7 @@ public class DriverController {
                 driverService.addDriver(driver);
                 driverService.sendInvitatinMail(driver.getUser().getEmail());
             } catch (ServiceException e) {
-                LOG.warn(e.getMessage());
+                LOG.warn(e);
                 model.addAttribute("error", errorProperties.getProperty(e.getStatusCode().name()));
                 return "driver/driverAdd";
             }
@@ -118,13 +118,13 @@ public class DriverController {
     }
 
     @RequestMapping(value = "/employee/driver/delete", method = RequestMethod.POST)
-    public String deleteDriver(@RequestParam(value = "number", required = false) int number, Model model, RedirectAttributes redirectAttributes){
+    public String deleteDriver(@RequestParam(value = "number", required = false) int number, RedirectAttributes redirectAttributes){
         try {
             driverService.deleteDriver(number);
             redirectAttributes.addFlashAttribute("message", "Driver deleted successfully!");
             return "redirect:/employee/drivers";
         } catch (ServiceException e) {
-            LOG.warn(e.getMessage());
+            LOG.warn(e);
             redirectAttributes.addFlashAttribute("message", errorProperties.getProperty(e.getStatusCode().name()));
             return "redirect:/employee/drivers";
         }
@@ -137,7 +137,7 @@ public class DriverController {
             model.addAttribute("driver", driver);
             return "driver/driverEdit";
         } catch (ServiceException e) {
-            LOG.warn(e.getMessage());
+            LOG.warn(e);
             redirectAttributes.addFlashAttribute("message", errorProperties.getProperty(e.getStatusCode().name()));
             return "redirect:/employee/drivers";
         }
@@ -156,7 +156,7 @@ public class DriverController {
                 redirectAttributes.addFlashAttribute("message", "Driver edited successfully!");
                 return "redirect:/employee/drivers";
             } catch (ServiceException e) {
-                LOG.warn(e.getMessage());
+                LOG.warn(e);
                 model.addAttribute("error", errorProperties.getProperty(e.getStatusCode().name()));
                 return "driver/driverEdit";
             }

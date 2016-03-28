@@ -66,8 +66,9 @@
                           <table class="striped white">
                               <thead>
                               <tr>
-                                  <th data-field="id">Number</th>
+                                  <th data-field="number">Point</th>
                                   <th data-field="pickup">Pickup</th>
+                                  <th data-field="number">Point</th>
                                   <th data-field="unload">Unload</th>
                                   <th data-field="name">Name</th>
                                   <th data-field="weight">Weight</th>
@@ -78,9 +79,11 @@
                               <tbody>
                               <c:forEach var="cargo" items="${cargos}">
                                   <tr>
-                                      <td><c:out value="${cargo.number}"/>
+                                      <td><c:out value="${cargo.pickup.point}"/>
                                       </td>
                                       <td><c:out value="${cargo.pickup.city.name}"/>
+                                      </td>
+                                      <td><c:out value="${cargo.unload.point}"/>
                                       </td>
                                       <td><c:out value="${cargo.unload.city.name}"/>
                                       </td>

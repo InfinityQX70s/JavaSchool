@@ -1,0 +1,16 @@
+INSERT INTO logiweb.RoutePoint (idRoute, point, orders_id, city_id) VALUES (1, 0, 1, 4650);
+INSERT INTO logiweb.RoutePoint (idRoute, point, orders_id, city_id) VALUES (2, 2, 1, 4400);
+INSERT INTO logiweb.RoutePoint (idRoute, point, orders_id, city_id) VALUES (3, 1, 1, 5352);
+INSERT INTO logiweb.RoutePoint (idRoute, point, orders_id, city_id) VALUES (4, 2, 1, 4400);
+INSERT INTO logiweb.RoutePoint (idRoute, point, orders_id, city_id) VALUES (5, 3, 1, 4400);
+INSERT INTO logiweb.RoutePoint (idRoute, point, orders_id, city_id) VALUES (6, 4, 1, 4962);
+INSERT INTO logiweb.RoutePoint (idRoute, point, orders_id, city_id) VALUES (7, 0, 2, 4962);
+INSERT INTO logiweb.RoutePoint (idRoute, point, orders_id, city_id) VALUES (8, 1, 2, 4650);
+INSERT INTO logiweb.RoutePoint (idRoute, point, orders_id, city_id) VALUES (9, 0, 3, 4650);
+INSERT INTO logiweb.RoutePoint (idRoute, point, orders_id, city_id) VALUES (10, 1, 3, 4400);
+INSERT INTO logiweb.RoutePoint (idRoute, point, orders_id, city_id) VALUES (11, 0, 19, 4650);
+INSERT INTO logiweb.RoutePoint (idRoute, point, orders_id, city_id) VALUES (12, 1, 19, 4400);
+INSERT INTO logiweb.RoutePoint (idRoute, point, orders_id, city_id) VALUES (13, 0, 20, 4650);
+INSERT INTO logiweb.RoutePoint (idRoute, point, orders_id, city_id) VALUES (14, 1, 20, 4400);
+INSERT INTO logiweb.RoutePoint (idRoute, point, orders_id, city_id) VALUES (15, 0, 21, 4400);
+INSERT INTO logiweb.RoutePoint (idRoute, point, orders_id, city_id) VALUES (16, 1, 21, 4650);

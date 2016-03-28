@@ -1,0 +1,17 @@
+INSERT INTO logiweb.DriverStatusLog (idDriverStatusLog, status, timestamp, driver_id) VALUES (1, 'rest', '2016-03-27 00:40:27', 1);
+INSERT INTO logiweb.DriverStatusLog (idDriverStatusLog, status, timestamp, driver_id) VALUES (2, 'shift', '2016-03-27 00:43:36', 1);
+INSERT INTO logiweb.DriverStatusLog (idDriverStatusLog, status, timestamp, driver_id) VALUES (3, 'driving', '2016-03-27 00:43:52', 1);
+INSERT INTO logiweb.DriverStatusLog (idDriverStatusLog, status, timestamp, driver_id) VALUES (4, 'shift', '2016-03-27 00:45:06', 1);
+INSERT INTO logiweb.DriverStatusLog (idDriverStatusLog, status, timestamp, driver_id) VALUES (5, 'rest', '2016-03-27 00:45:07', 1);
+INSERT INTO logiweb.DriverStatusLog (idDriverStatusLog, status, timestamp, driver_id) VALUES (6, 'shift', '2016-03-27 22:14:05', 1);
+INSERT INTO logiweb.DriverStatusLog (idDriverStatusLog, status, timestamp, driver_id) VALUES (7, 'driving', '2016-03-27 22:14:08', 1);
+INSERT INTO logiweb.DriverStatusLog (idDriverStatusLog, status, timestamp, driver_id) VALUES (8, 'rest', '2016-03-27 22:14:36', 1);
+INSERT INTO logiweb.DriverStatusLog (idDriverStatusLog, status, timestamp, driver_id) VALUES (9, 'rest', '2016-03-27 22:21:50', 2);
+INSERT INTO logiweb.DriverStatusLog (idDriverStatusLog, status, timestamp, driver_id) VALUES (10, 'rest', '2016-03-28 14:07:04', 3);
+INSERT INTO logiweb.DriverStatusLog (idDriverStatusLog, status, timestamp, driver_id) VALUES (11, 'shift', '2016-03-28 14:41:03', 1);
+INSERT INTO logiweb.DriverStatusLog (idDriverStatusLog, status, timestamp, driver_id) VALUES (12, 'driving', '2016-03-28 14:41:14', 1);
+INSERT INTO logiweb.DriverStatusLog (idDriverStatusLog, status, timestamp, driver_id) VALUES (13, 'rest', '2016-03-28 14:41:16', 1);
+INSERT INTO logiweb.DriverStatusLog (idDriverStatusLog, status, timestamp, driver_id) VALUES (14, 'shift', '2016-03-28 14:41:19', 2);
+INSERT INTO logiweb.DriverStatusLog (idDriverStatusLog, status, timestamp, driver_id) VALUES (15, 'rest', '2016-03-28 14:41:25', 2);
+INSERT INTO logiweb.DriverStatusLog (idDriverStatusLog, status, timestamp, driver_id) VALUES (16, 'shift', '2016-03-28 14:41:28', 3);
+INSERT INTO logiweb.DriverStatusLog (idDriverStatusLog, status, timestamp, driver_id) VALUES (17, 'rest', '2016-03-28 14:41:33', 3);

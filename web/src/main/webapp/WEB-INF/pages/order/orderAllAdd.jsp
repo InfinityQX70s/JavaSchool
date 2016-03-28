@@ -14,43 +14,64 @@
     <jsp:param name="orders" value="active z-depth-2"/>
     <jsp:param name="trucks" value=""/>
 </jsp:include>
-<div class="row col s7 offset-s3" >
-<form id="fullForm" action="/employee/order/submit" method="post">
-<div id="wizard" class="swMain">
-    <ul>
-        <li><a href="#step-1">
-            <label class="stepNumber">1</label>
-             <span class="stepDesc">Step 1<br/><small>Order and Cargos</small></span>
-        </a></li>
-        <li><a href="#step-2">
-            <label class="stepNumber">2</label>
-            <span class="stepDesc">Step 2<br/><small>Truck</small></span>
-        </a></li>
-        <li><a href="#step-3">
-            <label class="stepNumber">3</label>
-            <span class="stepDesc">Step 3<br/><small>Map</small></span>
-        </a></li>
-        <li><a href="#step-4">
-            <label class="stepNumber">4</label>
-            <span class="stepDesc">Step 4<br/><small>Drivers</small></span>
-        </a></li>
-    </ul>
-    <div id="step-1">
-
+<div class="row col s7 offset-s3">
+    <div id="overlaydiv">
+        <div class="preloader-wrapper big active" style="position: fixed;
+                                                           top: 50%;
+                                                           left: 50%;
+                                                           margin-top: -64px;
+                                                           margin-left: -64px;">
+            <div class="spinner-layer spinner-blue-only">
+                <div class="circle-clipper left">
+                    <div class="circle"></div>
+                </div>
+                <div class="gap-patch">
+                    <div class="circle"></div>
+                </div>
+                <div class="circle-clipper right">
+                    <div class="circle"></div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div id="step-2">
 
-    </div>
+    <form id="fullForm" action="/employee/order/submit" method="post">
+        <div id="wizard" class="swMain">
+            <ul>
+                <li><a href="#step-1">
+                    <label class="stepNumber">1</label>
+                    <span class="stepDesc">Step 1<br/><small>Order and Cargos</small></span>
+                </a></li>
+                <li><a href="#step-2">
+                    <label class="stepNumber">2</label>
+                    <span class="stepDesc">Step 2<br/><small>Truck</small></span>
+                </a></li>
+                <li><a href="#step-3">
+                    <label class="stepNumber">3</label>
+                    <span class="stepDesc">Step 3<br/><small>Map</small></span>
+                </a></li>
+                <li><a href="#step-4">
+                    <label class="stepNumber">4</label>
+                    <span class="stepDesc">Step 4<br/><small>Drivers</small></span>
+                </a></li>
+            </ul>
+            <div id="step-1">
 
-    <div id="step-3">
+            </div>
 
-    </div>
+            <div id="step-2">
 
-    <div id="step-4">
+            </div>
 
-    </div>
-</div>
-</form>
+            <div id="step-3">
+
+            </div>
+
+            <div id="step-4">
+
+            </div>
+        </div>
+    </form>
 </div>
 <jsp:include page="../footer.jsp"/>

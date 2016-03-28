@@ -1,0 +1,9 @@
+INSERT INTO logiweb.TruckStatistic (idTruckStatistic, timestamp, truck_id, city_id) VALUES (5, '2016-03-27', 2, 4650);
+INSERT INTO logiweb.TruckStatistic (idTruckStatistic, timestamp, truck_id, city_id) VALUES (6, '2016-03-27', 2, 5352);
+INSERT INTO logiweb.TruckStatistic (idTruckStatistic, timestamp, truck_id, city_id) VALUES (7, '2016-03-27', 2, 4400);
+INSERT INTO logiweb.TruckStatistic (idTruckStatistic, timestamp, truck_id, city_id) VALUES (8, '2016-03-27', 2, 4962);
+INSERT INTO logiweb.TruckStatistic (idTruckStatistic, timestamp, truck_id, city_id) VALUES (9, '2016-03-27', 3, 4650);
+INSERT INTO logiweb.TruckStatistic (idTruckStatistic, timestamp, truck_id, city_id) VALUES (10, '2016-03-27', 4, 4650);
+INSERT INTO logiweb.TruckStatistic (idTruckStatistic, timestamp, truck_id, city_id) VALUES (11, '2016-03-28', 2, 4650);
+INSERT INTO logiweb.TruckStatistic (idTruckStatistic, timestamp, truck_id, city_id) VALUES (12, '2016-03-28', 3, 4400);
+INSERT INTO logiweb.TruckStatistic (idTruckStatistic, timestamp, truck_id, city_id) VALUES (13, '2016-03-28', 4, 4400);

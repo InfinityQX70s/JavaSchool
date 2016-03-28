@@ -1,0 +1,3 @@
+INSERT INTO logiweb.Driver (idDriver, number, firstName, lastName, phoneNumber, token, user_id, order_id, сity_id) VALUES (1, 100, 'Mikhail', 'Mazurkevich', '+79155031134', '77e25904f9257b422808c2c8c8912874', 26, 20, 4650);
+INSERT INTO logiweb.Driver (idDriver, number, firstName, lastName, phoneNumber, token, user_id, order_id, сity_id) VALUES (2, 101, 'Svetlana', 'Mazurkevich', '+79155031134', '77afb7833a4e0776affa16cf6814ebdb', 27, null, 4400);
+INSERT INTO logiweb.Driver (idDriver, number, firstName, lastName, phoneNumber, token, user_id, order_id, сity_id) VALUES (3, 102, 'test', 'test', '+79155031134', '186a7a02ef6e16ad064651211290d316', 28, 21, 4400);
