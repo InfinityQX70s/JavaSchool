@@ -18,11 +18,6 @@ public class UserDaoImpl extends GenericDaoImpl<User> implements UserDao{
 
     private static final Logger LOG = Logger.getLogger(UserDaoImpl.class);
 
-    /**Return user find by unique email address in DB
-     * @param email
-     * @return unique user
-     * @throws DaoException
-     */
     @Override
     public User findUniqueByEmail(String email) throws DaoException {
         try {
@@ -41,12 +36,6 @@ public class UserDaoImpl extends GenericDaoImpl<User> implements UserDao{
     }
 
 
-    /**Return list of user find by user role (employer or driver)
-     * @param isDriver - true if we want to get all drivers, false
-     *                 if we want to get all employer
-     * @return
-     * @throws DaoException
-     */
     @Override
     public List<User> findAllByRole(boolean isDriver) throws DaoException {
         try {

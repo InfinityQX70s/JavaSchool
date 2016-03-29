@@ -16,13 +16,13 @@
 
     <properties>
         <mysql-connector-java.version>5.1.38</mysql-connector-java.version>
-        <hibernate-jpa-2.0-api.version>1.0.1.Final</hibernate-jpa-2.0-api.version>
         <hibernate-entitymanager.version>5.0.0.Final</hibernate-entitymanager.version>
         <commons-codec.version>1.9</commons-codec.version>
         <servlet-api.version>2.5</servlet-api.version>
         <log4j.version>1.2.17</log4j.version>
         <jackson-mapper-asl.version>1.9.13</jackson-mapper-asl.version>
         <jackson-databind.version>2.5.0</jackson-databind.version>
+        <hibernate-jpa-2.1-api.version>1.0.0.Final</hibernate-jpa-2.1-api.version>
     </properties>
 
     <dependencies>
@@ -38,8 +38,8 @@
         </dependency>
         <dependency>
             <groupId>org.hibernate.javax.persistence</groupId>
-            <artifactId>hibernate-jpa-2.0-api</artifactId>
-            <version>${hibernate-jpa-2.0-api.version}</version>
+            <artifactId>hibernate-jpa-2.1-api</artifactId>
+            <version>${hibernate-jpa-2.1-api.version}</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
