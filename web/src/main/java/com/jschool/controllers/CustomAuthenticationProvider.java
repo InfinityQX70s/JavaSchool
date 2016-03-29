@@ -19,10 +19,14 @@ import javax.servlet.http.HttpServletRequest;
 @Component
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
-    @Autowired
     private UserService userService;
-    @Autowired
     private HttpServletRequest request;
+
+    @Autowired
+    public CustomAuthenticationProvider(UserService userService, HttpServletRequest request) {
+        this.userService = userService;
+        this.request = request;
+    }
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
