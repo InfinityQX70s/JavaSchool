@@ -67,7 +67,7 @@
                                                        varStatus="loop">
                                                 <c:if test="${loop.last}">
                                                     <c:if test="${cargoStatusLog.status eq 'ready'}">
-                                                        <i class="material-icons" style="color: #31c100">lens</i>
+                                                        <i class="material-icons" style="color: #f8982b">schedule</i>
                                                     </c:if>
                                                     <c:if test="${cargoStatusLog.status eq 'loaded'}">
                                                         <i class="material-icons" style="color: #ca7834">local_shipping</i>

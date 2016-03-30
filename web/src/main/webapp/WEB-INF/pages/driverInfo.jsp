@@ -44,16 +44,18 @@
                     </h6>
                     <h6>Truck number : <c:out value="${order.truck.number}"/>
                     </h6>
-                    <h6>Co-drivers :
-                        <c:forEach var="drive" items="${drivers}" varStatus="loop">
-                            <c:if test="${driver.number != drive.number}">
-                                    <c:out value="${drive.number}"/>
-                                    <c:out value="${drive.firstName}"/>
-                                    <c:out value="${drive.lastName}"/>
-                                    <c:out value="  "/>
-                            </c:if>
-                        </c:forEach>
-                    </h6>
+                      <c:if test="${fn:length(drivers) ne 1}">
+                          <h6>Co-drivers :
+                              <c:forEach var="drive" items="${drivers}" varStatus="loop">
+                                  <c:if test="${driver.number != drive.number}">
+                                      <c:out value="${drive.number}"/>
+                                      <c:out value="${drive.firstName}"/>
+                                      <c:out value="${drive.lastName}"/>
+                                      <c:out value="  "/>
+                                  </c:if>
+                              </c:forEach>
+                          </h6>
+                      </c:if>
                   <div class="row">
                       <div class="col s12">
                           <ul class="tabs">
@@ -98,7 +100,15 @@
                                               <c:forEach var="cargoStatusLog" items="${cargo.statusLogs}"
                                                          varStatus="loop">
                                                   <c:if test="${loop.last}">
-                                                      <c:out value="${cargoStatusLog.status}"/>
+                                                      <c:if test="${cargoStatusLog.status eq 'ready'}">
+                                                          <i class="material-icons" style="color: #f8982b">schedule</i>
+                                                      </c:if>
+                                                      <c:if test="${cargoStatusLog.status eq 'loaded'}">
+                                                          <i class="material-icons" style="color: #ca7834">local_shipping</i>
+                                                      </c:if>
+                                                      <c:if test="${cargoStatusLog.status eq 'delivered'}">
+                                                          <i class="material-icons" style="color: #6ecddd">done</i>
+                                                      </c:if>
                                                   </c:if>
                                               </c:forEach>
                                           </c:if>

@@ -175,11 +175,15 @@ public class OrderController {
 
                 int pickUpPosition = 0;
                 int unloadPosition = 0;
+                boolean pickUpCheck = false;
+                boolean unloadCheck = false;
                 for (int j = 0; j < cities.size(); j++) {
-                    if (pickup[i].equals(cities.get(j)) && countOfUse.get(j) > 0 && pickUpPosition == 0) {
+                    if (pickup[i].equals(cities.get(j)) && countOfUse.get(j) > 0 && !pickUpCheck) {
+                        pickUpCheck = true;
                         pickUpPosition = j;
                     }
-                    if (unload[i].equals(cities.get(j)) && countOfUse.get(j) > 0 && unloadPosition == 0) {
+                    if (unload[i].equals(cities.get(j)) && countOfUse.get(j) > 0 && !unloadCheck) {
+                        unloadCheck = true;
                         unloadPosition = j;
                     }
                 }

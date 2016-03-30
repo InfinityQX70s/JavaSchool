@@ -42,10 +42,10 @@
         <td><c:out value="${truck.city.name}"/>
         </td>
         <c:if test="${truck.repairState}">
-            <td><i class="material-icons" style="color: #297dc1">thumb_up</i></td>
+            <td><i class="material-icons" style="color: #297dc1">lens</i></td>
         </c:if>
         <c:if test="${not truck.repairState}">
-            <td><i class="material-icons" style="color: #ca7834">thumb_down</i></td>
+            <td><i class="material-icons" style="color: #ca7834">lens</i></td>
         </c:if>
         <c:if test="${empty truck.oreder}">
             <td>Free</td>
