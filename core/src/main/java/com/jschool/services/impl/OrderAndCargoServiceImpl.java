@@ -67,15 +67,19 @@ public class OrderAndCargoServiceImpl implements OrderAndCargoService {
                 if (truck.getOreder() == null) {
                     if (truck.getCity().getName().equals(cargos.get(0).getPickup().getCity().getName())) {
                         // get list of drivers we want to assign
-                        List<Driver> drivers = order.getDrivers();
-                        order.setRoutePoints(null);
-                        order.setDrivers(null);
-                        order.setTruck(truck);
-                        ordersDao.create(order);
-                        //method assign drivers to order
-                        assignDrivers(order, drivers, duration);
-                        // method add cargos to order and check capacity
-                        assignCargos(order, cargos, truck.getCapacity(), maxWeight);
+                        if (truck.isRepairState()) {
+                            List<Driver> drivers = order.getDrivers();
+                            order.setRoutePoints(null);
+                            order.setDrivers(null);
+                            order.setTruck(truck);
+                            ordersDao.create(order);
+                            //method assign drivers to order
+                            assignDrivers(order, drivers, duration);
+                            // method add cargos to order and check capacity
+                            assignCargos(order, cargos, truck.getCapacity(), maxWeight);
+                        }else{
+                            throw new ServiceException("Truck is in broken state", ServiceStatusCode.TRUCK_BROKEN);
+                        }
                     } else {
                         throw new ServiceException("Truck not in same city", ServiceStatusCode.TRUCK_NOT_IN_SAME_CITY);
                     }
