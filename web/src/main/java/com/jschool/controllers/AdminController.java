@@ -72,7 +72,7 @@ public class AdminController {
                 model.addAttribute("error", errorProperties.getProperty(e.getStatusCode().name()));
                 return "userAdd";
             }
-            redirectAttributes.addFlashAttribute("message", "Driver added successfully!");
+            redirectAttributes.addFlashAttribute("message", "User added successfully!");
             return "redirect:/admin/users";
         }
     }
