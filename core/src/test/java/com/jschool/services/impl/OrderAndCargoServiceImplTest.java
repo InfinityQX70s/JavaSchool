@@ -60,6 +60,7 @@ public class OrderAndCargoServiceImplTest {
     private Truck getTruck(){
         Truck truck = new Truck();
         truck.setNumber("EW23456");
+        truck.setRepairState(true);
         truck.setCapacity(50);
         truck.setShiftSize(1);
         City city = new City();
@@ -71,6 +72,7 @@ public class OrderAndCargoServiceImplTest {
     private Truck getTruckShiftSizeException(){
         Truck truck = new Truck();
         truck.setNumber("EW23456");
+        truck.setRepairState(true);
         truck.setCapacity(50);
         truck.setShiftSize(0);
         City city = new City();
@@ -93,6 +95,7 @@ public class OrderAndCargoServiceImplTest {
     private Truck getTruckCapacityException(){
         Truck truck = new Truck();
         truck.setNumber("EW23456");
+        truck.setRepairState(true);
         truck.setCapacity(40);
         truck.setShiftSize(1);
         City city = new City();

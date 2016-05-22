@@ -208,7 +208,5 @@ public class DriverServiceImplTest {
         Assert.assertEquals(map.get(driver).intValue(),70);
         map = driverService.findAllAvailableDrivers(120,"Orel");
         Assert.assertEquals(map.isEmpty(),true);
-
-
     }
 }
